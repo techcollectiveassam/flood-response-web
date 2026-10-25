@@ -2,7 +2,19 @@ import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const DEFAULT_DELAY = Number(import.meta.env.VITE_SUSPENSE_FALLBACK_DELAY) || 200
+const getDefaultDelay = () => {
+  const raw = import.meta.env.VITE_SUSPENSE_FALLBACK_DELAY
+  if (raw === undefined || raw === '') {
+    return 200
+  }
+  const parsed = Number(raw)
+  if (Number.isFinite(parsed)) {
+    return parsed
+  }
+  return 200
+}
+
+const DEFAULT_DELAY = getDefaultDelay()
 
 type DelayedFallbackProps = {
   delay?: number
@@ -21,8 +33,16 @@ export function DelayedFallback({ delay = DEFAULT_DELAY, className, spinnerClass
   if (!show) return null
 
   return (
-    <div className={cn('flex h-[50vh] w-full items-center justify-center', className)}>
-      <Loader2 className={cn('h-6 w-6 animate-spin text-muted-foreground', spinnerClassName)} />
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn('flex h-[50vh] w-full items-center justify-center', className)}
+    >
+      <Loader2
+        aria-hidden="true"
+        className={cn('h-6 w-6 animate-spin text-muted-foreground', spinnerClassName)}
+      />
+      <span className="sr-only">Loading</span>
     </div>
   )
 }
