@@ -18,6 +18,20 @@ Flood response frontend for coordinating emergency relief in Assam. Built by Tec
 - Run tests with coverage: `npm run test:coverage`
 - Lint: `npm run lint`
 
+## Change Workflow
+
+Build in small, self-contained increments that are easy to review.
+
+- Prefer one UI block or one behavior per change/commit. For example: app header, drawer footer, drawer header, scroll shell, menu groups.
+- Before implementation, assess the scope of the request. If it spans multiple components, screens, or behaviors, propose a phased plan made of small, reviewable increments and get approval before coding.
+- Split phases at natural UI or behavior boundaries, not arbitrary line counts.
+- Keep each increment compiling, lint-clean, and tested before moving on.
+- Add only the supporting code needed for that increment. Defer routes, integrations, and unrelated refactors.
+- When a temporary scaffold is required, keep it isolated and replace it in a later increment.
+- Before committing, run `npx tsc -b`, `npm run lint`, and `npm run test:run`.
+- In the handoff, state the commands run and any intentionally deferred behavior.
+- Do not commit unless explicitly asked.
+
 ## Tech Stack
 
 - **React 19** with **TypeScript 6** (strict: `noUnusedLocals`, `noUnusedParameters`, `erasableSyntaxOnly`, `verbatimModuleSyntax`)
@@ -97,6 +111,13 @@ src/
 
 6. **Layout Nesting**: `RootLayout` → feature `Layout` → page component, all connected via `<Outlet />`.
 
+### Routing
+
+- Use React Router `Link` for internal destinations and `<a>` only for external URLs.
+- Derive navigation active state from the current location; never hard-code it in menu configuration.
+- Until a destination exists, keep the requested placeholder UI isolated. Do not mark placeholder links as current or add navigation behavior prematurely.
+- Close transient navigation UI after successful internal navigation.
+
 ## Code Conventions
 
 ### File & Component Naming
@@ -131,9 +152,25 @@ src/
 - Use shadcn's `components.json` (style: `base-nova`, icon library: `lucide`)
 - Add new UI components via `npx shadcn@latest add <component-name>`
 
+### Accessibility & Responsive UI
+
+- Use semantic elements and native controls; every icon-only control needs an accessible name.
+- Preserve keyboard navigation and visible focus indicators.
+- Use `aria-current` only for the actual current route.
+- Validate interactive controls at mobile viewport sizes, including safe-area insets and a minimum 44px touch target where practical.
+- Respect reduced-motion preferences for new animations or transitions.
+
+### Internationalization
+
+- Put user-facing copy in `src/lib/i18n.ts`; do not add new hard-coded UI strings.
+- A functional locale change must update app-wide copy and document language, with the chosen locale persisted.
+- Presentational language selectors are allowed during scaffolding, but must not imply that translation is already active.
+
 ## API Layer
 
 When implementing API integration, follow these patterns:
+
+> TanStack Query and Zod are preferred when API work begins, but are not currently installed. Add dependencies explicitly as part of the first approved API integration.
 
 1. **Single API Client**: Create a single preconfigured API client instance in `src/lib/api-client.ts`. Use an interceptor to handle errors globally (e.g., notification toasts, auth redirects, token refresh).
 
@@ -147,6 +184,8 @@ When implementing API integration, follow these patterns:
 ## State Management
 
 Categorize state by type — do NOT put everything into a single global store:
+
+> Zustand and Jotai are preferred options if global client state becomes necessary, but are not currently installed. Add one deliberately when its first approved use requires it.
 
 | State Type | Where | Tools |
 |---|---|---|
@@ -191,6 +230,11 @@ npm test              # Watch mode
 npm run test:run      # Single run
 npm run test:coverage # With coverage report
 ```
+
+### Change-Level Verification
+
+- Add or update a behavior-focused test when changing navigation, accessibility attributes, forms, API behavior, or error states.
+- For visual-only scaffolding, lint, build, and a manual keyboard/mobile check are sufficient unless the change has non-trivial interaction.
 
 ## Error Handling
 
