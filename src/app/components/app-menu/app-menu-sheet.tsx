@@ -1,14 +1,8 @@
 import { useState } from 'react'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { t } from '@/lib/i18n'
+import { Sheet, SheetContent } from '@/components/ui/sheet'
 import type { LanguageCode } from '@/lib/i18n'
 import { AppMenuFooter } from './app-menu-footer'
+import { AppMenuHeader } from './app-menu-header'
 
 type AppMenuSheetProps = {
   open: boolean
@@ -23,16 +17,11 @@ export function AppMenuSheet({ open, onOpenChange }: AppMenuSheetProps) {
       <SheetContent
         id="app-menu-drawer"
         side="left"
+        showCloseButton={false}
         className="data-[side=left]:w-[85vw] data-[side=left]:max-w-xs data-[side=left]:sm:max-w-xs"
       >
-        <SheetHeader>
-          <SheetTitle>{t('menu.placeholderTitle')}</SheetTitle>
-          <SheetDescription>{t('menu.placeholderDescription')}</SheetDescription>
-        </SheetHeader>
-        <AppMenuFooter
-          language={language}
-          onLanguageChange={setLanguage}
-        />
+        <AppMenuHeader />
+        <AppMenuFooter language={language} onLanguageChange={setLanguage} />
       </SheetContent>
     </Sheet>
   )
