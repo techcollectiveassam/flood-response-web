@@ -1,0 +1,25 @@
+export const languages = ['en', 'as', 'hi', 'bn'] as const
+
+export type LanguageCode = (typeof languages)[number]
+
+const en = {
+  'appHeader.openMenu': 'Open navigation menu',
+  'appHeader.brand': 'Flood Watch',
+  'appHeader.subtitle': 'Assam Floods 2026',
+  'appHeader.report': 'Report',
+  'menu.placeholderTitle': 'Navigation',
+  'menu.placeholderDescription': 'Drawer content will be added in the next phases.',
+} as const
+
+export type TranslationKey = keyof typeof en
+
+const messages: Record<LanguageCode, Partial<Record<TranslationKey, string>>> = {
+  en,
+  as: {},
+  hi: {},
+  bn: {},
+}
+
+export function t(key: TranslationKey, language: LanguageCode = 'en'): string {
+  return messages[language][key] ?? en[key]
+}
