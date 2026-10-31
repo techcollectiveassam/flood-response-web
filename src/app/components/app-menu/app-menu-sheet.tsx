@@ -18,9 +18,10 @@ export function AppMenuSheet({ open, onOpenChange }: AppMenuSheetProps) {
         id="app-menu-drawer"
         side="left"
         showCloseButton={false}
-        className="data-[side=left]:w-[85vw] data-[side=left]:max-w-xs data-[side=left]:sm:max-w-xs"
+        className="gap-0 p-0 data-[side=left]:w-[85vw] data-[side=left]:max-w-xs data-[side=left]:sm:max-w-xs"
       >
         <AppMenuHeader />
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-3" />
         <AppMenuFooter language={language} onLanguageChange={setLanguage} />
       </SheetContent>
     </Sheet>
