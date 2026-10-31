@@ -9,6 +9,12 @@ const en = {
   'appHeader.report': 'Report',
   'menu.placeholderTitle': 'Navigation',
   'menu.placeholderDescription': 'Drawer content will be added in the next phases.',
+  'footer.languageLabel': 'Language',
+  'footer.copyright': '© 2026 FloodResponse · Coordinated under ASDMA',
+  'language.english': 'English',
+  'language.assamese': 'অসমীয়া',
+  'language.hindi': 'हिन्दी',
+  'language.bengali': 'বাংলা',
 } as const
 
 export type TranslationKey = keyof typeof en

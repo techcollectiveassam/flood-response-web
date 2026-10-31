@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -6,6 +7,8 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { t } from '@/lib/i18n'
+import type { LanguageCode } from '@/lib/i18n'
+import { AppMenuFooter } from './app-menu-footer'
 
 type AppMenuSheetProps = {
   open: boolean
@@ -13,6 +16,8 @@ type AppMenuSheetProps = {
 }
 
 export function AppMenuSheet({ open, onOpenChange }: AppMenuSheetProps) {
+  const [language, setLanguage] = useState<LanguageCode>('en')
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -24,6 +29,10 @@ export function AppMenuSheet({ open, onOpenChange }: AppMenuSheetProps) {
           <SheetTitle>{t('menu.placeholderTitle')}</SheetTitle>
           <SheetDescription>{t('menu.placeholderDescription')}</SheetDescription>
         </SheetHeader>
+        <AppMenuFooter
+          language={language}
+          onLanguageChange={setLanguage}
+        />
       </SheetContent>
     </Sheet>
   )
