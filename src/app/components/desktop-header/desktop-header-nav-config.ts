@@ -1,6 +1,6 @@
 import { UserPlus } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { TranslationKey } from '@/lib/i18n'
+import type { TranslationKey } from '@/lib/i18n/catalog'
 
 export type DesktopHeaderNavItemVariant = 'default' | 'emergency'
 

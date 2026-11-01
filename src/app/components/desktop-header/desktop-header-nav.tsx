@@ -1,18 +1,18 @@
 import type { DesktopHeaderNavItem } from './desktop-header-nav-config'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { t } from '@/lib/i18n'
-import type { LanguageCode } from '@/lib/i18n'
 
 type DesktopHeaderNavProps = {
   items: DesktopHeaderNavItem[]
-  language: LanguageCode
   className?: string
 }
 
-export function DesktopHeaderNav({ items, language, className }: DesktopHeaderNavProps) {
+export function DesktopHeaderNav({ items, className }: DesktopHeaderNavProps) {
+  const { t } = useTranslation()
+
   return (
     <nav
-      aria-label={t('desktopHeader.navigationLabel', language)}
+      aria-label={t('desktopHeader.navigationLabel')}
       className={cn('flex items-center gap-1', className)}
     >
       {items.map((item) => {
@@ -31,7 +31,7 @@ export function DesktopHeaderNav({ items, language, className }: DesktopHeaderNa
             )}
           >
             {Icon ? <Icon className="size-4 shrink-0" aria-hidden="true" /> : null}
-            <span>{t(item.labelKey, language)}</span>
+            <span>{t(item.labelKey)}</span>
           </a>
         )
       })}

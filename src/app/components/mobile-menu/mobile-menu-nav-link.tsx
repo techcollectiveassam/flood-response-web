@@ -1,20 +1,20 @@
 import { matchPath, useLocation } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import type { MobileMenuItem } from './mobile-menu-config'
 import { cn } from '@/lib/utils'
-import { t } from '@/lib/i18n'
-import type { LanguageCode } from '@/lib/i18n'
 
 type MobileMenuNavLinkProps = {
   item: MobileMenuItem
-  language: LanguageCode
 }
 
-export function MobileMenuNavLink({ item, language }: MobileMenuNavLinkProps) {
+export function MobileMenuNavLink({ item }: MobileMenuNavLinkProps) {
+  const { t } = useTranslation()
   const { pathname } = useLocation()
   const Icon = item.icon
   const isEmergency = item.variant === 'emergency'
   const isActive =
-    item.to !== '#' && matchPath({ path: item.to, end: false }, pathname) !== null
+    item.to !== '#' &&
+    matchPath({ path: item.to, end: false }, pathname) !== null
 
   return (
     <a
@@ -30,7 +30,7 @@ export function MobileMenuNavLink({ item, language }: MobileMenuNavLinkProps) {
       )}
     >
       <Icon className="size-4 shrink-0" aria-hidden="true" />
-      <span className="truncate">{t(item.labelKey, language)}</span>
+      <span className="truncate">{t(item.labelKey)}</span>
     </a>
   )
 }

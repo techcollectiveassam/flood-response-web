@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 const getDefaultDelay = () => {
@@ -23,6 +24,7 @@ type DelayedFallbackProps = {
 }
 
 export function DelayedFallback({ delay = DEFAULT_DELAY, className, spinnerClassName }: DelayedFallbackProps) {
+  const { t } = useTranslation()
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export function DelayedFallback({ delay = DEFAULT_DELAY, className, spinnerClass
         aria-hidden="true"
         className={cn('h-6 w-6 animate-spin text-muted-foreground', spinnerClassName)}
       />
-      <span className="sr-only">Loading</span>
+      <span className="sr-only">{t('common.loading')}</span>
     </div>
   )
 }

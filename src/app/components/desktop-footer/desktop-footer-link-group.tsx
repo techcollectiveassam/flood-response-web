@@ -1,18 +1,18 @@
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { t } from '@/lib/i18n'
-import type { LanguageCode } from '@/lib/i18n'
 import type { DesktopFooterLinkGroup } from './desktop-footer-config'
 
 type DesktopFooterLinkGroupProps = {
   group: DesktopFooterLinkGroup
-  language: LanguageCode
 }
 
-export function DesktopFooterLinkGroup({ group, language }: DesktopFooterLinkGroupProps) {
+export function DesktopFooterLinkGroup({ group }: DesktopFooterLinkGroupProps) {
+  const { t } = useTranslation()
+
   return (
     <div>
       <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
-        {t(group.titleKey, language)}
+        {t(group.titleKey)}
       </h3>
       <ul className="mt-4 space-y-2.5">
         {group.links.map((link) => (
@@ -26,7 +26,7 @@ export function DesktopFooterLinkGroup({ group, language }: DesktopFooterLinkGro
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              {t(link.labelKey, language)}
+              {t(link.labelKey)}
             </a>
           </li>
         ))}
