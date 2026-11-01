@@ -3,15 +3,15 @@ import { LanguageSwitcher } from '@/components/language-switcher'
 import { t } from '@/lib/i18n'
 import type { LanguageCode } from '@/lib/i18n'
 
-type AppMenuFooterProps = {
+type MobileMenuFooterProps = {
   language: LanguageCode
   onLanguageChange: (language: LanguageCode) => void
 }
 
-export function AppMenuFooter({
+export function MobileMenuFooter({
   language,
   onLanguageChange,
-}: AppMenuFooterProps) {
+}: MobileMenuFooterProps) {
   return (
     <SheetFooter className="mt-auto shrink-0 gap-2.5 border-t border-border px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <LanguageSwitcher value={language} onChange={onLanguageChange} />

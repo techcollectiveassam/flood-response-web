@@ -10,12 +10,12 @@ import { cn } from '@/lib/utils'
 import { t } from '@/lib/i18n'
 import type { LanguageCode } from '@/lib/i18n'
 
-type AppMenuHeaderProps = {
+type MobileMenuHeaderProps = {
   language: LanguageCode
   className?: string
 }
 
-export function AppMenuHeader({ language, className }: AppMenuHeaderProps) {
+export function MobileMenuHeader({ language, className }: MobileMenuHeaderProps) {
   return (
     <SheetHeader
       className={cn(
@@ -29,10 +29,10 @@ export function AppMenuHeader({ language, className }: AppMenuHeaderProps) {
 
       <div className="min-w-0 flex-1">
         <SheetTitle className="truncate text-base font-semibold leading-tight">
-          {t('menu.title', language)}
+          {t('mobileMenu.title', language)}
         </SheetTitle>
         <SheetDescription className="truncate text-[10px] font-medium uppercase tracking-[0.12em]">
-          {t('menu.subtitle', language)}
+          {t('mobileMenu.subtitle', language)}
         </SheetDescription>
       </div>
 
@@ -43,7 +43,7 @@ export function AppMenuHeader({ language, className }: AppMenuHeaderProps) {
             variant="ghost"
             size="icon"
             className="size-11 shrink-0"
-            aria-label={t('menu.close', language)}
+            aria-label={t('mobileMenu.close', language)}
           />
         }
       >

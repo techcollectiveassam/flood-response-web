@@ -1,14 +1,14 @@
-import type { MenuGroup } from './menu-config'
+import type { MobileMenuGroup } from './mobile-menu-config'
 import { t } from '@/lib/i18n'
 import type { LanguageCode } from '@/lib/i18n'
-import { MenuNavLink } from './menu-nav-link'
+import { MobileMenuNavLink } from './mobile-menu-nav-link'
 
-type MenuNavGroupProps = {
-  group: MenuGroup
+type MobileMenuNavGroupProps = {
+  group: MobileMenuGroup
   language: LanguageCode
 }
 
-export function MenuNavGroup({ group, language }: MenuNavGroupProps) {
+export function MobileMenuNavGroup({ group, language }: MobileMenuNavGroupProps) {
   return (
     <section className="space-y-1">
       <h3 className="px-2 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -17,7 +17,7 @@ export function MenuNavGroup({ group, language }: MenuNavGroupProps) {
       <ul className="space-y-0.5">
         {group.items.map((item) => (
           <li key={item.labelKey}>
-            <MenuNavLink item={item} language={language} />
+            <MobileMenuNavLink item={item} language={language} />
           </li>
         ))}
       </ul>

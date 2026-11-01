@@ -27,7 +27,7 @@ export function DesktopFooter({
                 <House className="size-4" aria-hidden="true" />
               </span>
               <span className="text-base font-semibold leading-none text-foreground">
-                {t('appHeader.brand', language)}
+                {t('header.brand', language)}
               </span>
             </div>
 
