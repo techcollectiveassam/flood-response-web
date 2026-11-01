@@ -1,15 +1,15 @@
 import { matchPath, useLocation } from 'react-router'
-import type { MenuItem } from './menu-config'
+import type { MobileMenuItem } from './mobile-menu-config'
 import { cn } from '@/lib/utils'
 import { t } from '@/lib/i18n'
 import type { LanguageCode } from '@/lib/i18n'
 
-type MenuNavLinkProps = {
-  item: MenuItem
+type MobileMenuNavLinkProps = {
+  item: MobileMenuItem
   language: LanguageCode
 }
 
-export function MenuNavLink({ item, language }: MenuNavLinkProps) {
+export function MobileMenuNavLink({ item, language }: MobileMenuNavLinkProps) {
   const { pathname } = useLocation()
   const Icon = item.icon
   const isEmergency = item.variant === 'emergency'

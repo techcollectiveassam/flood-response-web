@@ -9,38 +9,38 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import type { TranslationKey } from '@/lib/i18n'
 
-export type MenuItemVariant = 'default' | 'emergency'
+export type MobileMenuItemVariant = 'default' | 'emergency'
 
-export type MenuItem = {
+export type MobileMenuItem = {
   labelKey: TranslationKey
   icon: LucideIcon
   to: string
-  variant?: MenuItemVariant
+  variant?: MobileMenuItemVariant
 }
 
-export type MenuGroup = {
+export type MobileMenuGroup = {
   id: string
   titleKey: TranslationKey
-  items: MenuItem[]
+  items: MobileMenuItem[]
 }
 
-export const menuGroups: MenuGroup[] = [
+export const mobileMenuGroups: MobileMenuGroup[] = [
   {
     id: 'citizen',
-    titleKey: 'menu.group.citizen',
+    titleKey: 'mobileMenu.group.citizen',
     items: [
       {
-        labelKey: 'menu.item.reportFloodedArea',
+        labelKey: 'mobileMenu.item.reportFloodedArea',
         icon: MapPin,
         to: '#',
       },
       {
-        labelKey: 'menu.item.requestRelief',
+        labelKey: 'mobileMenu.item.requestRelief',
         icon: BriefcaseMedical,
         to: '#',
       },
       {
-        labelKey: 'menu.item.emergencySos',
+        labelKey: 'mobileMenu.item.emergencySos',
         icon: Siren,
         to: '#',
         variant: 'emergency',
@@ -49,20 +49,20 @@ export const menuGroups: MenuGroup[] = [
   },
   {
     id: 'coordination',
-    titleKey: 'menu.group.coordination',
+    titleKey: 'mobileMenu.group.coordination',
     items: [
       {
-        labelKey: 'menu.item.volunteerRegistration',
+        labelKey: 'mobileMenu.item.volunteerRegistration',
         icon: UserRound,
         to: '#',
       },
       {
-        labelKey: 'menu.item.ngoOnboarding',
+        labelKey: 'mobileMenu.item.ngoOnboarding',
         icon: Building2,
         to: '#',
       },
       {
-        labelKey: 'menu.item.commandCenter',
+        labelKey: 'mobileMenu.item.commandCenter',
         icon: Monitor,
         to: '#',
       },

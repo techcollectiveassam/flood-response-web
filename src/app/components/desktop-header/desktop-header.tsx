@@ -21,7 +21,7 @@ export function DesktopHeader({ language, onLanguageChange }: DesktopHeaderProps
             <House className="size-4" aria-hidden="true" />
           </span>
           <span className="text-base font-semibold leading-none text-foreground">
-            {t('appHeader.brand', language)}
+            {t('header.brand', language)}
           </span>
         </div>
 
@@ -48,7 +48,7 @@ export function DesktopHeader({ language, onLanguageChange }: DesktopHeaderProps
               'h-10 px-4 text-xs font-semibold uppercase tracking-[0.08em]',
             )}
           >
-            {t('appHeader.report', language)}
+             {t('header.report', language)}
           </a>
         </div>
       </div>
