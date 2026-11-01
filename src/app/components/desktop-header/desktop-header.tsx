@@ -29,7 +29,7 @@ export function DesktopHeader({ language, onLanguageChange }: DesktopHeaderProps
           {t('desktopHeader.year', language)}
         </span>
 
-        <div className="hidden items-center gap-1.5 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium whitespace-nowrap text-success xl:flex">
+        <div className="hidden items-center gap-1.5 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium whitespace-nowrap text-success-text xl:flex">
           <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
           {t('desktopHeader.liveStatus', language)}
         </div>

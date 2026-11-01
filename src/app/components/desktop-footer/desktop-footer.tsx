@@ -39,7 +39,7 @@ export function DesktopFooter({
               {t('footer.description', language)}
             </p>
 
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium text-success">
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium text-success-text">
               <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
               {t('footer.systemStatus', language)}
             </div>
