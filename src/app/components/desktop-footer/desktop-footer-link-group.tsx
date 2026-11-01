@@ -1,16 +1,18 @@
 import { cn } from '@/lib/utils'
 import { t } from '@/lib/i18n'
+import type { LanguageCode } from '@/lib/i18n'
 import type { DesktopFooterLinkGroup } from './desktop-footer-config'
 
 type DesktopFooterLinkGroupProps = {
   group: DesktopFooterLinkGroup
+  language: LanguageCode
 }
 
-export function DesktopFooterLinkGroup({ group }: DesktopFooterLinkGroupProps) {
+export function DesktopFooterLinkGroup({ group, language }: DesktopFooterLinkGroupProps) {
   return (
     <div>
       <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
-        {t(group.titleKey)}
+        {t(group.titleKey, language)}
       </h3>
       <ul className="mt-4 space-y-2.5">
         {group.links.map((link) => (
@@ -24,7 +26,7 @@ export function DesktopFooterLinkGroup({ group }: DesktopFooterLinkGroupProps) {
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
-              {t(link.labelKey)}
+              {t(link.labelKey, language)}
             </a>
           </li>
         ))}

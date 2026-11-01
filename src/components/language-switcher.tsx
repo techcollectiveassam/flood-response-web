@@ -30,7 +30,7 @@ export function LanguageSwitcher({
   return (
     <div
       role="group"
-      aria-label={t('footer.languageLabel')}
+      aria-label={t('footer.languageLabel', value)}
       className={cn(
         'flex items-center',
         isSegmented

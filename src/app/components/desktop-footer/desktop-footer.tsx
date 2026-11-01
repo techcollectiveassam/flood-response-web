@@ -27,41 +27,41 @@ export function DesktopFooter({
                 <House className="size-4" aria-hidden="true" />
               </span>
               <span className="text-base font-semibold leading-none text-foreground">
-                {t('appHeader.brand')}
+                {t('appHeader.brand', language)}
               </span>
             </div>
 
             <p className="mt-5 text-xs font-semibold uppercase leading-relaxed tracking-[0.06em] text-primary">
-              {t('footer.crisisTitle')}
+              {t('footer.crisisTitle', language)}
             </p>
 
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              {t('footer.description')}
+              {t('footer.description', language)}
             </p>
 
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium text-success">
               <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
-              {t('footer.systemStatus')}
+              {t('footer.systemStatus', language)}
             </div>
           </div>
 
-          <nav aria-label={t('footer.navigationLabel')} className="contents">
+          <nav aria-label={t('footer.navigationLabel', language)} className="contents">
             {desktopFooterLinkGroups.map((group) => (
-              <DesktopFooterLinkGroup key={group.id} group={group} />
+              <DesktopFooterLinkGroup key={group.id} group={group} language={language} />
             ))}
           </nav>
 
           <div>
             <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
-              {t('footer.verificationTitle')}
+              {t('footer.verificationTitle', language)}
             </h3>
 
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              {t('footer.verificationBody')}
+              {t('footer.verificationBody', language)}
             </p>
 
              <p className="mt-4 rounded-lg border border-border bg-surface-soft px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-               {t('footer.privacyNotice')}
+               {t('footer.privacyNotice', language)}
              </p>
            </div>
         </div>
@@ -69,14 +69,14 @@ export function DesktopFooter({
 
       <div className="border-t border-border">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-4 text-[11px] text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
-          <p>{t('footer.copyrightDesktop')}</p>
+          <p>{t('footer.copyrightDesktop', language)}</p>
 
           <div className="flex flex-wrap items-center gap-3">
             <LanguageSwitcher value={language} onChange={onLanguageChange} />
 
             <span aria-hidden="true" className="h-4 w-px bg-border" />
 
-            <nav aria-label={t('footer.legalLabel')}>
+            <nav aria-label={t('footer.legalLabel', language)}>
               <ul className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 {desktopFooterPolicyLinks.map((link) => (
                   <li key={link.labelKey}>
@@ -84,7 +84,7 @@ export function DesktopFooter({
                       href={link.to}
                       className="inline-flex min-h-6 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                     >
-                      {t(link.labelKey)}
+                      {t(link.labelKey, language)}
                     </a>
                   </li>
                 ))}
