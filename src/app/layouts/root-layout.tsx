@@ -1,11 +1,11 @@
-import { Outlet } from 'react-router'
+import { useMediaQuery } from '@/hooks/use-media-query'
+import { DesktopAppShell } from './desktop-app-shell'
+import { MobileAppShell } from './mobile-app-shell'
+
+const DESKTOP_QUERY = '(min-width: 1024px)'
 
 export function RootLayout() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto px-4 py-6">
-        <Outlet />
-      </main>
-    </div>
-  )
+  const isDesktop = useMediaQuery(DESKTOP_QUERY)
+
+  return isDesktop ? <DesktopAppShell /> : <MobileAppShell />
 }
