@@ -1,7 +1,7 @@
 import { createInstance } from 'i18next'
 import ICU from 'i18next-icu'
 import { describe, expect, it } from 'vitest'
-import type { LanguageCode } from '@/lib/i18n'
+import type { LanguageCode } from '@/lib/i18n/config'
 
 const messages = {
   'plural.basic': '{count, plural, one {one} other {other}}',
