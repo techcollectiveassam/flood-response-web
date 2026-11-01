@@ -1,75 +1,70 @@
-# React + TypeScript + Vite
+# Flood Response Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for Flood Response and Relief Coordination, built by TechCollective Assam.
 
-Currently, two official plugins are available:
+> **Project status:** early-stage frontend scaffolding. The application shell and SOS route structure are in place, but authentication, backend integration, and most user workflows are not implemented yet.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- React 19, TypeScript, and Vite
+- React Router data router
+- Tailwind CSS v4 and shadcn/ui (`base-nova`)
+- Vitest and Testing Library
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js `20.19+` or `22.12+`
+- npm (bundled with Node.js)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+The development server prints its local URL (normally `http://localhost:5173`) after it starts.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment variables
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Copy `.env.example` to `.env.local` only when you need to override a value.
 
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `VITE_SUSPENSE_FALLBACK_DELAY` | `200` | Delay in milliseconds before route loading feedback is shown. |
+
+Never commit `.env.local` or credentials.
+
+## Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server. |
+| `npm run preview` | Serve the production build locally. |
+| `npm run build` | Type-check and create a production build. |
+| `npm run lint` | Lint the source code. |
+| `npm test` | Run tests in watch mode. |
+| `npm run test:run` | Run the test suite once. |
+| `npm run test:coverage` | Run tests with coverage reporting. |
+
+## Current routes
+
+| Route | Status |
+| --- | --- |
+| `/` | Application shell with a scaffolded home page. |
+| `/sos` | SOS request list scaffold. |
+| `/sos/new` | Create SOS request scaffold. |
+
+## Project structure
+
+The codebase follows a shared → features → app dependency flow. SOS functionality lives in `src/features/sos`; application routing and layouts live in `src/app`; reusable UI and utilities live under `src/components` and `src/lib`.
+
+## Contributing
+
+See [AGENTS.md](AGENTS.md) for architecture and contribution conventions. Before handing off a change, run:
+
+```bash
+npm run lint
+npm run test:run
+npm run build
 ```
