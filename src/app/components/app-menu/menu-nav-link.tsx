@@ -2,12 +2,14 @@ import { matchPath, useLocation } from 'react-router'
 import type { MenuItem } from './menu-config'
 import { cn } from '@/lib/utils'
 import { t } from '@/lib/i18n'
+import type { LanguageCode } from '@/lib/i18n'
 
 type MenuNavLinkProps = {
   item: MenuItem
+  language: LanguageCode
 }
 
-export function MenuNavLink({ item }: MenuNavLinkProps) {
+export function MenuNavLink({ item, language }: MenuNavLinkProps) {
   const { pathname } = useLocation()
   const Icon = item.icon
   const isEmergency = item.variant === 'emergency'
@@ -28,7 +30,7 @@ export function MenuNavLink({ item }: MenuNavLinkProps) {
       )}
     >
       <Icon className="size-4 shrink-0" aria-hidden="true" />
-      <span className="truncate">{t(item.labelKey)}</span>
+      <span className="truncate">{t(item.labelKey, language)}</span>
     </a>
   )
 }

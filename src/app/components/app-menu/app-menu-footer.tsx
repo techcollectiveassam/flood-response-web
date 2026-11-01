@@ -16,7 +16,7 @@ export function AppMenuFooter({
     <SheetFooter className="mt-auto shrink-0 gap-2.5 border-t border-border px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <LanguageSwitcher value={language} onChange={onLanguageChange} />
       <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
-        {t('footer.copyright')}
+        {t('footer.copyright', language)}
       </p>
     </SheetFooter>
   )

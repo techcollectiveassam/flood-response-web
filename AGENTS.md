@@ -163,6 +163,7 @@ src/
 ### Internationalization
 
 - Put user-facing copy in `src/lib/i18n.ts`; do not add new hard-coded UI strings.
+- Scaffolded user-facing copy, including the root route (`Home`), SOS pages (`SOS Requests`, `Create SOS Request`), and loading fallback (`Loading`), is temporary scaffold copy explicitly exempt from translation unless it is moved into the translation table in `src/lib/i18n.ts`.
 - A functional locale change must update app-wide copy and document language, with the chosen locale persisted.
 - Presentational language selectors are allowed during scaffolding, but must not imply that translation is already active.
 
@@ -216,7 +217,7 @@ Prioritize **integration tests** over unit tests. Integration tests provide the 
 ### Guidelines
 
 - Import from `@/testing/test-utils` (NOT directly from `@testing-library/react`)
-- Use `renderWithProviders()` to render components (wraps with all app providers)
+- Use `renderWithProviders()` to render components (currently returns children without mounting providers until app providers are added)
 - Test user behavior, NOT implementation details — test what the user sees, not internal state
 - Use MSW (Mock Service Worker) for API mocking instead of mocking fetch directly
 - Mocks are automatically restored after each test (`restoreMocks: true`)
@@ -248,7 +249,7 @@ npm run test:coverage # With coverage report
 
 - Store auth tokens in HttpOnly cookies (NOT localStorage) when possible
 - Sanitize all user inputs before rendering to prevent XSS attacks
-- Never store secrets or API keys in source code — use environment variables via `import.meta.env.VITE_*`
+- Never store secrets or API keys in source code or client-exposed `VITE_*` variables; keep them in server-only environment variables. `VITE_*` is only for non-sensitive public configuration.
 - For authorization, implement RBAC (role-based) or PBAC (permission-based) access control as needed
 
 ## Performance
@@ -277,7 +278,7 @@ npm run test:coverage # With coverage report
 - Do NOT add components to `src/app/components/` unless they are truly app-scoped (error boundaries, global navigation).
 - Do NOT use default exports for components. Always use named exports.
 - Do NOT use `require()` or CommonJS patterns. The project uses ESM (`"type": "module"`).
-- Do NOT store sensitive values in source. Use environment variables via `import.meta.env.VITE_*`.
+- Do NOT store sensitive values in source or client-exposed `VITE_*` variables. Use server-only environment variables; `VITE_*` is only for non-sensitive public configuration.
 - Do NOT add nested render functions inside components. Extract them into separate components.
 - Do NOT import from `src/app/` inside `src/features/` or shared modules (violates unidirectional flow).
 - Do NOT put all state in a single global store. Categorize state by type and keep it local when possible.

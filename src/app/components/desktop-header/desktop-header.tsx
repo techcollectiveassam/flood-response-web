@@ -21,17 +21,17 @@ export function DesktopHeader({ language, onLanguageChange }: DesktopHeaderProps
             <House className="size-4" aria-hidden="true" />
           </span>
           <span className="text-base font-semibold leading-none text-foreground">
-            {t('appHeader.brand')}
+            {t('appHeader.brand', language)}
           </span>
         </div>
 
         <span className="shrink-0 rounded-md border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-          {t('desktopHeader.year')}
+          {t('desktopHeader.year', language)}
         </span>
 
         <div className="hidden items-center gap-1.5 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium whitespace-nowrap text-success xl:flex">
           <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
-          {t('desktopHeader.liveStatus')}
+          {t('desktopHeader.liveStatus', language)}
         </div>
 
         <div className="ml-auto flex items-center gap-2">
@@ -40,7 +40,7 @@ export function DesktopHeader({ language, onLanguageChange }: DesktopHeaderProps
             onChange={onLanguageChange}
             variant="segmented"
           />
-          <DesktopHeaderNav items={desktopHeaderNavItems} />
+          <DesktopHeaderNav items={desktopHeaderNavItems} language={language} />
           <a
             href="#"
             className={cn(
@@ -48,7 +48,7 @@ export function DesktopHeader({ language, onLanguageChange }: DesktopHeaderProps
               'h-10 px-4 text-xs font-semibold uppercase tracking-[0.08em]',
             )}
           >
-            {t('appHeader.report')}
+            {t('appHeader.report', language)}
           </a>
         </div>
       </div>

@@ -8,12 +8,14 @@ import {
 } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import { t } from '@/lib/i18n'
+import type { LanguageCode } from '@/lib/i18n'
 
 type AppMenuHeaderProps = {
+  language: LanguageCode
   className?: string
 }
 
-export function AppMenuHeader({ className }: AppMenuHeaderProps) {
+export function AppMenuHeader({ language, className }: AppMenuHeaderProps) {
   return (
     <SheetHeader
       className={cn(
@@ -27,10 +29,10 @@ export function AppMenuHeader({ className }: AppMenuHeaderProps) {
 
       <div className="min-w-0 flex-1">
         <SheetTitle className="truncate text-base font-semibold leading-tight">
-          {t('menu.title')}
+          {t('menu.title', language)}
         </SheetTitle>
         <SheetDescription className="truncate text-[10px] font-medium uppercase tracking-[0.12em]">
-          {t('menu.subtitle')}
+          {t('menu.subtitle', language)}
         </SheetDescription>
       </div>
 
@@ -41,7 +43,7 @@ export function AppMenuHeader({ className }: AppMenuHeaderProps) {
             variant="ghost"
             size="icon"
             className="size-11 shrink-0"
-            aria-label={t('menu.close')}
+            aria-label={t('menu.close', language)}
           />
         }
       >
