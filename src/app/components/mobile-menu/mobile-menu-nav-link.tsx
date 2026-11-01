@@ -1,6 +1,8 @@
 import { matchPath, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import type { MobileMenuItem } from './mobile-menu-config'
+import { useLanguage } from '@/hooks/use-language'
+import { stripLocalePrefix } from '@/lib/i18n/locale-segment'
 import { cn } from '@/lib/utils'
 
 type MobileMenuNavLinkProps = {
@@ -9,12 +11,14 @@ type MobileMenuNavLinkProps = {
 
 export function MobileMenuNavLink({ item }: MobileMenuNavLinkProps) {
   const { t } = useTranslation()
+  const { language } = useLanguage()
   const { pathname } = useLocation()
   const Icon = item.icon
   const isEmergency = item.variant === 'emergency'
+  const localizedPathname = stripLocalePrefix(pathname, language)
   const isActive =
     item.to !== '#' &&
-    matchPath({ path: item.to, end: false }, pathname) !== null
+    matchPath({ path: item.to, end: false }, localizedPathname) !== null
 
   return (
     <a

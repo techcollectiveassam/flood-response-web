@@ -1,9 +1,12 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
+import { resolveLanguage } from '@/lib/i18n/config'
 
 export function RouteErrorBoundary() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const language = resolveLanguage(i18n.resolvedLanguage ?? i18n.language)
+  const homePath = `/${language}`
   const error = useRouteError()
 
   if (isRouteErrorResponse(error)) {
@@ -20,7 +23,7 @@ export function RouteErrorBoundary() {
           ) : null}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => (window.location.href = '/')}>
+          <Button variant="outline" onClick={() => (window.location.href = homePath)}>
             {t('common.goHome')}
           </Button>
           <Button onClick={() => window.location.reload()}>{t('common.reload')}</Button>
@@ -37,7 +40,7 @@ export function RouteErrorBoundary() {
           <p className="text-muted-foreground">{error.message}</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => (window.location.href = '/')}>
+          <Button variant="outline" onClick={() => (window.location.href = homePath)}>
             {t('common.goHome')}
           </Button>
           <Button onClick={() => window.location.reload()}>{t('common.reload')}</Button>
@@ -53,7 +56,7 @@ export function RouteErrorBoundary() {
         <p className="text-muted-foreground">{t('error.unexpected')}</p>
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" onClick={() => (window.location.href = '/')}>
+        <Button variant="outline" onClick={() => (window.location.href = homePath)}>
           {t('common.goHome')}
         </Button>
         <Button onClick={() => window.location.reload()}>{t('common.reload')}</Button>

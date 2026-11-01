@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { languages, resolveLanguage } from '@/lib/i18n/config'
+import { useLanguage } from '@/hooks/use-language'
+import { languages } from '@/lib/i18n/config'
 import type { LanguageCode } from '@/lib/i18n/config'
 import type { TranslationKey } from '@/lib/i18n/catalog'
 
@@ -23,8 +24,8 @@ export function LanguageSwitcher({
   variant = 'inline',
   className,
 }: LanguageSwitcherProps) {
-  const { t, i18n } = useTranslation()
-  const activeLanguage = resolveLanguage(i18n.resolvedLanguage ?? i18n.language)
+  const { t } = useTranslation()
+  const { language: activeLanguage, setLanguage } = useLanguage()
   const isSegmented = variant === 'segmented'
 
   return (
@@ -55,7 +56,7 @@ export function LanguageSwitcher({
             lang={language}
             aria-pressed={activeLanguage === language}
             onClick={() => {
-              void i18n.changeLanguage(language)
+              void setLanguage(language)
             }}
             className={cn(
               'rounded-md text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
