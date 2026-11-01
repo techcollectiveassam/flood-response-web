@@ -38,6 +38,26 @@
   html {
     @apply font-sans;
   }
+
+  :lang(as),
+  :lang(bn) {
+    line-height: 1.65;
+  }
+
+  :lang(as) .uppercase,
+  :lang(bn) .uppercase {
+    text-transform: none;
+  }
+
+  :lang(as) [class*='tracking-'],
+  :lang(bn) [class*='tracking-'] {
+    letter-spacing: 0;
+  }
+
+  :lang(as) :is(h1, h2, h3),
+  :lang(bn) :is(h1, h2, h3) {
+    overflow-wrap: anywhere;
+  }
 }
 
 @theme inline {
