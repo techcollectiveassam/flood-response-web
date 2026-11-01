@@ -44,7 +44,6 @@ const en = {
     'Coordinated in partnership with ASDMA (Assam State Disaster Management Authority), Revenue Circle Desks, and SDRF field officers.',
   'footer.privacyNotice':
     'Phone numbers (98******12) and precise household coordinates are strictly masked per crisis data privacy protocols.',
-  'footer.installPwa': 'Install PWA for Offline Access',
   'footer.copyrightDesktop':
     '© 2026 FloodResponse Humanitarian Initiative • Coordinated under ASDMA disaster response protocol',
   'footer.privacyPolicy': 'Privacy Policy',

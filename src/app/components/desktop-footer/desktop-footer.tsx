@@ -1,7 +1,5 @@
-import { Download, House } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button'
+import { House } from 'lucide-react'
 import { LanguageSwitcher } from '@/components/language-switcher'
-import { cn } from '@/lib/utils'
 import { t } from '@/lib/i18n'
 import type { LanguageCode } from '@/lib/i18n'
 import {
@@ -62,12 +60,10 @@ export function DesktopFooter({
               {t('footer.verificationBody')}
             </p>
 
-            <p className="mt-4 rounded-lg border border-border bg-surface-soft px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-              {t('footer.privacyNotice')}
-            </p>
-
-           
-          </div>
+             <p className="mt-4 rounded-lg border border-border bg-surface-soft px-3 py-3 text-xs leading-relaxed text-muted-foreground">
+               {t('footer.privacyNotice')}
+             </p>
+           </div>
         </div>
       </div>
 
