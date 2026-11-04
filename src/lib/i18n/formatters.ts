@@ -10,6 +10,7 @@ const UNIT_MS: Partial<Record<Intl.RelativeTimeFormatUnit, number>> = {
   day: 86_400_000,
   week: 604_800_000,
   month: 2_629_800_000,
+  quarter: 7_889_400_000,
   year: 31_557_600_000,
 }
 

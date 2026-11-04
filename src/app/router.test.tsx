@@ -63,6 +63,26 @@ describe('locale routing', () => {
     expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
   })
 
+  it('localizes short unknown paths instead of dropping them', async () => {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, 'hi')
+
+    const router = renderRoute('/map')
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe('/hi/map')
+    })
+    expect(await screen.findByRole('heading', { name: 'पृष्ठ नहीं मिला' })).toBeInTheDocument()
+  })
+
+  it('sends a bare short unknown segment to the localized 404 instead of home', async () => {
+    const router = renderRoute('/faq')
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe('/en/faq')
+    })
+    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
+  })
+
   it('renders a localized 404 without redirecting inside a supported locale', async () => {
     const router = renderRoute('/as/nope')
 

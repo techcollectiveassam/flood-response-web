@@ -225,7 +225,7 @@ export async function loadCatalogs() {
       try {
         return [locale, JSON.parse(source)]
       } catch (error) {
-        throw new Error(`${locale}.json is not valid JSON: ${error.message}`)
+        throw new Error(`${locale}.json is not valid JSON: ${error.message}`, { cause: error })
       }
     }),
   )

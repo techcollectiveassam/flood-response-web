@@ -57,7 +57,7 @@ async function localeLoader({ params, request }: LoaderFunctionArgs) {
     return redirect(preferredPath(request, `/${raw}${rest}`))
   }
 
-  if (isLocaleLikeSegment(raw)) {
+  if (isLocaleLikeSegment(raw) && rest !== '') {
     return redirect(preferredPath(request, rest))
   }
 

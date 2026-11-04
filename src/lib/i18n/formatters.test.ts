@@ -48,6 +48,17 @@ describe('Intl formatters', () => {
     ).toMatch(/[०-९]/)
   })
 
+  it('formats an explicit quarter offset from the yearly unit', () => {
+    const now = new Date(2026, 0, 15, 12, 0, 0)
+
+    expect(
+      formatRelativeTime(now.getTime() - 2 * 7_889_400_000, 'en', {
+        now,
+        unit: 'quarter',
+      }),
+    ).toBe('2 quarters ago')
+  })
+
   it('formats lists and compares text', () => {
     expect(formatList(['a', 'b'], 'en')).toBe('a and b')
     expect(formatList(['ক', 'খ'], 'as')).toContain('আৰু')

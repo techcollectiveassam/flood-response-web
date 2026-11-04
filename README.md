@@ -14,7 +14,7 @@ Frontend for Flood Response and Relief Coordination, built by TechCollective Ass
 
 ## Prerequisites
 
-- Node.js `20.19+` or `22.12+`
+- Node.js `22.22.2+` (on the 22.x line), `24.15+`, or `26+` — the locked dependencies (react-router, jsdom) require these minimums; Node 20 is no longer supported
 - npm (bundled with Node.js)
 
 ## Getting started

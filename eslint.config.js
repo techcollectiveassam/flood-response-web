@@ -20,6 +20,13 @@ export default defineConfig([
     },
   },
   {
+    files: ['**/*.{js,mjs,cjs}'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
     files: ['**/*.test.{ts,tsx}', 'src/testing/**/*.{ts,tsx}', 'src/components/ui/**/*.{ts,tsx}', 'src/app/router.tsx', 'src/features/*/routes.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
