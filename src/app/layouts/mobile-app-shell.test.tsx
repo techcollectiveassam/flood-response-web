@@ -66,7 +66,7 @@ describe('MobileAppShell', () => {
     expect(menuButton).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('closes the navigation menu after switching language inside it', async () => {
+  it('keeps the navigation menu open after switching language inside it', async () => {
     const router = renderShell('/en')
 
     await userEvent.click(
@@ -78,10 +78,8 @@ describe('MobileAppShell', () => {
     await userEvent.click(screen.getByRole('button', { name: 'हिन्दी' }))
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    })
-    await waitFor(() => {
       expect(router.state.location.pathname).toBe('/hi')
     })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })

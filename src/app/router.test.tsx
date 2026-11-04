@@ -83,6 +83,24 @@ describe('locale routing', () => {
     expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
   })
 
+  it('keeps a nested short unknown segment instead of dropping it', async () => {
+    const router = renderRoute('/map/foo')
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe('/en/map/foo')
+    })
+    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
+  })
+
+  it('does not normalize a malformed region tag as a locale', async () => {
+    const router = renderRoute('/as-invalid/sos')
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe('/en/as-invalid/sos')
+    })
+    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
+  })
+
   it('renders a localized 404 without redirecting inside a supported locale', async () => {
     const router = renderRoute('/as/nope')
 

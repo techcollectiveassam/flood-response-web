@@ -1,13 +1,17 @@
 import { isLanguageCode } from './config'
 import type { LanguageCode } from './config'
 
-const LOCALE_LIKE_PATTERN = /^[a-zA-Z]{2,3}(?:-[a-zA-Z]{2})?$/
+const LOCALE_LIKE_PATTERN = /^[a-zA-Z]{2}(?:-[a-zA-Z]{2})?$/
 
 export function isLocaleLikeSegment(segment: string): boolean {
   return LOCALE_LIKE_PATTERN.test(segment)
 }
 
 export function normalizeLocaleSegment(segment: string): LanguageCode | null {
+  if (!isLocaleLikeSegment(segment)) {
+    return null
+  }
+
   const [base] = segment.toLowerCase().split('-')
   return isLanguageCode(base) ? base : null
 }
@@ -32,6 +36,16 @@ export function stripLocalePrefix(
   }
 
   return pathname
+}
+
+export function stripLocaleSegment(pathname: string): string {
+  const firstSegment = getFirstPathSegment(pathname)
+
+  if (!normalizeLocaleSegment(firstSegment)) {
+    return pathname
+  }
+
+  return pathname.slice(firstSegment.length + 1) || ''
 }
 
 export function buildLocalizedPath(

@@ -59,6 +59,24 @@ describe('Intl formatters', () => {
     ).toBe('2 quarters ago')
   })
 
+  it('formats plural relative-time units with the singular conversion', () => {
+    const now = new Date(2026, 0, 15, 12, 0, 0)
+
+    expect(
+      formatRelativeTime(now.getTime() - 2 * 3_600_000, 'en', {
+        now,
+        unit: 'hours',
+      }),
+    ).toBe('2 hours ago')
+
+    expect(
+      formatRelativeTime(now.getTime() - 2 * 7_889_400_000, 'en', {
+        now,
+        unit: 'quarters',
+      }),
+    ).toBe('2 quarters ago')
+  })
+
   it('formats lists and compares text', () => {
     expect(formatList(['a', 'b'], 'en')).toBe('a and b')
     expect(formatList(['ক', 'খ'], 'as')).toContain('আৰু')

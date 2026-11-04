@@ -3,7 +3,17 @@ import type { LanguageCode } from './config'
 
 type DateInput = Date | number | string
 
-const UNIT_MS: Partial<Record<Intl.RelativeTimeFormatUnit, number>> = {
+type RelativeTimeUnit =
+  | 'second'
+  | 'minute'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'quarter'
+  | 'year'
+
+const UNIT_MS: Record<RelativeTimeUnit, number> = {
   second: 1_000,
   minute: 60_000,
   hour: 3_600_000,
@@ -12,6 +22,12 @@ const UNIT_MS: Partial<Record<Intl.RelativeTimeFormatUnit, number>> = {
   month: 2_629_800_000,
   quarter: 7_889_400_000,
   year: 31_557_600_000,
+}
+
+function singularUnit(
+  unit: Intl.RelativeTimeFormatUnit,
+): RelativeTimeUnit {
+  return (unit.endsWith('s') ? unit.slice(0, -1) : unit) as RelativeTimeUnit
 }
 
 const FORMATTER_CACHE_LIMIT = 256
@@ -125,13 +141,13 @@ export function formatRelativeTime(
   )
 
   if (options.unit) {
-    const unitMs = UNIT_MS[options.unit] ?? 1_000
+    const unitMs = UNIT_MS[singularUnit(options.unit)]
     return formatter.format(Math.round((target - now) / unitMs), options.unit)
   }
 
   const difference = target - now
 
-  const units: Intl.RelativeTimeFormatUnit[] = [
+  const units: RelativeTimeUnit[] = [
     'year',
     'month',
     'week',
@@ -142,7 +158,7 @@ export function formatRelativeTime(
   ]
 
   for (const unit of units) {
-    const unitMs = UNIT_MS[unit] ?? 1_000
+    const unitMs = UNIT_MS[unit]
     if (Math.abs(difference) >= unitMs) {
       return formatter.format(Math.round(difference / unitMs), unit)
     }
