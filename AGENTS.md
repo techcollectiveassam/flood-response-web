@@ -232,7 +232,7 @@ Prioritize **integration tests** over unit tests. Integration tests provide the 
 ### Guidelines
 
 - Import from `@/testing/test-utils` (NOT directly from `@testing-library/react`)
-- Use `renderWithProviders()` to render components (currently returns children without mounting providers until app providers are added)
+- Use `renderWithProviders()` to render components (mounts `I18nextProvider` with the shared i18n instance)
 - Test user behavior, NOT implementation details — test what the user sees, not internal state
 - Use MSW (Mock Service Worker) for API mocking instead of mocking fetch directly
 - Mocks are automatically restored after each test (`restoreMocks: true`)

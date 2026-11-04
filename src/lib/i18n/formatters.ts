@@ -14,6 +14,37 @@ const UNIT_MS: Partial<Record<Intl.RelativeTimeFormatUnit, number>> = {
   year: 31_557_600_000,
 }
 
+const FORMATTER_CACHE_LIMIT = 256
+
+const dateTimeFormatters = new Map<string, Intl.DateTimeFormat>()
+const numberFormatters = new Map<string, Intl.NumberFormat>()
+const relativeTimeFormatters = new Map<string, Intl.RelativeTimeFormat>()
+const listFormatters = new Map<string, Intl.ListFormat>()
+const collators = new Map<string, Intl.Collator>()
+
+function cacheKey(language: LanguageCode, options: object): string {
+  return `${language}|${JSON.stringify(options)}`
+}
+
+function getCachedFormatter<T>(
+  cache: Map<string, T>,
+  key: string,
+  create: () => T,
+): T {
+  const existing = cache.get(key)
+  if (existing !== undefined) {
+    return existing
+  }
+
+  if (cache.size >= FORMATTER_CACHE_LIMIT) {
+    cache.clear()
+  }
+
+  const formatter = create()
+  cache.set(key, formatter)
+  return formatter
+}
+
 function intlLocale(language: LanguageCode): string {
   const { intlLocale: base, numberingSystem } = localeConfig[language]
   return `${base}-u-nu-${numberingSystem}`
@@ -36,10 +67,17 @@ export function formatDate(
   language: LanguageCode,
   options: Intl.DateTimeFormatOptions = {},
 ): string {
-  return new Intl.DateTimeFormat(intlLocale(language), {
-    dateStyle: 'medium',
-    ...options,
-  }).format(toTime(value))
+  const formatter = getCachedFormatter(
+    dateTimeFormatters,
+    cacheKey(language, options),
+    () =>
+      new Intl.DateTimeFormat(intlLocale(language), {
+        dateStyle: 'medium',
+        ...options,
+      }),
+  )
+
+  return formatter.format(toTime(value))
 }
 
 export function formatNumber(
@@ -47,7 +85,13 @@ export function formatNumber(
   language: LanguageCode,
   options: Intl.NumberFormatOptions = {},
 ): string {
-  return new Intl.NumberFormat(intlLocale(language), options).format(value)
+  const formatter = getCachedFormatter(
+    numberFormatters,
+    cacheKey(language, options),
+    () => new Intl.NumberFormat(intlLocale(language), options),
+  )
+
+  return formatter.format(value)
 }
 
 export function formatCurrency(
@@ -56,11 +100,11 @@ export function formatCurrency(
   currency = 'INR',
   options: Intl.NumberFormatOptions = {},
 ): string {
-  return new Intl.NumberFormat(intlLocale(language), {
+  return formatNumber(value, language, {
     style: 'currency',
     currency,
     ...options,
-  }).format(value)
+  })
 }
 
 export function formatRelativeTime(
@@ -73,9 +117,12 @@ export function formatRelativeTime(
 ): string {
   const target = toTime(value)
   const now = options.now === undefined ? Date.now() : toTime(options.now)
-  const formatter = new Intl.RelativeTimeFormat(intlLocale(language), {
-    numeric: 'auto',
-  })
+  const formatter = getCachedFormatter(
+    relativeTimeFormatters,
+    language,
+    () =>
+      new Intl.RelativeTimeFormat(intlLocale(language), { numeric: 'auto' }),
+  )
 
   if (options.unit) {
     const unitMs = UNIT_MS[options.unit] ?? 1_000
@@ -109,11 +156,18 @@ export function formatList(
   language: LanguageCode,
   options: Intl.ListFormatOptions = {},
 ): string {
-  return new Intl.ListFormat(intlLocale(language), {
-    style: 'long',
-    type: 'conjunction',
-    ...options,
-  }).format(items)
+  const formatter = getCachedFormatter(
+    listFormatters,
+    cacheKey(language, options),
+    () =>
+      new Intl.ListFormat(intlLocale(language), {
+        style: 'long',
+        type: 'conjunction',
+        ...options,
+      }),
+  )
+
+  return formatter.format(items)
 }
 
 export function compareText(
@@ -121,9 +175,13 @@ export function compareText(
   right: string,
   language: LanguageCode,
 ): number {
-  return new Intl.Collator(intlLocale(language), {
-    sensitivity: 'base',
-  }).compare(left, right)
+  const collator = getCachedFormatter(
+    collators,
+    language,
+    () => new Intl.Collator(intlLocale(language), { sensitivity: 'base' }),
+  )
+
+  return collator.compare(left, right)
 }
 
 export function formatIdentifier(value: string): string {

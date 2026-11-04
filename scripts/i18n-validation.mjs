@@ -220,12 +220,22 @@ export async function loadCatalogs() {
   const entries = await Promise.all(
     LOCALES.map(async (locale) => {
       const file = path.join(LOCALES_DIR, `${locale}.json`)
-      const source = await readFile(file, 'utf8')
+      let source
+
+      try {
+        source = await readFile(file, 'utf8')
+      } catch (error) {
+        throw new Error(`${locale}.json could not be read: ${error.message}`, {
+          cause: error,
+        })
+      }
 
       try {
         return [locale, JSON.parse(source)]
       } catch (error) {
-        throw new Error(`${locale}.json is not valid JSON: ${error.message}`, { cause: error })
+        throw new Error(`${locale}.json is not valid JSON: ${error.message}`, {
+          cause: error,
+        })
       }
     }),
   )

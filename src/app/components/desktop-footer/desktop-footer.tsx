@@ -75,7 +75,7 @@ export function DesktopFooter() {
                   <li key={link.labelKey}>
                     <a
                       href={link.to}
-                      className="inline-flex min-h-6 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      className="inline-flex min-h-8 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                     >
                       {t(link.labelKey)}
                     </a>

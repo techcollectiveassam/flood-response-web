@@ -46,7 +46,7 @@ export function MobileHeader({ onMenuClick, isMenuOpen = false }: MobileHeaderPr
           href="#"
           className={cn(
             buttonVariants({ size: 'sm' }),
-            'ml-auto min-h-9 px-3 text-xs font-semibold uppercase tracking-[0.08em]',
+            'ml-auto min-h-11 px-4 text-xs font-semibold uppercase tracking-[0.08em]',
           )}
         >
           {t('header.report')}

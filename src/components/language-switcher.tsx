@@ -60,7 +60,7 @@ export function LanguageSwitcher({
             }}
             className={cn(
               'rounded-md text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
-              isSegmented ? 'min-h-7 px-2.5' : 'min-h-8 px-1',
+              isSegmented ? 'min-h-8 px-2.5' : 'min-h-11 px-2',
               activeLanguage === language
                 ? 'font-semibold text-foreground'
                 : 'text-muted-foreground hover:text-foreground',

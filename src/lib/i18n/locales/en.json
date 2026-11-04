@@ -49,6 +49,7 @@
   "sos.list.title": "SOS Requests",
   "sos.create.title": "Create SOS Request",
   "common.loading": "Loading",
+  "common.skipToContent": "Skip to main content",
   "common.goHome": "Go home",
   "common.reload": "Reload",
   "error.title": "Something went wrong",

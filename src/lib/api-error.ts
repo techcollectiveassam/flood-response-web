@@ -3,7 +3,6 @@ import type { TranslationKey } from './i18n/catalog'
 export type ApiErrorLike = {
   status?: number
   code?: string
-  message?: string
 }
 
 const STATUS_KEYS: Record<number, TranslationKey> = {

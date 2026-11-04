@@ -37,7 +37,6 @@ export function DelayedFallback({ delay = DEFAULT_DELAY, className, spinnerClass
   return (
     <div
       role="status"
-      aria-live="polite"
       className={cn('flex h-[50vh] w-full items-center justify-center', className)}
     >
       <Loader2

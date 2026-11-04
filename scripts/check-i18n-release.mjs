@@ -13,23 +13,52 @@ const REVIEW_STATUS_PATH = path.join(
   'src/lib/i18n/review-status.json',
 )
 
-const { catalogs, errors } = await validateCatalogs()
-
-const reviewSource = await readFile(REVIEW_STATUS_PATH, 'utf8')
-let reviewStatus
+let catalogs
+let errors = []
 
 try {
-  reviewStatus = JSON.parse(reviewSource)
+  ;({ catalogs, errors } = await validateCatalogs())
 } catch (error) {
-  errors.push(`review-status.json is not valid JSON: ${error.message}`)
+  printErrors([error instanceof Error ? error.message : String(error)])
+  process.exit(1)
 }
 
-if (reviewStatus === null || typeof reviewStatus !== 'object' || Array.isArray(reviewStatus)) {
+let reviewSource
+
+try {
+  reviewSource = await readFile(REVIEW_STATUS_PATH, 'utf8')
+} catch (error) {
+  errors.push(`review-status.json could not be read: ${error.message}`)
+}
+
+let reviewStatus
+
+if (reviewSource !== undefined) {
+  try {
+    reviewStatus = JSON.parse(reviewSource)
+  } catch (error) {
+    errors.push(`review-status.json is not valid JSON: ${error.message}`)
+  }
+}
+
+if (
+  reviewStatus !== undefined &&
+  (reviewStatus === null ||
+    typeof reviewStatus !== 'object' ||
+    Array.isArray(reviewStatus))
+) {
   errors.push('review-status.json must map locale codes to arrays of keys')
-} else {
+} else if (reviewStatus !== undefined) {
   for (const locale of Object.keys(reviewStatus)) {
-    if (!LOCALES.includes(locale) || locale === 'en') {
+    if (!LOCALES.includes(locale)) {
       errors.push(`review-status.json contains an unsupported locale: ${locale}`)
+      continue
+    }
+
+    if (locale === 'en') {
+      errors.push(
+        "review-status.json must not track drafted keys for 'en' (the source locale is never machine-drafted)",
+      )
       continue
     }
 

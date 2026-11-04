@@ -8,7 +8,7 @@ const messages = {
   'plural.exact': '{count, plural, =0 {zero} one {one} other {other}}',
 }
 
-const pluralLanguages: LanguageCode[] = ['as', 'bn']
+const pluralLanguages: LanguageCode[] = ['as', 'hi', 'bn']
 
 async function createTestI18n(language: LanguageCode) {
   const i18n = createInstance()

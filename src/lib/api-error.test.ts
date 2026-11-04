@@ -9,7 +9,9 @@ describe('getApiErrorKey', () => {
     [409, 'apiError.conflict'],
     [429, 'apiError.rateLimited'],
     [500, 'apiError.server'],
+    [502, 'apiError.server'],
     [503, 'apiError.server'],
+    [504, 'apiError.server'],
   ] as const)('maps status %i', (status, key) => {
     expect(getApiErrorKey({ status })).toBe(key)
   })

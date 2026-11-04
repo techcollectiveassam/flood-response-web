@@ -41,7 +41,8 @@
     "apiError.conflict",
     "apiError.rateLimited",
     "apiError.server",
-    "apiError.unknown"
+    "apiError.unknown",
+    "common.skipToContent"
   ],
   "hi": [
     "desktopHeader.volunteer",
@@ -85,7 +86,8 @@
     "apiError.conflict",
     "apiError.rateLimited",
     "apiError.server",
-    "apiError.unknown"
+    "apiError.unknown",
+    "common.skipToContent"
   ],
   "bn": [
     "desktopHeader.volunteer",
@@ -129,6 +131,7 @@
     "apiError.conflict",
     "apiError.rateLimited",
     "apiError.server",
-    "apiError.unknown"
+    "apiError.unknown",
+    "common.skipToContent"
   ]
 }

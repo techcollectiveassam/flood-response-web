@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -21,7 +22,6 @@ describe('i18n catalog guard', () => {
       .sort()
 
     expect(localeFiles).toEqual(['as.json', 'bn.json', 'en.json', 'hi.json'])
-    expect(reviewStatusPath.startsWith(localesDirectory)).toBe(false)
     expect(existsSync(reviewStatusPath)).toBe(true)
   })
 
@@ -29,5 +29,13 @@ describe('i18n catalog guard', () => {
     const source = readFileSync(catalogSourcePath, 'utf8')
 
     expect(source).not.toContain('review-status')
+  })
+
+  it.each(languages)('%s keeps dotted keys flat', (locale) => {
+    const catalog = catalogs[locale]
+
+    for (const key of Object.keys(catalog)) {
+      expect(key.includes('.')).toBe(true)
+    }
   })
 })

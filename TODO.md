@@ -2,9 +2,16 @@
 
 Last updated: 2026-11-01
 
+## Navigation follow-up
+
+- [ ] Wire the primary "Report" CTA (desktop and mobile headers) to
+      `/{locale}/sos/new`. It is currently an inert placeholder (`href="#"`).
+- [ ] Replace remaining placeholder nav/menu/footer destinations (`to: '#'`)
+      with real locale-prefixed routes once those pages exist.
+
 ## i18n follow-up
 
-- [ ] Native review of 126 machine-drafted keys: 42 each for `as`, `hi`, `bn`.
+- [ ] Native review of 129 machine-drafted keys: 43 each for `as`, `hi`, `bn`.
       Source: `src/lib/i18n/review-status.json`.
       `npm run check:i18n:release` stays red until this list is empty.
 - [ ] Assamese quality review: use Assamese vocabulary and `ৰ`/`ৱ`; never copy Bengali.
