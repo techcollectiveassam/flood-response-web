@@ -38,7 +38,9 @@
   html {
     @apply font-sans;
   }
+}
 
+@layer utilities {
   :lang(as),
   :lang(bn) {
     line-height: 1.65;

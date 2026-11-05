@@ -1,7 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parse } from '@formatjs/icu-messageformat-parser'
+import { parse, TYPE } from '@formatjs/icu-messageformat-parser'
 
 export const LOCALES = ['en', 'as', 'hi', 'bn']
 
@@ -27,46 +27,53 @@ function addSelector(state, type, name, options, key) {
   state.selectors.push({ type, name, branches, key })
 }
 
-function collectNode(node, state, key) {
+function collectNode(node, state, key, localArguments = new Set()) {
   switch (node.type) {
-    case 'argument':
-      addArgument(state, node.value, 'argument', key)
+    case TYPE.argument:
+      if (!localArguments.has(node.value)) {
+        addArgument(state, node.value, 'argument', key)
+      }
       break
-    case 'number':
+    case TYPE.number:
       addArgument(state, node.value, 'number', key)
       break
-    case 'date':
+    case TYPE.date:
       addArgument(state, node.value, 'date', key)
       break
-    case 'time':
+    case TYPE.time:
       addArgument(state, node.value, 'time', key)
       break
-    case 'select':
+    case TYPE.select: {
       addArgument(state, node.value, 'select', key)
       addSelector(state, 'select', node.value, node.options, key)
+      const selectLocals = new Set(localArguments).add(node.value)
       for (const option of Object.values(node.options)) {
         for (const child of option.value) {
-          collectNode(child, state, key)
+          collectNode(child, state, key, selectLocals)
         }
       }
       break
-    case 'plural':
-    case 'selectordinal':
-      addArgument(state, node.value, node.type, key)
-      addSelector(state, node.type, node.value, node.options, key)
+    }
+    case TYPE.plural: {
+      const type =
+        node.pluralType === 'ordinal' ? 'selectordinal' : 'plural'
+      addArgument(state, node.value, type, key)
+      addSelector(state, type, node.value, node.options, key)
+      const pluralLocals = new Set(localArguments).add(node.value)
       for (const option of Object.values(node.options)) {
         for (const child of option.value) {
-          collectNode(child, state, key)
+          collectNode(child, state, key, pluralLocals)
         }
       }
       break
-    case 'tag':
+    }
+    case TYPE.tag:
       for (const child of node.children) {
-        collectNode(child, state, key)
+        collectNode(child, state, key, localArguments)
       }
       break
-    case 'pound':
-    case 'literal':
+    case TYPE.pound:
+    case TYPE.literal:
       break
     default:
       break

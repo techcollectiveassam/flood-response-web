@@ -30,6 +30,15 @@ describe('Intl formatters', () => {
     expect(formatDate(date, 'hi')).toMatch(/[०-९]/)
   })
 
+  it('uses date component options without applying dateStyle', () => {
+    const date = new Date(2026, 0, 15)
+
+    expect(() => formatDate(date, 'en', { year: 'numeric' })).not.toThrow()
+    expect(formatDate(date, 'en', { year: 'numeric', month: 'long' })).toBe(
+      'January 2026',
+    )
+  })
+
   it('formats relative time with locale numerals', () => {
     const now = new Date(2026, 0, 15, 12, 0, 0)
 
@@ -46,6 +55,15 @@ describe('Intl formatters', () => {
         unit: 'minute',
       }),
     ).toMatch(/[०-९]/)
+  })
+
+  it('rejects invalid relative-time timestamps', () => {
+    expect(() => formatRelativeTime('not-a-date', 'en')).toThrow(RangeError)
+    expect(() =>
+      formatRelativeTime(new Date(2026, 0, 15), 'en', {
+        now: 'not-a-date',
+      }),
+    ).toThrow(RangeError)
   })
 
   it('formats an explicit quarter offset from the yearly unit', () => {

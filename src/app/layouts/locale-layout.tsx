@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { LocaleHead } from '../components/locale-head'
+import { LocaleHead } from '@/app/components/locale-head'
 
 export function LocaleLayout() {
   return (

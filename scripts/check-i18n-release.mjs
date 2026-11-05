@@ -69,6 +69,16 @@ if (
       continue
     }
 
+    const catalog = catalogs[locale]
+
+    if (
+      catalog === null ||
+      typeof catalog !== 'object' ||
+      Array.isArray(catalog)
+    ) {
+      continue
+    }
+
     const seen = new Set()
 
     for (const key of keys) {
@@ -82,7 +92,7 @@ if (
       }
       seen.add(key)
 
-      if (!(key in catalogs[locale])) {
+      if (!Object.hasOwn(catalog, key)) {
         errors.push(`review-status.json:${locale} references unknown key ${key}`)
       }
     }

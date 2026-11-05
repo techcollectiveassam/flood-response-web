@@ -78,6 +78,28 @@ function toTime(value: DateInput): number {
   return new Date(value).getTime()
 }
 
+const DATE_COMPONENT_OPTIONS = [
+  'weekday',
+  'era',
+  'year',
+  'month',
+  'day',
+  'dayPeriod',
+  'hour',
+  'minute',
+  'second',
+  'fractionalSecondDigits',
+  'timeZoneName',
+] as const satisfies readonly (keyof Intl.DateTimeFormatOptions)[]
+
+function hasDateComponentOptions(
+  options: Intl.DateTimeFormatOptions,
+): boolean {
+  return DATE_COMPONENT_OPTIONS.some(
+    (option) => options[option] !== undefined,
+  )
+}
+
 export function formatDate(
   value: DateInput,
   language: LanguageCode,
@@ -87,10 +109,12 @@ export function formatDate(
     dateTimeFormatters,
     cacheKey(language, options),
     () =>
-      new Intl.DateTimeFormat(intlLocale(language), {
-        dateStyle: 'medium',
-        ...options,
-      }),
+      new Intl.DateTimeFormat(
+        intlLocale(language),
+        hasDateComponentOptions(options)
+          ? options
+          : { dateStyle: 'medium', ...options },
+      ),
   )
 
   return formatter.format(toTime(value))
@@ -133,6 +157,15 @@ export function formatRelativeTime(
 ): string {
   const target = toTime(value)
   const now = options.now === undefined ? Date.now() : toTime(options.now)
+
+  if (!Number.isFinite(target)) {
+    throw new RangeError('Invalid relative-time date value')
+  }
+
+  if (!Number.isFinite(now)) {
+    throw new RangeError('Invalid relative-time now value')
+  }
+
   const formatter = getCachedFormatter(
     relativeTimeFormatters,
     language,

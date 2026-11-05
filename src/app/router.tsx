@@ -7,11 +7,11 @@ import {
   isLocaleLikeSegment,
   normalizeLocaleSegment,
 } from '@/lib/i18n/locale-segment'
-import { RouteErrorBoundary } from './components/route-error-boundary'
-import { NotFoundPage } from './components/not-found-page'
-import { LocaleLayout } from './layouts/locale-layout'
-import { RootLayout } from './layouts/root-layout'
-import { HomePage } from './pages/home-page'
+import { RouteErrorBoundary } from '@/app/components/route-error-boundary'
+import { NotFoundPage } from '@/app/components/not-found-page'
+import { LocaleLayout } from '@/app/layouts/locale-layout'
+import { RootLayout } from '@/app/layouts/root-layout'
+import { HomePage } from '@/app/pages/home-page'
 
 const RESERVED_SEGMENTS = new Set(['sos'])
 
