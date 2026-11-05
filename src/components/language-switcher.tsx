@@ -1,7 +1,10 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { languages, t } from '@/lib/i18n'
-import type { LanguageCode, TranslationKey } from '@/lib/i18n'
+import { useLanguage } from '@/hooks/use-language'
+import { languages } from '@/lib/i18n/config'
+import type { LanguageCode } from '@/lib/i18n/config'
+import type { TranslationKey } from '@/lib/i18n/catalog'
 
 const languageLabelKeys: Record<LanguageCode, TranslationKey> = {
   en: 'language.english',
@@ -13,24 +16,22 @@ const languageLabelKeys: Record<LanguageCode, TranslationKey> = {
 type LanguageSwitcherVariant = 'inline' | 'segmented'
 
 type LanguageSwitcherProps = {
-  value: LanguageCode
-  onChange: (value: LanguageCode) => void
   variant?: LanguageSwitcherVariant
   className?: string
 }
 
 export function LanguageSwitcher({
-  value,
-  onChange,
   variant = 'inline',
   className,
 }: LanguageSwitcherProps) {
+  const { t } = useTranslation()
+  const { language: activeLanguage, setLanguage } = useLanguage()
   const isSegmented = variant === 'segmented'
 
   return (
     <div
       role="group"
-      aria-label={t('footer.languageLabel', value)}
+      aria-label={t('footer.languageLabel')}
       className={cn(
         'flex items-center',
         isSegmented
@@ -52,12 +53,15 @@ export function LanguageSwitcher({
           ) : null}
           <button
             type="button"
-            aria-pressed={value === language}
-            onClick={() => onChange(language)}
+            lang={language}
+            aria-pressed={activeLanguage === language}
+            onClick={() => {
+              void setLanguage(language)
+            }}
             className={cn(
               'rounded-md text-[11px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
-              isSegmented ? 'min-h-7 px-2.5' : 'min-h-8 px-1',
-              value === language
+              isSegmented ? 'min-h-8 px-2.5' : 'min-h-11 px-2',
+              activeLanguage === language
                 ? 'font-semibold text-foreground'
                 : 'text-muted-foreground hover:text-foreground',
             )}

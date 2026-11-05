@@ -1,4 +1,5 @@
 import { House, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   SheetClose,
@@ -7,15 +8,14 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
-import { t } from '@/lib/i18n'
-import type { LanguageCode } from '@/lib/i18n'
 
 type MobileMenuHeaderProps = {
-  language: LanguageCode
   className?: string
 }
 
-export function MobileMenuHeader({ language, className }: MobileMenuHeaderProps) {
+export function MobileMenuHeader({ className }: MobileMenuHeaderProps) {
+  const { t } = useTranslation()
+
   return (
     <SheetHeader
       className={cn(
@@ -29,10 +29,10 @@ export function MobileMenuHeader({ language, className }: MobileMenuHeaderProps)
 
       <div className="min-w-0 flex-1">
         <SheetTitle className="truncate text-base font-semibold leading-tight">
-          {t('mobileMenu.title', language)}
+          {t('mobileMenu.title')}
         </SheetTitle>
         <SheetDescription className="truncate text-[10px] font-medium uppercase tracking-[0.12em]">
-          {t('mobileMenu.subtitle', language)}
+          {t('mobileMenu.subtitle')}
         </SheetDescription>
       </div>
 
@@ -43,7 +43,7 @@ export function MobileMenuHeader({ language, className }: MobileMenuHeaderProps)
             variant="ghost"
             size="icon"
             className="size-11 shrink-0"
-            aria-label={t('mobileMenu.close', language)}
+            aria-label={t('mobileMenu.close')}
           />
         }
       >

@@ -1,22 +1,15 @@
 import { House } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from '@/components/language-switcher'
-import { t } from '@/lib/i18n'
-import type { LanguageCode } from '@/lib/i18n'
 import {
   desktopFooterLinkGroups,
   desktopFooterPolicyLinks,
 } from './desktop-footer-config'
 import { DesktopFooterLinkGroup } from './desktop-footer-link-group'
 
-type DesktopFooterProps = {
-  language: LanguageCode
-  onLanguageChange: (language: LanguageCode) => void
-}
+export function DesktopFooter() {
+  const { t } = useTranslation()
 
-export function DesktopFooter({
-  language,
-  onLanguageChange,
-}: DesktopFooterProps) {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto w-full max-w-7xl px-6 py-10">
@@ -27,41 +20,41 @@ export function DesktopFooter({
                 <House className="size-4" aria-hidden="true" />
               </span>
               <span className="text-base font-semibold leading-none text-foreground">
-                {t('header.brand', language)}
+                {t('header.brand')}
               </span>
             </div>
 
             <p className="mt-5 text-xs font-semibold uppercase leading-relaxed tracking-[0.06em] text-primary">
-              {t('footer.crisisTitle', language)}
+              {t('footer.crisisTitle')}
             </p>
 
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              {t('footer.description', language)}
+              {t('footer.description')}
             </p>
 
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-success/25 bg-success-soft px-3 py-1.5 text-[11px] font-medium text-success-text">
               <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
-              {t('footer.systemStatus', language)}
+              {t('footer.systemStatus')}
             </div>
           </div>
 
-          <nav aria-label={t('footer.navigationLabel', language)} className="contents">
+          <nav aria-label={t('footer.navigationLabel')} className="contents">
             {desktopFooterLinkGroups.map((group) => (
-              <DesktopFooterLinkGroup key={group.id} group={group} language={language} />
+              <DesktopFooterLinkGroup key={group.id} group={group} />
             ))}
           </nav>
 
           <div>
             <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
-              {t('footer.verificationTitle', language)}
+              {t('footer.verificationTitle')}
             </h3>
 
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              {t('footer.verificationBody', language)}
+              {t('footer.verificationBody')}
             </p>
 
              <p className="mt-4 rounded-lg border border-border bg-surface-soft px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-               {t('footer.privacyNotice', language)}
+               {t('footer.privacyNotice')}
              </p>
            </div>
         </div>
@@ -69,22 +62,22 @@ export function DesktopFooter({
 
       <div className="border-t border-border">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-4 text-[11px] text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
-          <p>{t('footer.copyrightDesktop', language)}</p>
+          <p>{t('footer.copyrightDesktop')}</p>
 
           <div className="flex flex-wrap items-center gap-3">
-            <LanguageSwitcher value={language} onChange={onLanguageChange} />
+            <LanguageSwitcher />
 
             <span aria-hidden="true" className="h-4 w-px bg-border" />
 
-            <nav aria-label={t('footer.legalLabel', language)}>
+            <nav aria-label={t('footer.legalLabel')}>
               <ul className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 {desktopFooterPolicyLinks.map((link) => (
                   <li key={link.labelKey}>
                     <a
                       href={link.to}
-                      className="inline-flex min-h-6 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      className="inline-flex min-h-8 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                     >
-                      {t(link.labelKey, language)}
+                      {t(link.labelKey)}
                     </a>
                   </li>
                 ))}

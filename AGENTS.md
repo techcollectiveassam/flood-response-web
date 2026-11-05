@@ -17,6 +17,8 @@ Flood response frontend for coordinating emergency relief in Assam. Built by Tec
 - Run tests (single run): `npm run test:run`
 - Run tests with coverage: `npm run test:coverage`
 - Lint: `npm run lint`
+- Validate translations: `npm run check:i18n`
+- Run the release translation gate: `npm run check:i18n:release`
 
 ## Change Workflow
 
@@ -28,9 +30,14 @@ Build in small, self-contained increments that are easy to review.
 - Keep each increment compiling, lint-clean, and tested before moving on.
 - Add only the supporting code needed for that increment. Defer routes, integrations, and unrelated refactors.
 - When a temporary scaffold is required, keep it isolated and replace it in a later increment.
-- Before committing, run `npx tsc -b`, `npm run lint`, and `npm run test:run`.
+- Before committing, run `npx tsc -b`, `npm run lint`, `npm run test:run`, and `npm run check:i18n`.
+- CI is intentionally not configured yet. When a provider is chosen, wire the normal and release pipelines described in `docs/ci.md`. Normal CI should run `check:i18n`; release or deploy workflows should run `check:i18n:release`.
 - In the handoff, state the commands run and any intentionally deferred behavior.
 - Do not commit unless explicitly asked.
+
+## Pending Work
+
+`TODO.md` is the canonical summary of deferred work. Read it when the user asks what is pending, or when planning a large implementation that may overlap deferred work. It is not a mandatory pre-work checklist.
 
 ## Tech Stack
 
@@ -38,6 +45,7 @@ Build in small, self-contained increments that are easy to review.
 - **Vite 8** bundler with `@vitejs/plugin-react`
 - **Tailwind CSS v4** — CSS-first config (`@import "tailwindcss"`, `@theme inline`, `@custom-variant`). There is NO `tailwind.config.js`.
 - **shadcn/ui v4** using the **`base-nova`** style with **`@base-ui/react`** headless primitives (NOT Radix UI)
+- **react-i18next** with **i18next** and **i18next-icu** for translation and ICU messages
 - **React Router v8** (`createBrowserRouter` data router pattern)
 - **Vitest 5** with jsdom, Testing Library, jest-dom matchers
 - **ESLint 10** with flat config (`eslint.config.js`)
@@ -162,10 +170,17 @@ src/
 
 ### Internationalization
 
-- Put user-facing copy in `src/lib/i18n.ts`; do not add new hard-coded UI strings.
-- Scaffolded user-facing copy, including the root route (`Home`), SOS pages (`SOS Requests`, `Create SOS Request`), and loading fallback (`Loading`), is temporary scaffold copy explicitly exempt from translation unless it is moved into the translation table in `src/lib/i18n.ts`.
-- A functional locale change must update app-wide copy and document language, with the chosen locale persisted.
-- Presentational language selectors are allowed during scaffolding, but must not imply that translation is already active.
+- English is the source catalog at `src/lib/i18n/locales/en.json`. Do not add new hard-coded UI strings.
+- Do not edit `as.json`, `hi.json`, or `bn.json` manually; use Crowdin or Weblate. See `TRANSLATORS.md`.
+- Catalogs are flat, use dotted keys, and must contain every English key. Never nest objects or arrays.
+- Use ICU syntax for plurals and selects. `as`, `hi`, and `bn` select `one` for `0` and `1`; use `=0` for zero-specific wording.
+- Use `useTranslation()` from `react-i18next` in components. Do not pass a language prop through component trees.
+- Locale routes are prefixed (`/en`, `/as`, `/hi`, `/bn`). Use the helpers in `src/lib/i18n/locale-segment.ts` instead of hand-parsing paths.
+- On language change, persist the preference and navigate to the same path under the new locale.
+- Every numeric, search, and form input must call `normalizeDigits` from `src/lib/normalize-digits.ts` on change and paste. Use `type="text"` with `inputMode="numeric"` for numeric entry because `type="number"` often rejects Bengali and Devanagari digits.
+- Use `src/lib/i18n/formatters.ts` for dates, numbers, currency, relative time, lists, and collation. Phone numbers, IDs, and codes bypass Intl formatting and render as plain ASCII strings.
+- Run `npm run check:i18n` after changing a catalog. Run `npm run check:i18n:release` only for release-gate checks.
+- Review tracking lives in `src/lib/i18n/review-status.json`, outside `locales/`. Do not import it from application code.
 
 ## API Layer
 
@@ -217,7 +232,7 @@ Prioritize **integration tests** over unit tests. Integration tests provide the 
 ### Guidelines
 
 - Import from `@/testing/test-utils` (NOT directly from `@testing-library/react`)
-- Use `renderWithProviders()` to render components (currently returns children without mounting providers until app providers are added)
+- Use `renderWithProviders()` to render components (mounts `I18nextProvider` with the shared i18n instance)
 - Test user behavior, NOT implementation details — test what the user sees, not internal state
 - Use MSW (Mock Service Worker) for API mocking instead of mocking fetch directly
 - Mocks are automatically restored after each test (`restoreMocks: true`)
@@ -283,3 +298,7 @@ npm run test:coverage # With coverage report
 - Do NOT import from `src/app/` inside `src/features/` or shared modules (violates unidirectional flow).
 - Do NOT put all state in a single global store. Categorize state by type and keep it local when possible.
 - Do NOT mock `fetch` directly in tests. Use MSW (Mock Service Worker) for API mocking.
+- Do NOT edit non-English catalogs manually. Use Crowdin or Weblate.
+- Do NOT import `review-status.json` from application code; only `scripts/check-i18n-release.mjs` reads it.
+- Do NOT format phone numbers, IDs, or codes with Intl formatters. Render them as plain ASCII strings.
+- Do NOT hand-parse locale-prefixed paths. Use `src/lib/i18n/locale-segment.ts`.
