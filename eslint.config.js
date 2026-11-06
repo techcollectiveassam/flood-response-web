@@ -27,6 +27,12 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/lib/pwa/tombstone-sw.js'],
+    languageOptions: {
+      globals: globals.serviceworker,
+    },
+  },
+  {
     files: ['**/*.test.{ts,tsx}', 'src/testing/**/*.{ts,tsx}', 'src/components/ui/**/*.{ts,tsx}', 'src/app/router.tsx', 'src/features/*/routes.tsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
