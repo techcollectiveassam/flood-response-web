@@ -3,19 +3,37 @@ import { useSyncExternalStore } from 'react'
 const canUseMatchMedia = () =>
   typeof window !== 'undefined' && typeof window.matchMedia === 'function'
 
+const mediaQueryLists = new Map<string, MediaQueryList>()
+
+function getMediaQueryList(query: string): MediaQueryList | null {
+  if (!canUseMatchMedia()) {
+    return null
+  }
+
+  let mediaQueryList = mediaQueryLists.get(query)
+
+  if (!mediaQueryList) {
+    mediaQueryList = window.matchMedia(query)
+    mediaQueryLists.set(query, mediaQueryList)
+  }
+
+  return mediaQueryList
+}
+
 export function useMediaQuery(query: string): boolean {
   return useSyncExternalStore(
     (onStoreChange) => {
-      if (!canUseMatchMedia()) {
+      const mediaQueryList = getMediaQueryList(query)
+
+      if (!mediaQueryList) {
         return () => {}
       }
 
-      const mediaQueryList = window.matchMedia(query)
       mediaQueryList.addEventListener('change', onStoreChange)
 
       return () => mediaQueryList.removeEventListener('change', onStoreChange)
     },
-    () => (canUseMatchMedia() ? window.matchMedia(query).matches : false),
+    () => getMediaQueryList(query)?.matches ?? false,
     () => false,
   )
 }
