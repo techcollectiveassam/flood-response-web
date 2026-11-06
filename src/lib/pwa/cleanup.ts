@@ -1,5 +1,11 @@
-export const APP_CACHE_PREFIXES = ['workbox-precache-']
 const APP_SW_PATH = '/sw.js'
+const APP_PRECACHE_PREFIX = 'workbox-precache-v2-'
+
+export function getAppPrecacheCacheName(): string {
+  const swUrl = new URL(APP_SW_PATH, window.location.origin)
+  const scope = new URL('./', swUrl).href
+  return `${APP_PRECACHE_PREFIX}${scope}`
+}
 
 export async function unregisterAppServiceWorkers(): Promise<void> {
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
@@ -39,14 +45,12 @@ export async function clearAppOwnedCaches(): Promise<void> {
   }
 
   try {
+    const cacheName = getAppPrecacheCacheName()
     const names = await caches.keys()
-    await Promise.all(
-      names
-        .filter((name) =>
-          APP_CACHE_PREFIXES.some((prefix) => name.startsWith(prefix)),
-        )
-        .map((name) => caches.delete(name)),
-    )
+
+    if (names.includes(cacheName)) {
+      await caches.delete(cacheName)
+    }
   } catch {
     return
   }

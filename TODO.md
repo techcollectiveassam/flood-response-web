@@ -27,12 +27,15 @@ Last updated: 2026-11-01
 
 ## PWA rollout follow-up
 
-- [ ] Flip `VITE_PWA_ENABLED=true` in the deployment environment when PWA goes live.
-- [ ] When offline-sync caches are introduced, name them OUTSIDE
-      `APP_CACHE_PREFIXES` (they survive the kill switch) or intentionally add
-      them to the list (they die on disable). Decide then.
-- [ ] Keep the cache prefix list in `src/lib/pwa/tombstone-sw.js` in sync with
-      `src/lib/pwa/cleanup.ts`.
+- [ ] When PWA goes live, set `VITE_PWA_ENABLED=true` in the build environment
+      before running `npm run build`, then deploy the newly built artifacts.
+      Changing the flag on a prebuilt artifact does not enable the PWA selected
+      by `vite.config.ts`.
+- [ ] When offline-sync caches are introduced, name them outside the app
+      precache cache name (they survive the kill switch) or intentionally
+      include them (they die on disable). Decide then.
+- [ ] Keep the app precache cache name construction in
+      `src/lib/pwa/tombstone-sw.js` in sync with `src/lib/pwa/cleanup.ts`.
 - [ ] The tombstone service worker must never gain a fetch handler.
 
 ## Verification

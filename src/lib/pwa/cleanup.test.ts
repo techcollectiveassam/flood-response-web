@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   clearAppOwnedCaches,
+  getAppPrecacheCacheName,
   unregisterAppServiceWorkers,
 } from './cleanup'
 
@@ -95,18 +96,26 @@ describe('unregisterAppServiceWorkers', () => {
 })
 
 describe('clearAppOwnedCaches', () => {
-  it('deletes only app-owned caches', async () => {
-    const appCache = 'workbox-precache-v2-http://localhost/'
+  it('derives the Workbox precache name from the app scope', () => {
+    expect(getAppPrecacheCacheName()).toBe(
+      `workbox-precache-v2-${new URL('/', origin).href}`,
+    )
+  })
+
+  it('deletes only this app’s exact precache cache', async () => {
+    const appCache = getAppPrecacheCacheName()
+    const otherAppCache = `workbox-precache-v2-${new URL('/other/', origin).href}`
     const foreignCache = 'app-offline-queue'
     const deleteCache = vi.fn().mockResolvedValue(true)
     vi.stubGlobal('caches', {
-      keys: vi.fn().mockResolvedValue([appCache, foreignCache]),
+      keys: vi.fn().mockResolvedValue([appCache, otherAppCache, foreignCache]),
       delete: deleteCache,
     })
 
     await clearAppOwnedCaches()
 
     expect(deleteCache).toHaveBeenCalledWith(appCache)
+    expect(deleteCache).not.toHaveBeenCalledWith(otherAppCache)
     expect(deleteCache).not.toHaveBeenCalledWith(foreignCache)
   })
 
