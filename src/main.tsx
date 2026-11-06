@@ -5,6 +5,9 @@ import { RouterProvider } from 'react-router/dom'
 import './index.css'
 import { router } from '@/app/router'
 import { i18n } from '@/lib/i18n/i18n'
+import { initPwa } from '@/lib/pwa/init'
+
+initPwa()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

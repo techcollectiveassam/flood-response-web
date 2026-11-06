@@ -28,6 +28,7 @@ Build in small, self-contained increments that are easy to review.
 - Before implementation, assess the scope of the request. If it spans multiple components, screens, or behaviors, propose a phased plan made of small, reviewable increments and get approval before coding.
 - Split phases at natural UI or behavior boundaries, not arbitrary line counts.
 - Keep each increment compiling, lint-clean, and tested before moving on.
+- When implementing a phased plan, finish one increment, run its gate, then stop and ask the user to review it. After review, ask whether to commit, then wait for the user's response before proceeding to the next increment.
 - Add only the supporting code needed for that increment. Defer routes, integrations, and unrelated refactors.
 - When a temporary scaffold is required, keep it isolated and replace it in a later increment.
 - Before committing, run `npx tsc -b`, `npm run lint`, `npm run test:run`, and `npm run check:i18n`.

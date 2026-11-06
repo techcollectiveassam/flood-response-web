@@ -42,7 +42,11 @@
     "apiError.rateLimited",
     "apiError.server",
     "apiError.unknown",
-    "common.skipToContent"
+    "common.skipToContent",
+    "pwa.updateAvailable",
+    "pwa.reload",
+    "pwa.dismiss",
+    "pwa.offlineReady"
   ],
   "hi": [
     "desktopHeader.volunteer",
@@ -87,7 +91,11 @@
     "apiError.rateLimited",
     "apiError.server",
     "apiError.unknown",
-    "common.skipToContent"
+    "common.skipToContent",
+    "pwa.updateAvailable",
+    "pwa.reload",
+    "pwa.dismiss",
+    "pwa.offlineReady"
   ],
   "bn": [
     "desktopHeader.volunteer",
@@ -132,6 +140,10 @@
     "apiError.rateLimited",
     "apiError.server",
     "apiError.unknown",
-    "common.skipToContent"
+    "common.skipToContent",
+    "pwa.updateAvailable",
+    "pwa.reload",
+    "pwa.dismiss",
+    "pwa.offlineReady"
   ]
 }
