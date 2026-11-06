@@ -4,6 +4,7 @@ import { sosRoutes } from '@/features/sos/routes'
 import { i18n } from '@/lib/i18n/i18n'
 import { getPreferredLanguage } from '@/lib/i18n/detect-language'
 import {
+  getFirstPathSegment,
   isLocaleLikeSegment,
   normalizeLocaleSegment,
 } from '@/lib/i18n/locale-segment'
@@ -39,8 +40,8 @@ function sosCreateLoader({ request }: LoaderFunctionArgs) {
 async function localeLoader({ params, request }: LoaderFunctionArgs) {
   const raw = params.lang ?? ''
   const { pathname } = new URL(request.url)
-  const prefix = `/${raw}`
-  const rest = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : ''
+  const firstSegment = getFirstPathSegment(pathname)
+  const rest = pathname.slice(firstSegment.length + 1)
   const suffix = `${rest}${locationSuffix(request)}`
   const normalized = normalizeLocaleSegment(raw)
 
