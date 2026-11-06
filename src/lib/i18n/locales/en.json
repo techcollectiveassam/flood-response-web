@@ -66,5 +66,9 @@
   "apiError.conflict": "This request conflicts with the current state. Refresh and try again.",
   "apiError.rateLimited": "Too many requests. Please wait and try again.",
   "apiError.server": "The server encountered an error. Please try again later.",
-  "apiError.unknown": "Something went wrong. Please try again."
+  "apiError.unknown": "Something went wrong. Please try again.",
+  "pwa.updateAvailable": "A new version is available.",
+  "pwa.reload": "Reload",
+  "pwa.dismiss": "Dismiss",
+  "pwa.offlineReady": "Ready to work offline."
 }
