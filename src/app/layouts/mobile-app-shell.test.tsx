@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { describe, expect, it } from 'vitest'
-import { renderWithProviders, screen, waitFor } from '@/testing/test-utils'
+import { renderWithProviders, screen, waitFor, within } from '@/testing/test-utils'
+import { i18n } from '@/lib/i18n/i18n'
 import { MobileAppShell } from '@/app/layouts/mobile-app-shell'
 
 function renderShell(initialEntry: string) {
@@ -81,5 +82,42 @@ describe('MobileAppShell', () => {
       expect(router.state.location.pathname).toBe('/hi')
     })
     expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('links the brand and the emergency SOS menu item to localized routes', async () => {
+    await i18n.changeLanguage('en')
+
+    const router = renderShell('/en')
+
+    expect(
+      screen.getByRole('link', { name: /Flood Watch.*Assam Floods 2026/i }),
+    ).toHaveAttribute('href', '/en')
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Open navigation menu' }),
+    )
+
+    const dialog = await screen.findByRole('dialog')
+
+    expect(
+      within(dialog).getByRole('link', {
+        name: /Flood Watch.*Assam Floods 2026/i,
+      }),
+    ).toHaveAttribute('href', '/en')
+
+    const sosLink = within(dialog).getByRole('link', {
+      name: 'Emergency SOS',
+    })
+
+    expect(sosLink).toHaveAttribute('href', '/en/sos/new')
+
+    await userEvent.click(sosLink)
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe('/en/sos/new')
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
   })
 })

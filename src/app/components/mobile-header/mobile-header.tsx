@@ -1,6 +1,9 @@
 import { House, Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { useLanguage } from '@/hooks/use-language'
+import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
 import { cn } from '@/lib/utils'
 
 type MobileHeaderProps = {
@@ -10,6 +13,7 @@ type MobileHeaderProps = {
 
 export function MobileHeader({ onMenuClick, isMenuOpen = false }: MobileHeaderProps) {
   const { t } = useTranslation()
+  const { language } = useLanguage()
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur supports-backdrop-filter:bg-background/80">
@@ -28,7 +32,10 @@ export function MobileHeader({ onMenuClick, isMenuOpen = false }: MobileHeaderPr
           <Menu aria-hidden="true" />
         </Button>
 
-        <div className="flex min-w-0 items-center gap-2">
+        <Link
+          to={buildLocalizedPath(language, '/')}
+          className="flex min-h-11 min-w-0 items-center gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <House className="size-4" aria-hidden="true" />
           </span>
@@ -40,7 +47,7 @@ export function MobileHeader({ onMenuClick, isMenuOpen = false }: MobileHeaderPr
               {t('mobileHeader.subtitle')}
             </p>
           </div>
-        </div>
+        </Link>
 
         <a
           href="#"

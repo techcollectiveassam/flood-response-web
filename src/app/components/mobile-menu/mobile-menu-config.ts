@@ -42,7 +42,7 @@ export const mobileMenuGroups: MobileMenuGroup[] = [
       {
         labelKey: 'mobileMenu.item.emergencySos',
         icon: Siren,
-        to: '#',
+        to: '/sos/new',
         variant: 'emergency',
       },
     ],
