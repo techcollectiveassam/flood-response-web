@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithProviders, screen } from '@/testing/test-utils'
 import { i18n } from '@/lib/i18n/i18n'
+import { SosQuickActions } from './sos-quick-actions'
 import { SosQuickActionsDesktop } from './sos-quick-actions-desktop'
 import { SosQuickActionsMobile } from './sos-quick-actions-mobile'
 
@@ -27,6 +28,10 @@ describe('SosQuickActions', () => {
     await i18n.changeLanguage('en')
   })
 
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('renders the mobile report, relief, and SOS actions', () => {
     renderWithProviders(<SosQuickActionsMobile />)
 
@@ -37,5 +42,48 @@ describe('SosQuickActions', () => {
     renderWithProviders(<SosQuickActionsDesktop />)
 
     expectQuickActions()
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Assam Floods 2026 Emergency Coordination',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', {
+        level: 2,
+        name: 'Immediate Distress Dispatch',
+      }),
+    ).toBeInTheDocument()
+
+    expect(screen.getByText('Active Relief Ops')).toBeInTheDocument()
+    expect(screen.getByText('Verified Relief Depots')).toBeInTheDocument()
+    expect(screen.getByText('18,420+')).toBeInTheDocument()
+    expect(screen.getByText('68%')).toBeInTheDocument()
+
+    expect(screen.getByText('No account needed')).toBeInTheDocument()
+    expect(screen.getByText('Instant GPS Geo-Lock')).toBeInTheDocument()
+    expect(screen.getByText('Low-Bandwidth SMS Fallback')).toBeInTheDocument()
+  })
+
+  it('selects the desktop layout on desktop viewports', () => {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn((query: string) => ({
+        matches: true,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    )
+
+    renderWithProviders(<SosQuickActions />)
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Assam Floods 2026 Emergency Coordination',
+      }),
+    ).toBeInTheDocument()
   })
 })
