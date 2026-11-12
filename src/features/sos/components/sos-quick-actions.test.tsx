@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { renderWithProviders, screen } from '@/testing/test-utils'
+import {
+  renderWithProviders,
+  screen,
+  within,
+} from '@/testing/test-utils'
 import { i18n } from '@/lib/i18n/i18n'
 import { SosQuickActions } from './sos-quick-actions'
 import { SosQuickActionsDesktop } from './sos-quick-actions-desktop'
@@ -82,6 +86,32 @@ describe('SosQuickActions', () => {
     expect(screen.getByText('No account needed')).toBeInTheDocument()
     expect(screen.getByText('Instant GPS Geo-Lock')).toBeInTheDocument()
     expect(screen.getByText('Low-Bandwidth SMS Fallback')).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('heading', {
+        level: 2,
+        name: 'Regional Flood Situation',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Live telemetry')).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', {
+        name: /Launch Live Interactive Flood Map/i,
+      }),
+    ).toHaveAttribute('href', '#')
+
+    const majuliCard = screen.getByRole('link', { name: /Majuli Island/i })
+    expect(within(majuliCard).getByText('Critical Alert')).toBeInTheDocument()
+    expect(within(majuliCard).getByText('4')).toBeInTheDocument()
+
+    expect(screen.getByText('Barpeta')).toBeInTheDocument()
+    expect(screen.getByText('Severe Flooding')).toBeInTheDocument()
+    expect(screen.getByText('Dhubri')).toBeInTheDocument()
+    expect(screen.getByText('High Surge')).toBeInTheDocument()
+    expect(screen.getByText('Darrang')).toBeInTheDocument()
+    expect(screen.getByText('Stable / Watch')).toBeInTheDocument()
+    expect(screen.getByText(/Water: \+1\.8m/)).toBeInTheDocument()
+    expect(screen.getByText(/Water: -0\.4m/)).toBeInTheDocument()
 
     expectSosTrigger()
   })

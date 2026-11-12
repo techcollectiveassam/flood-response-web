@@ -6,6 +6,7 @@ import type { LanguageCode } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/formatters'
 import { SosActionCard } from './sos-action-card'
 import { SosMetricCard } from './sos-metric-card'
+import { SosRegionalSituation } from './sos-regional-situation'
 import { SosTriggerButton } from './sos-trigger-button'
 
 type SosMetric = {
@@ -206,6 +207,8 @@ export function SosQuickActionsDesktop() {
           tone="info"
         />
       </div>
+
+      <SosRegionalSituation />
     </div>
   )
 }
