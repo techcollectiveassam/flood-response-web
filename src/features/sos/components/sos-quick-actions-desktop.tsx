@@ -4,7 +4,7 @@ import type { TranslationKey } from '@/lib/i18n/catalog'
 import { resolveLanguage } from '@/lib/i18n/config'
 import type { LanguageCode } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/formatters'
-import { QuickActionCard } from './quick-action-card'
+import { SosActionCard } from './sos-action-card'
 import { SosMetricCard } from './sos-metric-card'
 import { SosTriggerButton } from './sos-trigger-button'
 
@@ -191,16 +191,18 @@ export function SosQuickActionsDesktop() {
       </section>
 
       <div className="grid grid-cols-2 gap-6">
-        <QuickActionCard
+        <SosActionCard
           icon={TriangleAlert}
           title={t('home.action.reportArea.title')}
-          description={t('home.action.reportArea.description')}
+          description={t('home.action.reportArea.detail')}
+          tag={t('home.action.reportArea.tag')}
           tone="warning"
         />
-        <QuickActionCard
+        <SosActionCard
           icon={HandHeart}
-          title={t('home.action.requestRelief.title')}
-          description={t('home.action.requestRelief.description')}
+          title={t('home.action.requestRelief.cardTitle')}
+          description={t('home.action.requestRelief.detail')}
+          tag={t('home.action.requestRelief.tag')}
           tone="info"
         />
       </div>

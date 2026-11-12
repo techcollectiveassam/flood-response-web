@@ -5,17 +5,7 @@ import { SosQuickActions } from './sos-quick-actions'
 import { SosQuickActionsDesktop } from './sos-quick-actions-desktop'
 import { SosQuickActionsMobile } from './sos-quick-actions-mobile'
 
-function expectQuickActions() {
-  expect(
-    screen.getByRole('link', { name: /Report flooded area/i }),
-  ).toHaveAttribute('href', '#')
-  expect(screen.getByText('Share real-time data')).toBeInTheDocument()
-
-  expect(
-    screen.getByRole('link', { name: /Request relief/i }),
-  ).toHaveAttribute('href', '#')
-  expect(screen.getByText('Food, water, or medicine')).toBeInTheDocument()
-
+function expectSosTrigger() {
   expect(
     screen.getByRole('button', { name: 'Send immediate SOS alert' }),
   ).toBeInTheDocument()
@@ -35,13 +25,41 @@ describe('SosQuickActions', () => {
   it('renders the mobile report, relief, and SOS actions', () => {
     renderWithProviders(<SosQuickActionsMobile />)
 
-    expectQuickActions()
+    expect(
+      screen.getByRole('link', { name: /Report flooded area/i }),
+    ).toHaveAttribute('href', '#')
+    expect(screen.getByText('Share real-time data')).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('link', { name: /Request relief/i }),
+    ).toHaveAttribute('href', '#')
+    expect(screen.getByText('Food, water, or medicine')).toBeInTheDocument()
+
+    expectSosTrigger()
   })
 
   it('renders the desktop report, relief, and SOS actions', () => {
     renderWithProviders(<SosQuickActionsDesktop />)
 
-    expectQuickActions()
+    expect(
+      screen.getByRole('link', { name: /Report flooded area/i }),
+    ).toHaveAttribute('href', '#')
+    expect(screen.getByText('2 min form')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Share real-time water levels, submerged access roads, bridge breaches, and stranded citizen headcounts.',
+      ),
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('link', { name: /Request relief supplies/i }),
+    ).toHaveAttribute('href', '#')
+    expect(screen.getByText('Priority Triage')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Request urgent food rations, clean drinking water, infant baby formula, medicines, or tarpaulin shelter kits.',
+      ),
+    ).toBeInTheDocument()
 
     expect(
       screen.getByRole('heading', {
@@ -64,6 +82,8 @@ describe('SosQuickActions', () => {
     expect(screen.getByText('No account needed')).toBeInTheDocument()
     expect(screen.getByText('Instant GPS Geo-Lock')).toBeInTheDocument()
     expect(screen.getByText('Low-Bandwidth SMS Fallback')).toBeInTheDocument()
+
+    expectSosTrigger()
   })
 
   it('selects the desktop layout on desktop viewports', () => {
