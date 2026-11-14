@@ -4,9 +4,13 @@ import { MobileMenuNavLink } from './mobile-menu-nav-link'
 
 type MobileMenuNavGroupProps = {
   group: MobileMenuGroup
+  onNavigate?: () => void
 }
 
-export function MobileMenuNavGroup({ group }: MobileMenuNavGroupProps) {
+export function MobileMenuNavGroup({
+  group,
+  onNavigate,
+}: MobileMenuNavGroupProps) {
   const { t } = useTranslation()
 
   return (
@@ -17,7 +21,7 @@ export function MobileMenuNavGroup({ group }: MobileMenuNavGroupProps) {
       <ul className="space-y-0.5">
         {group.items.map((item) => (
           <li key={item.labelKey}>
-            <MobileMenuNavLink item={item} />
+            <MobileMenuNavLink item={item} onNavigate={onNavigate} />
           </li>
         ))}
       </ul>
