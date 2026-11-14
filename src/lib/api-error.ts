@@ -1,8 +1,14 @@
 import type { TranslationKey } from './i18n/catalog'
 
+export const PERMISSION_DENIED_ERROR_CODE = 'PERMISSION_DENIED'
+
 export type ApiErrorLike = {
   status?: number
   code?: string
+  name?: string
+  response?: {
+    status?: number
+  }
 }
 
 const STATUS_KEYS: Record<number, TranslationKey> = {
@@ -26,13 +32,23 @@ const NETWORK_CODES = new Set([
 
 export function getApiErrorKey(error: unknown): TranslationKey {
   if (typeof error === 'object' && error !== null) {
-    const { status, code } = error as ApiErrorLike
+    const { status, code, name, response } = error as ApiErrorLike
+    const httpStatus =
+      typeof status === 'number' ? status : response?.status
 
-    if (typeof status === 'number' && STATUS_KEYS[status]) {
-      return STATUS_KEYS[status]
+    if (typeof httpStatus === 'number' && STATUS_KEYS[httpStatus]) {
+      return STATUS_KEYS[httpStatus]
     }
 
-    if (typeof code === 'string' && NETWORK_CODES.has(code)) {
+    if (code === PERMISSION_DENIED_ERROR_CODE) {
+      return 'apiError.forbidden'
+    }
+
+    if (
+      (typeof code === 'string' && NETWORK_CODES.has(code)) ||
+      name === 'NetworkError' ||
+      name === 'TimeoutError'
+    ) {
       return 'apiError.network'
     }
   }

@@ -1,6 +1,15 @@
-import { Asterisk, Plus } from 'lucide-react'
+import { Asterisk, Loader2, Plus } from 'lucide-react'
+import { useId, useState } from 'react'
+import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getApiErrorKey } from '@/lib/api-error'
+import { normalizeDigits } from '@/lib/normalize-digits'
 import { cn } from '@/lib/utils'
+import {
+  isLocationError,
+  useCreateSosRequest,
+} from '../api/create-sos-request'
+import { useGeolocationPermission } from '../hooks/use-geolocation-permission'
 
 type SosTriggerButtonVariant = 'card' | 'plain'
 type SosTriggerButtonSize = 'compact' | 'hero'
@@ -32,8 +41,34 @@ export function SosTriggerButton({
   size = 'compact',
 }: SosTriggerButtonProps) {
   const { t } = useTranslation()
+  const gpsSosRequest = useCreateSosRequest()
+  const mobileSosRequest = useCreateSosRequest()
+  const geolocationPermission = useGeolocationPermission()
+  const [mobile, setMobile] = useState('')
+  const [mobileError, setMobileError] = useState(false)
+  const mobileInputId = useId()
+  const locationMessageId = useId()
   const classes = sizeClasses[size]
   const Icon = size === 'hero' ? Plus : Asterisk
+  const isSending = gpsSosRequest.isPending
+  const isMobileSending = mobileSosRequest.isPending
+  const locationPermissionDenied = geolocationPermission === 'denied'
+  const locationBlocked =
+    locationPermissionDenied || isLocationError(gpsSosRequest.error)
+
+  function handleMobileSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const normalizedMobile = normalizeDigits(mobile).trim()
+
+    if (!/^\d{10}$/.test(normalizedMobile)) {
+      setMobileError(true)
+      return
+    }
+
+    setMobileError(false)
+    mobileSosRequest.mutate({ reporterMobile: normalizedMobile })
+  }
 
   return (
     <div
@@ -61,16 +96,31 @@ export function SosTriggerButton({
           <button
             type="button"
             aria-label={t('home.sos.ariaLabel')}
+            aria-busy={isSending}
+            aria-describedby={locationBlocked ? locationMessageId : undefined}
+            disabled={isSending || locationPermissionDenied}
+            onClick={() => gpsSosRequest.mutate()}
             className={cn(
-              'flex flex-col items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg shadow-destructive/25 transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emergency-ring motion-safe:active:scale-[0.97]',
+              'flex flex-col items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg shadow-destructive/25 transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emergency-ring motion-safe:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-80',
               classes.button,
             )}
           >
-            <Icon
-              className={cn('text-destructive-soft', classes.icon)}
-              strokeWidth={3}
-              aria-hidden="true"
-            />
+            {isSending ? (
+              <Loader2
+                className={cn(
+                  'text-destructive-soft motion-safe:animate-spin',
+                  classes.icon,
+                )}
+                strokeWidth={3}
+                aria-hidden="true"
+              />
+            ) : (
+              <Icon
+                className={cn('text-destructive-soft', classes.icon)}
+                strokeWidth={3}
+                aria-hidden="true"
+              />
+            )}
             <span
               className={cn(
                 'font-extrabold leading-none tracking-tight',
@@ -85,6 +135,88 @@ export function SosTriggerButton({
           </button>
         </span>
       </div>
+
+      {locationBlocked && (
+        <div className="mt-5 w-full max-w-xs rounded-2xl border border-border bg-muted/40 p-4 text-left">
+          <p
+            id={locationMessageId}
+            role="status"
+            className="text-xs font-medium leading-relaxed text-muted-foreground"
+          >
+            {t('sos.create.locationRequired')}
+          </p>
+
+          <form
+            onSubmit={handleMobileSubmit}
+            className="mt-3 space-y-2"
+            noValidate
+          >
+            <label
+              htmlFor={mobileInputId}
+              className="block text-xs font-semibold text-foreground"
+            >
+              {t('sos.create.mobileLabel')}
+            </label>
+            <input
+              id={mobileInputId}
+              name="mobile"
+              type="text"
+              inputMode="tel"
+              autoComplete="tel"
+              required
+              value={mobile}
+              disabled={isMobileSending}
+              aria-invalid={mobileError || undefined}
+              aria-describedby={
+                mobileError ? `${mobileInputId}-error` : undefined
+              }
+              onChange={(event) => {
+                setMobile(normalizeDigits(event.target.value).replace(/\D/g, ''))
+                setMobileError(false)
+              }}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-70"
+            />
+
+            {mobileError && (
+              <p
+                id={`${mobileInputId}-error`}
+                role="alert"
+                className="text-xs font-semibold text-destructive"
+              >
+                {t('sos.create.mobileInvalid')}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={isMobileSending}
+              className="flex w-full items-center justify-center rounded-lg bg-destructive px-3 py-2 text-sm font-bold text-destructive-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emergency-ring disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isMobileSending
+                ? t('common.loading')
+                : t('sos.create.sendWithMobile')}
+            </button>
+
+            {mobileSosRequest.isError && (
+              <p
+                role="alert"
+                className="text-xs font-semibold text-destructive"
+              >
+                {t(getApiErrorKey(mobileSosRequest.error))}
+              </p>
+            )}
+          </form>
+        </div>
+      )}
+
+      {gpsSosRequest.isError && !isLocationError(gpsSosRequest.error) && (
+        <p
+          role="alert"
+          className="mt-4 max-w-xs text-center text-xs font-semibold text-destructive"
+        >
+          {t(getApiErrorKey(gpsSosRequest.error))}
+        </p>
+      )}
     </div>
   )
 }

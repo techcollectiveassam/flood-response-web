@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { getApiErrorKey } from './api-error'
+import {
+  getApiErrorKey,
+  PERMISSION_DENIED_ERROR_CODE,
+} from './api-error'
 
 describe('getApiErrorKey', () => {
   it.each([
@@ -16,9 +19,26 @@ describe('getApiErrorKey', () => {
     expect(getApiErrorKey({ status })).toBe(key)
   })
 
-  it('maps network error codes', () => {
+  it('maps HTTP errors that expose the status on a response', () => {
+    expect(getApiErrorKey({ response: { status: 404 } })).toBe(
+      'apiError.notFound',
+    )
+    expect(getApiErrorKey({ response: { status: 503 } })).toBe(
+      'apiError.server',
+    )
+  })
+
+  it('maps network error codes and names', () => {
     expect(getApiErrorKey({ code: 'NETWORK_ERROR' })).toBe('apiError.network')
     expect(getApiErrorKey({ code: 'ETIMEDOUT' })).toBe('apiError.network')
+    expect(getApiErrorKey({ name: 'NetworkError' })).toBe('apiError.network')
+    expect(getApiErrorKey({ name: 'TimeoutError' })).toBe('apiError.network')
+  })
+
+  it('maps permission denied errors', () => {
+    expect(getApiErrorKey({ code: PERMISSION_DENIED_ERROR_CODE })).toBe(
+      'apiError.forbidden',
+    )
   })
 
   it('falls back to the unknown error key', () => {
