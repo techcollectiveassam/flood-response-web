@@ -6,6 +6,7 @@ import {
   API_ERROR_CODES,
   ApiError,
   getApiErrorKey,
+  isRetryableApiError,
   LOCATION_UNAVAILABLE_ERROR_CODE,
   normalizeApiError,
   PERMISSION_DENIED_ERROR_CODE,
@@ -171,5 +172,31 @@ describe('normalizeApiError', () => {
 
     expect(error.code).toBe(API_ERROR_CODES.UNKNOWN)
     expect(error.cause).toBe(cause)
+  })
+})
+
+describe('isRetryableApiError', () => {
+  it('retries network and timeout failures', () => {
+    expect(isRetryableApiError({ code: API_ERROR_CODES.NETWORK })).toBe(true)
+    expect(isRetryableApiError({ code: API_ERROR_CODES.TIMEOUT })).toBe(true)
+    expect(isRetryableApiError({ name: 'NetworkError' })).toBe(true)
+    expect(isRetryableApiError({ name: 'TimeoutError' })).toBe(true)
+  })
+
+  it('retries 5xx responses only', () => {
+    expect(isRetryableApiError({ status: 500 })).toBe(true)
+    expect(isRetryableApiError({ status: 503 })).toBe(true)
+    expect(isRetryableApiError({ response: { status: 502 } })).toBe(true)
+    expect(isRetryableApiError({ status: 400 })).toBe(false)
+    expect(isRetryableApiError({ status: 404 })).toBe(false)
+    expect(isRetryableApiError({ response: { status: 429 } })).toBe(false)
+  })
+
+  it('does not retry validation or unknown errors', () => {
+    expect(isRetryableApiError({ code: API_ERROR_CODES.VALIDATION })).toBe(
+      false,
+    )
+    expect(isRetryableApiError(new Error('boom'))).toBe(false)
+    expect(isRetryableApiError(undefined)).toBe(false)
   })
 })

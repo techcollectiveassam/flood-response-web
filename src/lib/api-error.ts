@@ -204,6 +204,26 @@ export function normalizeApiError(error: unknown): ApiError {
   })
 }
 
+export function isRetryableApiError(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null) {
+    return false
+  }
+
+  const { status, code, name, response } = error as ApiErrorLike
+  const httpStatus =
+    typeof status === 'number' ? status : response?.status
+
+  if (typeof httpStatus === 'number') {
+    return httpStatus >= 500 && httpStatus < 600
+  }
+
+  return (
+    (typeof code === 'string' && NETWORK_CODES.has(code)) ||
+    name === 'NetworkError' ||
+    name === 'TimeoutError'
+  )
+}
+
 export function getApiErrorKey(error: unknown): TranslationKey {
   if (typeof error === 'object' && error !== null) {
     const { status, code, name, response } = error as ApiErrorLike
