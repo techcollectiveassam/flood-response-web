@@ -52,12 +52,25 @@ export function SosTriggerButton({
   const Icon = size === 'hero' ? Plus : Asterisk
   const isSending = gpsSosRequest.isPending
   const isMobileSending = mobileSosRequest.isPending
+  const isSubmitting = isSending || isMobileSending
   const locationPermissionDenied = geolocationPermission === 'denied'
   const locationBlocked =
     locationPermissionDenied || isLocationError(gpsSosRequest.error)
 
+  function handleGpsSubmit() {
+    if (isSubmitting) {
+      return
+    }
+
+    gpsSosRequest.mutate()
+  }
+
   function handleMobileSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if (isSubmitting) {
+      return
+    }
 
     const normalizedMobile = normalizeDigits(mobile).trim()
 
@@ -98,8 +111,8 @@ export function SosTriggerButton({
             aria-label={t('home.sos.ariaLabel')}
             aria-busy={isSending}
             aria-describedby={locationBlocked ? locationMessageId : undefined}
-            disabled={isSending || locationPermissionDenied}
-            onClick={() => gpsSosRequest.mutate()}
+            disabled={isSubmitting || locationPermissionDenied}
+            onClick={handleGpsSubmit}
             className={cn(
               'flex flex-col items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg shadow-destructive/25 transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emergency-ring motion-safe:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-80',
               classes.button,
@@ -165,7 +178,7 @@ export function SosTriggerButton({
               autoComplete="tel"
               required
               value={mobile}
-              disabled={isMobileSending}
+              disabled={isSubmitting}
               aria-invalid={mobileError || undefined}
               aria-describedby={
                 mobileError ? `${mobileInputId}-error` : undefined
@@ -189,7 +202,7 @@ export function SosTriggerButton({
 
             <button
               type="submit"
-              disabled={isMobileSending}
+              disabled={isSubmitting}
               className="flex w-full items-center justify-center rounded-lg bg-destructive px-3 py-2 text-sm font-bold text-destructive-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emergency-ring disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isMobileSending

@@ -1,15 +1,19 @@
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getSosDisasterId } from '@/config/api'
+import {
+  API_ERROR_CODES,
+  ApiError,
+  LOCATION_UNAVAILABLE_ERROR_CODE,
+  normalizeApiError,
+  PERMISSION_DENIED_ERROR_CODE,
+} from '@/lib/api-error'
 import type { ApiErrorLike } from '@/lib/api-error'
-import { PERMISSION_DENIED_ERROR_CODE } from '@/lib/api-error'
 import { apiClient } from '@/lib/api-client'
 import { normalizeDigits } from '@/lib/normalize-digits'
 
 const MOBILE_PATTERN = /^\d{10}$/
 const GEOLOCATION_PERMISSION_DENIED = 1
-
-export const LOCATION_UNAVAILABLE_ERROR_CODE = 'LOCATION_UNAVAILABLE'
 
 const coordinatesSchema = z.object({
   latitude: z.number().min(-90).max(90),
@@ -55,8 +59,8 @@ type CreateSosRequestVariables = {
   reporterMobile?: string
 }
 
-function createLocationError(code: string, message: string) {
-  return Object.assign(new Error(message), { code })
+function createLocationError(code: string, message: string, cause?: unknown) {
+  return new ApiError({ code, message, cause })
 }
 
 function getCurrentLocation(): Promise<Coordinates> {
@@ -84,6 +88,7 @@ function getCurrentLocation(): Promise<Coordinates> {
             createLocationError(
               PERMISSION_DENIED_ERROR_CODE,
               'Location permission denied',
+              error,
             ),
           )
           return
@@ -93,6 +98,7 @@ function getCurrentLocation(): Promise<Coordinates> {
           createLocationError(
             LOCATION_UNAVAILABLE_ERROR_CODE,
             'Location is unavailable',
+            error,
           ),
         )
       },
@@ -118,17 +124,28 @@ export function isLocationError(error: unknown): boolean {
   )
 }
 
+function parseCreateSosRequest(input: unknown): CreateSosRequestInput {
+  try {
+    return createSosRequestSchema.parse(input)
+  } catch (error) {
+    throw normalizeApiError(error)
+  }
+}
+
 export async function buildCreateSosRequest(
   reporterMobile?: string,
 ): Promise<CreateSosRequestInput> {
   const disasterId = getSosDisasterId()
 
   if (disasterId === null) {
-    throw new Error('VITE_DISASTER_ID is not configured')
+    throw new ApiError({
+      code: API_ERROR_CODES.CONFIGURATION,
+      message: 'VITE_DISASTER_ID is not configured',
+    })
   }
 
   if (reporterMobile !== undefined) {
-    return createSosRequestSchema.parse({
+    return parseCreateSosRequest({
       disaster_id: disasterId,
       reporter_mobile: normalizeDigits(reporterMobile).trim(),
     })
@@ -136,7 +153,7 @@ export async function buildCreateSosRequest(
 
   const location = await getCurrentLocation()
 
-  return createSosRequestSchema.parse({
+  return parseCreateSosRequest({
     disaster_id: disasterId,
     location,
   })
@@ -145,12 +162,16 @@ export async function buildCreateSosRequest(
 export async function createSosRequest(
   variables: CreateSosRequestVariables = {},
 ): Promise<Sos> {
-  const payload = await buildCreateSosRequest(variables.reporterMobile)
-  const response = await apiClient
-    .post('api/v1/sos', { json: payload })
-    .json<unknown>()
+  try {
+    const payload = await buildCreateSosRequest(variables.reporterMobile)
+    const response = await apiClient
+      .post('api/v1/sos', { json: payload })
+      .json<unknown>()
 
-  return sosResponseSchema.parse(response).data
+    return sosResponseSchema.parse(response).data
+  } catch (error) {
+    throw normalizeApiError(error)
+  }
 }
 
 export function useCreateSosRequest() {

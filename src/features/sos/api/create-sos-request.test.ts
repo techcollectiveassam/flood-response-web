@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { PERMISSION_DENIED_ERROR_CODE } from '@/lib/api-error'
+import {
+  API_ERROR_CODES,
+  LOCATION_UNAVAILABLE_ERROR_CODE,
+  PERMISSION_DENIED_ERROR_CODE,
+} from '@/lib/api-error'
 import {
   buildCreateSosRequest,
   isLocationError,
-  LOCATION_UNAVAILABLE_ERROR_CODE,
   sosResponseSchema,
 } from './create-sos-request'
 
@@ -84,24 +87,28 @@ describe('buildCreateSosRequest', () => {
     })
   })
 
-  it('rejects an invalid mobile number', async () => {
-    await expect(buildCreateSosRequest('123')).rejects.toThrow()
+  it('rejects an invalid mobile number with a validation error', async () => {
+    await expect(buildCreateSosRequest('123')).rejects.toMatchObject({
+      code: API_ERROR_CODES.VALIDATION,
+    })
   })
 
   it('rejects when the disaster id is missing', async () => {
     vi.stubEnv('VITE_DISASTER_ID', '')
 
-    await expect(buildCreateSosRequest()).rejects.toThrow(
-      'VITE_DISASTER_ID is not configured',
-    )
+    await expect(buildCreateSosRequest()).rejects.toMatchObject({
+      code: API_ERROR_CODES.CONFIGURATION,
+      message: 'VITE_DISASTER_ID is not configured',
+    })
   })
 
   it('rejects when the disaster id is invalid', async () => {
     vi.stubEnv('VITE_DISASTER_ID', 'abc')
 
-    await expect(buildCreateSosRequest()).rejects.toThrow(
-      'VITE_DISASTER_ID is not configured',
-    )
+    await expect(buildCreateSosRequest()).rejects.toMatchObject({
+      code: API_ERROR_CODES.CONFIGURATION,
+      message: 'VITE_DISASTER_ID is not configured',
+    })
   })
 
   it('rejects when geolocation fails', async () => {
