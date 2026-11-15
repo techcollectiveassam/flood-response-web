@@ -37,9 +37,11 @@ describe('getApiErrorKey', () => {
     [409, 'apiError.conflict'],
     [429, 'apiError.rateLimited'],
     [500, 'apiError.server'],
+    [501, 'apiError.server'],
     [502, 'apiError.server'],
     [503, 'apiError.server'],
     [504, 'apiError.server'],
+    [599, 'apiError.server'],
   ] as const)('maps status %i', (status, key) => {
     expect(getApiErrorKey({ status })).toBe(key)
   })
@@ -54,16 +56,22 @@ describe('getApiErrorKey', () => {
   })
 
   it('maps network error codes and names', () => {
-    expect(getApiErrorKey({ code: 'NETWORK_ERROR' })).toBe('apiError.network')
-    expect(getApiErrorKey({ code: 'ETIMEDOUT' })).toBe('apiError.network')
-    expect(getApiErrorKey({ code: 'TIMEOUT' })).toBe('apiError.network')
+    expect(getApiErrorKey({ code: API_ERROR_CODES.NETWORK })).toBe(
+      'apiError.network',
+    )
+    expect(getApiErrorKey({ code: API_ERROR_CODES.TIMEOUT })).toBe(
+      'apiError.network',
+    )
     expect(getApiErrorKey({ name: 'NetworkError' })).toBe('apiError.network')
     expect(getApiErrorKey({ name: 'TimeoutError' })).toBe('apiError.network')
   })
 
-  it('maps permission denied errors', () => {
+  it('maps permission denied and location unavailable errors', () => {
     expect(getApiErrorKey({ code: PERMISSION_DENIED_ERROR_CODE })).toBe(
       'apiError.forbidden',
+    )
+    expect(getApiErrorKey({ code: LOCATION_UNAVAILABLE_ERROR_CODE })).toBe(
+      'sos.create.locationRequired',
     )
   })
 
@@ -165,6 +173,15 @@ describe('normalizeApiError', () => {
     expect(normalizeApiError(error)).toBe(error)
   })
 
+  it('normalizes abort errors', () => {
+    const cause = new DOMException('The operation was aborted.', 'AbortError')
+
+    const error = normalizeApiError(cause)
+
+    expect(error.code).toBe(API_ERROR_CODES.ABORTED)
+    expect(error.cause).toBe(cause)
+  })
+
   it('normalizes unknown errors', () => {
     const cause = new Error('boom')
 
@@ -192,10 +209,12 @@ describe('isRetryableApiError', () => {
     expect(isRetryableApiError({ response: { status: 429 } })).toBe(false)
   })
 
-  it('does not retry validation or unknown errors', () => {
+  it('does not retry validation, aborted, or unknown errors', () => {
     expect(isRetryableApiError({ code: API_ERROR_CODES.VALIDATION })).toBe(
       false,
     )
+    expect(isRetryableApiError({ code: API_ERROR_CODES.ABORTED })).toBe(false)
+    expect(isRetryableApiError({ name: 'AbortError' })).toBe(false)
     expect(isRetryableApiError(new Error('boom'))).toBe(false)
     expect(isRetryableApiError(undefined)).toBe(false)
   })

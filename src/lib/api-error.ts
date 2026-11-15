@@ -4,7 +4,7 @@ import {
   isResponseSizeError,
   isTimeoutError,
 } from 'ky'
-import { ZodError } from 'zod'
+import { z, ZodError } from 'zod'
 import type { TranslationKey } from './i18n/catalog'
 
 export const PERMISSION_DENIED_ERROR_CODE = 'PERMISSION_DENIED'
@@ -14,6 +14,7 @@ export const API_ERROR_CODES = {
   HTTP: 'HTTP_ERROR',
   NETWORK: 'NETWORK_ERROR',
   TIMEOUT: 'TIMEOUT',
+  ABORTED: 'ABORTED',
   VALIDATION: 'VALIDATION_ERROR',
   RESPONSE_TOO_LARGE: 'RESPONSE_TOO_LARGE',
   CONFIGURATION: 'CONFIGURATION_ERROR',
@@ -62,80 +63,81 @@ export type ApiErrorLike = {
   }
 }
 
-const STATUS_KEYS: Record<number, TranslationKey> = {
+const STATUS_KEYS: Partial<Record<number, TranslationKey>> = {
   401: 'apiError.unauthorized',
   403: 'apiError.forbidden',
   404: 'apiError.notFound',
   409: 'apiError.conflict',
   429: 'apiError.rateLimited',
-  500: 'apiError.server',
-  502: 'apiError.server',
-  503: 'apiError.server',
-  504: 'apiError.server',
 }
 
-const NETWORK_CODES = new Set([
-  'NETWORK_ERROR',
-  'ERR_NETWORK',
-  'ECONNABORTED',
-  'ETIMEDOUT',
-  'TIMEOUT',
+const NETWORK_CODES = new Set<string>([
+  API_ERROR_CODES.NETWORK,
+  API_ERROR_CODES.TIMEOUT,
 ])
+
+const NETWORK_ERROR_NAMES = new Set(['NetworkError', 'TimeoutError'])
 
 const KNOWN_DOMAIN_CODES = new Set([
   PERMISSION_DENIED_ERROR_CODE,
   LOCATION_UNAVAILABLE_ERROR_CODE,
 ])
 
-function getFieldErrors(details: unknown): ApiErrorField[] | undefined {
-  if (!Array.isArray(details)) {
-    return undefined
-  }
+const fieldErrorSchema = z.object({
+  field: z.string(),
+  message: z.string(),
+})
 
-  const fieldErrors = details
-    .map((detail) => {
-      if (typeof detail !== 'object' || detail === null) {
-        return null
-      }
+// Keep `details` as `z.array(z.unknown())` and validate items individually in
+// `getBackendError` so one malformed entry does not discard valid sibling errors.
+const backendErrorPayloadSchema = z.object({
+  error: z.object({
+    code: z.string().optional(),
+    details: z.array(z.unknown()).optional(),
+  }),
+})
 
-      const { field, message } = detail as {
-        field?: unknown
-        message?: unknown
-      }
+function asApiErrorLike(error: unknown): ApiErrorLike | null {
+  return typeof error === 'object' && error !== null
+    ? (error as ApiErrorLike)
+    : null
+}
 
-      if (typeof field !== 'string' || typeof message !== 'string') {
-        return null
-      }
+function getHttpStatus(error: ApiErrorLike): number | undefined {
+  return typeof error.status === 'number'
+    ? error.status
+    : error.response?.status
+}
 
-      return { field, message }
-    })
-    .filter((detail): detail is ApiErrorField => detail !== null)
+function isServerErrorStatus(status: number): boolean {
+  return status >= 500 && status < 600
+}
 
-  return fieldErrors.length > 0 ? fieldErrors : undefined
+function isNetworkOrTimeoutError(error: ApiErrorLike): boolean {
+  return (
+    (typeof error.code === 'string' && NETWORK_CODES.has(error.code)) ||
+    (typeof error.name === 'string' && NETWORK_ERROR_NAMES.has(error.name))
+  )
 }
 
 function getBackendError(data: unknown): {
   code?: string
   fieldErrors?: ApiErrorField[]
 } {
-  if (typeof data !== 'object' || data === null) {
+  const parsed = backendErrorPayloadSchema.safeParse(data)
+  if (!parsed.success) {
     return {}
   }
 
-  const { error } = data as { error?: unknown }
-
-  if (typeof error !== 'object' || error === null) {
-    return {}
-  }
-
-  const { code, details } = error as {
-    code?: unknown
-    details?: unknown
-  }
+  const { code, details } = parsed.data.error
+  const fieldErrors = details?.flatMap((item) => {
+    const field = fieldErrorSchema.safeParse(item)
+    return field.success ? [field.data] : []
+  })
 
   return {
-    code: typeof code === 'string' ? code : undefined,
-    fieldErrors: getFieldErrors(details),
+    code,
+    fieldErrors: fieldErrors?.length ? fieldErrors : undefined,
   }
 }
 
@@ -145,28 +147,21 @@ export function normalizeApiError(error: unknown): ApiError {
   }
 
   if (isHTTPError(error)) {
-    const backendError = getBackendError(error.data)
-
+    const { code, fieldErrors } = getBackendError(error.data)
     return new ApiError({
       status: error.response.status,
-      code: backendError.code ?? API_ERROR_CODES.HTTP,
-      fieldErrors: backendError.fieldErrors,
+      code: code ?? API_ERROR_CODES.HTTP,
+      fieldErrors,
       cause: error,
     })
   }
 
   if (isTimeoutError(error)) {
-    return new ApiError({
-      code: API_ERROR_CODES.TIMEOUT,
-      cause: error,
-    })
+    return new ApiError({ code: API_ERROR_CODES.TIMEOUT, cause: error })
   }
 
   if (isNetworkError(error)) {
-    return new ApiError({
-      code: API_ERROR_CODES.NETWORK,
-      cause: error,
-    })
+    return new ApiError({ code: API_ERROR_CODES.NETWORK, cause: error })
   }
 
   if (isResponseSizeError(error)) {
@@ -187,64 +182,63 @@ export function normalizeApiError(error: unknown): ApiError {
     })
   }
 
-  if (typeof error === 'object' && error !== null) {
-    const { code } = error as ApiErrorLike
-
-    if (typeof code === 'string' && KNOWN_DOMAIN_CODES.has(code)) {
-      return new ApiError({
-        code,
-        cause: error,
-      })
-    }
+  const errorLike = asApiErrorLike(error)
+  if (errorLike?.name === 'AbortError') {
+    return new ApiError({ code: API_ERROR_CODES.ABORTED, cause: error })
   }
 
-  return new ApiError({
-    code: API_ERROR_CODES.UNKNOWN,
-    cause: error,
-  })
+  if (
+    typeof errorLike?.code === 'string' &&
+    KNOWN_DOMAIN_CODES.has(errorLike.code)
+  ) {
+    return new ApiError({ code: errorLike.code, cause: error })
+  }
+
+  return new ApiError({ code: API_ERROR_CODES.UNKNOWN, cause: error })
 }
 
 export function isRetryableApiError(error: unknown): boolean {
-  if (typeof error !== 'object' || error === null) {
+  const errorLike = asApiErrorLike(error)
+  if (!errorLike) {
     return false
   }
 
-  const { status, code, name, response } = error as ApiErrorLike
-  const httpStatus =
-    typeof status === 'number' ? status : response?.status
-
+  const httpStatus = getHttpStatus(errorLike)
   if (typeof httpStatus === 'number') {
-    return httpStatus >= 500 && httpStatus < 600
+    return isServerErrorStatus(httpStatus)
   }
 
-  return (
-    (typeof code === 'string' && NETWORK_CODES.has(code)) ||
-    name === 'NetworkError' ||
-    name === 'TimeoutError'
-  )
+  return isNetworkOrTimeoutError(errorLike)
 }
 
 export function getApiErrorKey(error: unknown): TranslationKey {
-  if (typeof error === 'object' && error !== null) {
-    const { status, code, name, response } = error as ApiErrorLike
-    const httpStatus =
-      typeof status === 'number' ? status : response?.status
+  const errorLike = asApiErrorLike(error)
+  if (!errorLike) {
+    return 'apiError.unknown'
+  }
 
-    if (typeof httpStatus === 'number' && STATUS_KEYS[httpStatus]) {
-      return STATUS_KEYS[httpStatus]
+  const httpStatus = getHttpStatus(errorLike)
+  if (typeof httpStatus === 'number') {
+    const statusKey = STATUS_KEYS[httpStatus]
+    if (statusKey) {
+      return statusKey
     }
 
-    if (code === PERMISSION_DENIED_ERROR_CODE) {
-      return 'apiError.forbidden'
+    if (isServerErrorStatus(httpStatus)) {
+      return 'apiError.server'
     }
+  }
 
-    if (
-      (typeof code === 'string' && NETWORK_CODES.has(code)) ||
-      name === 'NetworkError' ||
-      name === 'TimeoutError'
-    ) {
-      return 'apiError.network'
-    }
+  if (errorLike.code === PERMISSION_DENIED_ERROR_CODE) {
+    return 'apiError.forbidden'
+  }
+
+  if (errorLike.code === LOCATION_UNAVAILABLE_ERROR_CODE) {
+    return 'sos.create.locationRequired'
+  }
+
+  if (isNetworkOrTimeoutError(errorLike)) {
+    return 'apiError.network'
   }
 
   return 'apiError.unknown'
