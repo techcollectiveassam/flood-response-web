@@ -37,15 +37,14 @@ const createSosRequestSchema = z
   )
 
 export const sosSchema = z.object({
-  id: z.number().int(),
-  disaster_id: z.number().int(),
-  status: z.enum(['reported', 'active', 'resolved', 'cancelled']),
+  tracking_id: z.string().uuid(),
+  status: z.enum(["reported", "active", "resolved", "cancelled"]),
   report_count: z.number().int(),
   created_at: z.string(),
   location: sosLocationSchema.nullish(),
   reporter_mobile: z.string().optional(),
   message: z.string().optional(),
-})
+});
 
 export const sosResponseSchema = z.object({
   data: sosSchema,

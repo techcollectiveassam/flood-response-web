@@ -153,8 +153,7 @@ describe('sosResponseSchema', () => {
   it('parses a created SOS response', () => {
     const response = sosResponseSchema.parse({
       data: {
-        id: 12,
-        disaster_id: 7,
+        tracking_id: '123e4567-e89b-12d3-a456-426614174000',
         status: 'reported',
         report_count: 1,
         created_at: '2026-11-13T00:00:00Z',
@@ -165,7 +164,9 @@ describe('sosResponseSchema', () => {
       },
     })
 
-    expect(response.data.id).toBe(12)
+    expect(response.data.tracking_id).toBe(
+      '123e4567-e89b-12d3-a456-426614174000',
+    )
     expect(response.data.location).toEqual({
       latitude: 26.29,
       longitude: 91.8,
