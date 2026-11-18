@@ -1,8 +1,26 @@
+import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { PERMISSION_DENIED_ERROR_CODE } from '@/lib/api-error'
 import { i18n } from '@/lib/i18n/i18n'
 import { renderWithProviders, screen } from '@/testing/test-utils'
 import { SosTriggerButton } from './sos-trigger-button'
+
+const locationSos = {
+  tracking_id: '123e4567-e89b-12d3-a456-426614174000',
+  status: 'reported',
+  report_count: 1,
+  created_at: '2026-11-13T00:00:00Z',
+  location: { latitude: 26.7509, longitude: 94.2037 },
+}
+
+const mobileSos = {
+  tracking_id: '223e4567-e89b-12d3-a456-426614174000',
+  status: 'reported',
+  report_count: 1,
+  created_at: '2026-11-13T00:00:00Z',
+  location: null,
+  reporter_mobile: '9800000000',
+}
 
 const mocks = vi.hoisted(() => {
   const createMutation = () => ({
@@ -97,23 +115,57 @@ describe('SosTriggerButton submission guards', () => {
     ).toBeDisabled()
   })
 
-  it('restores both controls after a successful mobile request', () => {
+  it('replaces the trigger with a confirmation after a successful mobile request', () => {
     showLocationError()
     mocks.mobile.isPending = true
 
-    const { rerender } = renderWithProviders(<SosTriggerButton />)
+    const { rerender } = renderWithProviders(
+      <MemoryRouter>
+        <SosTriggerButton />
+      </MemoryRouter>,
+    )
 
     expect(screen.getByLabelText('Mobile number')).toBeDisabled()
 
     mocks.mobile.isPending = false
     mocks.mobile.isSuccess = true
-    rerender(<SosTriggerButton />)
+    mocks.mobile.data = mobileSos
+    rerender(
+      <MemoryRouter>
+        <SosTriggerButton />
+      </MemoryRouter>,
+    )
 
-    expect(screen.getByLabelText('Mobile number')).toBeEnabled()
-    expect(screen.getByRole('button', { name: 'Send SOS' })).toBeEnabled()
     expect(
-      screen.getByRole('button', { name: 'Send immediate SOS alert' }),
-    ).toBeEnabled()
+      screen.getByRole('heading', { name: 'SOS Sent' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Your SOS has been sent to the Command Center with your mobile number.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByLabelText('Mobile number')).not.toBeInTheDocument()
+  })
+
+  it('shows the confirmation with coordinates after a successful GPS request', () => {
+    mocks.gps.isSuccess = true
+    mocks.gps.data = locationSos
+
+    renderWithProviders(
+      <MemoryRouter>
+        <SosTriggerButton />
+      </MemoryRouter>,
+    )
+
+    expect(
+      screen.getByRole('heading', { name: 'SOS Sent' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Coordinates: 26.7509° N, 94.2037° E'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Send immediate SOS alert' }),
+    ).not.toBeInTheDocument()
   })
 
   it('restores both controls after a failed mobile request', () => {

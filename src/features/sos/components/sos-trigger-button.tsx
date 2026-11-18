@@ -10,6 +10,7 @@ import {
   useCreateSosRequest,
 } from '../api/create-sos-request'
 import { useGeolocationPermission } from '../hooks/use-geolocation-permission'
+import { SosConfirmation } from './sos-confirmation'
 
 type SosTriggerButtonVariant = 'card' | 'plain'
 type SosTriggerButtonSize = 'compact' | 'hero'
@@ -56,6 +57,12 @@ export function SosTriggerButton({
   const locationPermissionDenied = geolocationPermission === 'denied'
   const locationBlocked =
     locationPermissionDenied || isLocationError(gpsSosRequest.error)
+  const createdSos = gpsSosRequest.data ?? mobileSosRequest.data
+  const panelClassName = cn(
+    'flex flex-col items-center justify-center',
+    variant === 'card' &&
+      'rounded-2xl border border-border-subtle bg-card p-5',
+  )
 
   function handleGpsSubmit() {
     if (isSubmitting) {
@@ -83,14 +90,22 @@ export function SosTriggerButton({
     mobileSosRequest.mutate({ reporterMobile: normalizedMobile })
   }
 
+  if (createdSos) {
+    return (
+      <div className={panelClassName}>
+        <SosConfirmation
+          sos={createdSos}
+          onReset={() => {
+            gpsSosRequest.reset()
+            mobileSosRequest.reset()
+          }}
+        />
+      </div>
+    )
+  }
+
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center',
-        variant === 'card' &&
-          'rounded-2xl border border-border-subtle bg-card p-5',
-      )}
-    >
+    <div className={panelClassName}>
       <div className="relative flex items-center justify-center">
         <span
           className={cn(
