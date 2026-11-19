@@ -48,6 +48,7 @@ Build in small, self-contained increments that are easy to review.
 - **shadcn/ui v4** using the **`base-nova`** style with **`@base-ui/react`** headless primitives (NOT Radix UI)
 - **react-i18next** with **i18next** and **i18next-icu** for translation and ICU messages
 - **React Router v8** (`createBrowserRouter` data router pattern)
+- **TanStack Query** and **Zod** — planned for the first API integration; neither is installed yet
 - **Vitest 5** with jsdom, Testing Library, jest-dom matchers
 - **ESLint 10** with flat config (`eslint.config.js`)
 
@@ -185,18 +186,55 @@ src/
 
 ## API Layer
 
-When implementing API integration, follow these patterns:
+When implementing API integration, follow these rules.
 
-> TanStack Query and Zod are preferred when API work begins, but are not currently installed. Add dependencies explicitly as part of the first approved API integration.
+> TanStack Query and Zod are preferred for API work, but are not currently installed. Add them explicitly as part of the first approved API integration increment.
 
-1. **Single API Client**: Create a single preconfigured API client instance in `src/lib/api-client.ts`. Use an interceptor to handle errors globally (e.g., notification toasts, auth redirects, token refresh).
+### HTTP Client
 
-2. **Request Declarations**: Each API call should be defined as a structured declaration inside the feature's `api/` folder, consisting of:
-   - Types and validation schemas (using Zod) for request and response data
-   - A fetcher function that calls the endpoint using the API client
-   - A React hook that wraps the fetcher using a data-fetching library (e.g., TanStack Query)
+1. **Single HTTP client**: `src/lib/api-client.ts` is the only place that configures HTTP transport. Create one preconfigured client (Ky, Axios, or a thin `fetch` wrapper — choose one) with the base URL, default headers, credentials/CSRF, timeout, and auth handling. Do not create per-feature clients or a second client for a special case.
 
-3. **Naming Convention**: Name API files descriptively: `get-sos-requests.ts`, `create-sos-request.ts`, `update-sos-request.ts`, `delete-sos-request.ts`.
+2. **No HTTP in UI**: Never call `fetch`, Ky, Axios, or another HTTP client from components, pages, layouts, or hooks. Components use feature query/mutation hooks; those hooks call fetchers from the same feature's `api/` folder.
+
+3. **Central configuration**: Read the backend base URL from typed config under `src/config/`, backed by a `VITE_` environment variable. Do not hardcode URLs or read `import.meta.env` directly in features and components.
+
+4. **Authentication**: Prefer HttpOnly cookies. Attach bearer tokens or CSRF headers in the shared client, never per request. Handle session expiry centrally (refresh once, then redirect or sign out).
+
+### Feature API Modules
+
+5. **Placement**: Each endpoint lives in `src/features/<name>/api/<verb>-<resource>.ts` (for example `get-sos-requests.ts`, `create-sos-request.ts`). Each declaration owns:
+   - Request and response Zod schemas plus their inferred types
+   - A fetcher that calls the endpoint through the shared client
+   - The TanStack Query query or mutation hook
+   - The query key factory for that resource
+
+6. **No cross-feature API imports**: A feature must not import another feature's `api/` modules. If two features genuinely share an endpoint contract, promote the shared contract and types to the shared layer deliberately instead of reaching across features.
+
+7. **Naming**: Use verb-first file names. Name hooks after the action and resource (for example `useGetSosRequests`, `useCreateSosRequest`) and expose typed query key factories (for example `sosKeys.list(filters)`), not ad-hoc key arrays.
+
+### Server State
+
+8. **TanStack Query owns server state**: Create one `QueryClient` in the application providers. Set deliberate defaults such as a sensible `staleTime` and retries only for network/5xx failures, never for 4xx. Do not copy fetched data into Zustand, Jotai, React Context, or local state.
+
+9. **Query keys and invalidation**: Colocate a typed key factory with the feature API. Include every filter or parameter that changes the response. Mutations must invalidate or update the affected keys; do not rely on refetch-on-focus for correctness.
+
+10. **UI states**: Derive loading, error, and empty states from the query (`isPending`, `isError`, `error`, `data`). Do not hand-roll duplicate loading/error booleans. Mutation hooks expose `isPending` and surface failures where the action was triggered.
+
+### Validation & Types
+
+11. **Zod at boundaries, not everywhere**: Validate untrusted data — API responses, user input and forms, URL/search params, and persisted storage — where a mismatch would cause a bug or unsafe rendering. Do not wrap trusted internal-only values or every function call in a schema.
+
+12. **Single source of truth for types**: Derive types from schemas with `z.infer` instead of hand-writing matching interfaces. Keep feature-specific API types with the API declaration or in the feature's `types/` folder. Move a type to `src/types/` only when multiple features use it. Use `import type` for type-only imports.
+
+13. **Parse at the edge**: Parse once when data enters the app, then pass the validated type inward. Map validation failures to the normalized error contract; never expose schema details or raw validation output to users.
+
+### Error Contract
+
+14. **One normalized error shape**: The shared client must normalize failures into a consistent shape with `status`, `code`, optional `fieldErrors`, and `cause`. Distinguish network/timeout failures, HTTP status failures, and validation failures so callers can handle them predictably.
+
+15. **Localized messages**: Map errors to catalog keys with `getApiErrorKey` from `src/lib/api-error.ts`. Add new `apiError.*` keys to `en.json` only; other locales go through Crowdin or Weblate. Never render raw server messages, English-only fallbacks, response bodies, or stack traces.
+
+16. **Layered handling**: The shared client handles cross-cutting concerns such as auth expiry and logging. Feature code renders inline error/retry states and mutation feedback. Do not show the same failure twice (for example, a global toast plus an inline error) without a deliberate reason.
 
 ## State Management
 
@@ -215,6 +253,7 @@ Categorize state by type — do NOT put everything into a single global store:
 Key principles:
 - Keep state as close as possible to where it is being used
 - Do not put everything in a single global state — split by usage area
+- Server data belongs to TanStack Query. Never copy fetched lists or entities into a global store or component state; keep only explicit drafts or form edits locally.
 - Use state initializer functions for expensive computations: `useState(() => expensiveFn())`, not `useState(expensiveFn())`
 - Prefer composition and lifting state up before reaching for context or global state
 
@@ -235,7 +274,8 @@ Prioritize **integration tests** over unit tests. Integration tests provide the 
 - Import from `@/testing/test-utils` (NOT directly from `@testing-library/react`)
 - Use `renderWithProviders()` to render components (mounts `I18nextProvider` with the shared i18n instance)
 - Test user behavior, NOT implementation details — test what the user sees, not internal state
-- Use MSW (Mock Service Worker) for API mocking instead of mocking fetch directly
+- Use MSW (Mock Service Worker) for API mocking instead of mocking `fetch` directly. Mock at the HTTP boundary; do not mock the shared API client or feature API hooks in page tests. MSW is not installed yet — add it with the first API integration.
+- When TanStack Query is added, extend `renderWithProviders()` with a fresh `QueryClientProvider` per test and disable retries so failures surface immediately.
 - Mocks are automatically restored after each test (`restoreMocks: true`)
 - Place test files alongside source files as `<filename>.test.tsx`
 - Coverage excludes: `src/testing/**`, `src/types/**`, and test files
@@ -255,11 +295,13 @@ npm run test:coverage # With coverage report
 
 ## Error Handling
 
-1. **API Errors**: Handle via API client interceptors. Display notification toasts, handle auth errors (logout/token refresh), and log errors.
+1. **API Errors**: Normalize every failure in the API layer (see **API Layer → Error Contract**). Handle auth/session expiry centrally. Render localized messages using `getApiErrorKey` from `src/lib/api-error.ts`. Show inline retry states for queries and feedback at the action point for mutations. Never display raw server messages or response bodies.
 
-2. **In-App Errors**: Use React error boundaries. Place multiple error boundaries in different areas of the app — don't rely on a single top-level boundary. Contain errors locally without disrupting the entire application.
+2. **Validation Errors**: Response-schema failures are API errors and use the generic localized message (log details for developers). Form field errors stay with the form and map to the relevant fields.
 
-3. **Error Tracking**: Use tools like Sentry for production error monitoring. Upload source maps for accurate stack traces.
+3. **In-App Errors**: Use React error boundaries. Place multiple error boundaries in different areas of the app — don't rely on a single top-level boundary. Contain errors locally without disrupting the entire application.
+
+4. **Error Tracking**: Use tools like Sentry for production error monitoring. Upload source maps for accurate stack traces, and scrub PII and tokens before sending events.
 
 ## Security
 
@@ -279,8 +321,11 @@ npm run test:coverage # With coverage report
 
 ## Environment Variables
 
-- Prefix all client-side env vars with `VITE_`
+- Prefix all client-side env vars with `VITE_`. These values are public; never store secrets, API keys, or credentials in them.
+- Read env vars through typed exports in `src/config/` (for example `src/config/pwa.ts`). Do not call `import.meta.env` directly in features or components.
+- `VITE_API_BASE_URL`: Backend origin/base path for API requests. Add it when API integration begins and document its expected format in both `.env.example` and the README table.
 - `VITE_SUSPENSE_FALLBACK_DELAY`: Delay in ms before showing loading spinners (default: 200)
+- Keep `.env.example` and the README environment table in sync when adding or changing variables.
 - See `.env.example` for the full list
 
 ## Boundaries & Constraints (Do Not...)
@@ -298,7 +343,14 @@ npm run test:coverage # With coverage report
 - Do NOT add nested render functions inside components. Extract them into separate components.
 - Do NOT import from `src/app/` inside `src/features/` or shared modules (violates unidirectional flow).
 - Do NOT put all state in a single global store. Categorize state by type and keep it local when possible.
-- Do NOT mock `fetch` directly in tests. Use MSW (Mock Service Worker) for API mocking.
+- Do NOT call `fetch`, Ky, Axios, or any HTTP client inside components, pages, layouts, or feature hooks. Go through the feature's API module.
+- Do NOT create a second HTTP client or per-feature client instance. Extend the shared client in `src/lib/api-client.ts`.
+- Do NOT import another feature's `api/` module. Promote genuinely shared contracts to the shared layer.
+- Do NOT hardcode API URLs. Read them from typed config backed by `VITE_*` variables.
+- Do NOT hand-write API response types that duplicate a Zod schema. Derive them with `z.infer`.
+- Do NOT store server data in global client state. TanStack Query owns server state.
+- Do NOT render raw API or server error messages. Use localized `apiError.*` keys via `getApiErrorKey`.
+- Do NOT mock `fetch`, the API client, or feature API hooks directly in tests. Mock the HTTP boundary with MSW.
 - Do NOT edit non-English catalogs manually. Use Crowdin or Weblate.
 - Do NOT import `review-status.json` from application code; only `scripts/check-i18n-release.mjs` reads it.
 - Do NOT format phone numbers, IDs, or codes with Intl formatters. Render them as plain ASCII strings.
