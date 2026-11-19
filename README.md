@@ -33,6 +33,8 @@ Copy `.env.example` to `.env.local` only when you need to override a value.
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `VITE_SUSPENSE_FALLBACK_DELAY` | `200` | Delay in milliseconds before route loading feedback is shown. |
+| `VITE_API_BASE_URL` | `/` | Backend origin used by the API client. |
+| `VITE_DISASTER_ID` | none | Disaster ID submitted with SOS requests; required for the SOS trigger. |
 
 Never commit `.env.local` or credentials.
 
