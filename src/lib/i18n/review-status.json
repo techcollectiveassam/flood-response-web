@@ -119,7 +119,21 @@
     "sos.confirmation.safetyTitle",
     "sos.confirmation.safetyDescription",
     "sos.confirmation.done",
-    "sos.confirmation.sendAnother"
+    "sos.confirmation.sendAnother",
+    "affectedArea.progress.label",
+    "affectedArea.step.location",
+    "affectedArea.step.situation",
+    "affectedArea.step.photos",
+    "affectedArea.step.review",
+    "affectedArea.location.title",
+    "affectedArea.location.description",
+    "affectedArea.progress.step",
+    "affectedArea.progress.stepOf",
+    "affectedArea.progress.estimatedTime",
+    "affectedArea.breadcrumb.label",
+    "affectedArea.breadcrumb.home",
+    "affectedArea.breadcrumb.citizenServices",
+    "affectedArea.breadcrumb.reportFloodedArea"
   ],
   "hi": [
     "desktopHeader.volunteer",
@@ -241,7 +255,21 @@
     "sos.confirmation.safetyTitle",
     "sos.confirmation.safetyDescription",
     "sos.confirmation.done",
-    "sos.confirmation.sendAnother"
+    "sos.confirmation.sendAnother",
+    "affectedArea.progress.label",
+    "affectedArea.step.location",
+    "affectedArea.step.situation",
+    "affectedArea.step.photos",
+    "affectedArea.step.review",
+    "affectedArea.location.title",
+    "affectedArea.location.description",
+    "affectedArea.progress.step",
+    "affectedArea.progress.stepOf",
+    "affectedArea.progress.estimatedTime",
+    "affectedArea.breadcrumb.label",
+    "affectedArea.breadcrumb.home",
+    "affectedArea.breadcrumb.citizenServices",
+    "affectedArea.breadcrumb.reportFloodedArea"
   ],
   "bn": [
     "desktopHeader.volunteer",
@@ -363,6 +391,20 @@
     "sos.confirmation.safetyTitle",
     "sos.confirmation.safetyDescription",
     "sos.confirmation.done",
-    "sos.confirmation.sendAnother"
+    "sos.confirmation.sendAnother",
+    "affectedArea.progress.label",
+    "affectedArea.step.location",
+    "affectedArea.step.situation",
+    "affectedArea.step.photos",
+    "affectedArea.step.review",
+    "affectedArea.location.title",
+    "affectedArea.location.description",
+    "affectedArea.progress.step",
+    "affectedArea.progress.stepOf",
+    "affectedArea.progress.estimatedTime",
+    "affectedArea.breadcrumb.label",
+    "affectedArea.breadcrumb.home",
+    "affectedArea.breadcrumb.citizenServices",
+    "affectedArea.breadcrumb.reportFloodedArea"
   ]
 }
