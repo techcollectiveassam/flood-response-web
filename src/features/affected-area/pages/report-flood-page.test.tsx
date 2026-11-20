@@ -112,6 +112,11 @@ describe('ReportFloodPage', () => {
     renderWithProviders(<ReportFloodPage />)
 
     expect(
+      screen.queryByRole('complementary', {
+        name: 'Emergency and privacy guidance',
+      }),
+    ).not.toBeInTheDocument()
+    expect(
       screen.getByText(
         'Saved securely on local storage • Zero connection needed',
       ),
@@ -216,6 +221,44 @@ describe('ReportFloodPage', () => {
     ).toHaveAttribute('href', '/en')
     expect(
       screen.getByRole('button', { name: 'Next: Situation details' }),
+    ).toBeInTheDocument()
+
+    const support = screen.getByRole('complementary', {
+      name: 'Emergency and privacy guidance',
+    })
+
+    expect(
+      within(support).getByRole('heading', {
+        name: 'Life Threatening Situation?',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(support).getByRole('link', {
+        name: /State Emergency Operations/,
+      }),
+    ).toHaveAttribute('href', 'tel:1070')
+    expect(
+      within(support).getByRole('link', {
+        name: /District Disaster Cell/,
+      }),
+    ).toHaveAttribute('href', 'tel:1077')
+    expect(
+      within(support).getByText(
+        'Toll-free direct lines available 24/7 in all local languages',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      within(support).getByRole('heading', {
+        name: 'Privacy & Data Masking',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      within(support).getByText('ASDMA Disaster Protocol Compliant'),
+    ).toBeInTheDocument()
+    expect(
+      within(support).getByRole('heading', {
+        name: 'Cellular Tower Blackouts',
+      }),
     ).toBeInTheDocument()
   })
 })

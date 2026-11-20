@@ -14,6 +14,7 @@ import { DesktopLocationFooter } from './desktop-location-footer'
 import { DesktopMapCard } from './desktop-map-card'
 import { DesktopReportProgress } from './desktop-report-progress'
 import { DesktopSearchCard } from './desktop-search-card'
+import { DesktopSupportColumn } from './desktop-support-column'
 
 export function ReportFloodDesktop() {
   const { t } = useTranslation()
@@ -95,6 +96,8 @@ export function ReportFloodDesktop() {
 
           <DesktopLocationFooter />
         </div>
+
+        <DesktopSupportColumn />
       </div>
     </div>
   )

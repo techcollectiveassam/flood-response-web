@@ -164,7 +164,18 @@
     "affectedArea.location.incidentRef",
     "affectedArea.next",
     "affectedArea.nextSituation",
-    "affectedArea.backToHome"
+    "affectedArea.backToHome",
+    "affectedArea.support.ariaLabel",
+    "affectedArea.support.emergency.title",
+    "affectedArea.support.emergency.description",
+    "affectedArea.support.emergency.stateLabel",
+    "affectedArea.support.emergency.districtLabel",
+    "affectedArea.support.emergency.footer",
+    "affectedArea.support.privacy.title",
+    "affectedArea.support.privacy.description",
+    "affectedArea.support.privacy.compliant",
+    "affectedArea.support.connectivity.title",
+    "affectedArea.support.connectivity.description"
   ],
   "hi": [
     "desktopHeader.volunteer",
@@ -331,7 +342,18 @@
     "affectedArea.location.incidentRef",
     "affectedArea.next",
     "affectedArea.nextSituation",
-    "affectedArea.backToHome"
+    "affectedArea.backToHome",
+    "affectedArea.support.ariaLabel",
+    "affectedArea.support.emergency.title",
+    "affectedArea.support.emergency.description",
+    "affectedArea.support.emergency.stateLabel",
+    "affectedArea.support.emergency.districtLabel",
+    "affectedArea.support.emergency.footer",
+    "affectedArea.support.privacy.title",
+    "affectedArea.support.privacy.description",
+    "affectedArea.support.privacy.compliant",
+    "affectedArea.support.connectivity.title",
+    "affectedArea.support.connectivity.description"
   ],
   "bn": [
     "desktopHeader.volunteer",
@@ -498,6 +520,17 @@
     "affectedArea.location.incidentRef",
     "affectedArea.next",
     "affectedArea.nextSituation",
-    "affectedArea.backToHome"
+    "affectedArea.backToHome",
+    "affectedArea.support.ariaLabel",
+    "affectedArea.support.emergency.title",
+    "affectedArea.support.emergency.description",
+    "affectedArea.support.emergency.stateLabel",
+    "affectedArea.support.emergency.districtLabel",
+    "affectedArea.support.emergency.footer",
+    "affectedArea.support.privacy.title",
+    "affectedArea.support.privacy.description",
+    "affectedArea.support.privacy.compliant",
+    "affectedArea.support.connectivity.title",
+    "affectedArea.support.connectivity.description"
   ]
 }
