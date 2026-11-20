@@ -133,7 +133,17 @@
     "affectedArea.breadcrumb.label",
     "affectedArea.breadcrumb.home",
     "affectedArea.breadcrumb.citizenServices",
-    "affectedArea.breadcrumb.reportFloodedArea"
+    "affectedArea.breadcrumb.reportFloodedArea",
+    "affectedArea.location.requiredBadge",
+    "affectedArea.location.requiredHint",
+    "affectedArea.location.methodLegend",
+    "affectedArea.location.device.title",
+    "affectedArea.location.device.gpsLabel",
+    "affectedArea.location.device.desktopTitle",
+    "affectedArea.location.device.fastest",
+    "affectedArea.location.device.description",
+    "affectedArea.location.device.action",
+    "affectedArea.location.device.hint"
   ],
   "hi": [
     "desktopHeader.volunteer",
@@ -269,7 +279,17 @@
     "affectedArea.breadcrumb.label",
     "affectedArea.breadcrumb.home",
     "affectedArea.breadcrumb.citizenServices",
-    "affectedArea.breadcrumb.reportFloodedArea"
+    "affectedArea.breadcrumb.reportFloodedArea",
+    "affectedArea.location.requiredBadge",
+    "affectedArea.location.requiredHint",
+    "affectedArea.location.methodLegend",
+    "affectedArea.location.device.title",
+    "affectedArea.location.device.gpsLabel",
+    "affectedArea.location.device.desktopTitle",
+    "affectedArea.location.device.fastest",
+    "affectedArea.location.device.description",
+    "affectedArea.location.device.action",
+    "affectedArea.location.device.hint"
   ],
   "bn": [
     "desktopHeader.volunteer",
@@ -405,6 +425,16 @@
     "affectedArea.breadcrumb.label",
     "affectedArea.breadcrumb.home",
     "affectedArea.breadcrumb.citizenServices",
-    "affectedArea.breadcrumb.reportFloodedArea"
+    "affectedArea.breadcrumb.reportFloodedArea",
+    "affectedArea.location.requiredBadge",
+    "affectedArea.location.requiredHint",
+    "affectedArea.location.methodLegend",
+    "affectedArea.location.device.title",
+    "affectedArea.location.device.gpsLabel",
+    "affectedArea.location.device.desktopTitle",
+    "affectedArea.location.device.fastest",
+    "affectedArea.location.device.description",
+    "affectedArea.location.device.action",
+    "affectedArea.location.device.hint"
   ]
 }

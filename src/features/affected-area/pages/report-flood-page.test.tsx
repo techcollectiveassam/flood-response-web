@@ -63,6 +63,24 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('selects the device GPS method and shows the one-tap action', () => {
+    renderWithProviders(<ReportFloodPage />)
+
+    expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
+    expect(screen.getByText('Any 1 method required')).toBeInTheDocument()
+    expect(screen.getByText('Only 1 needed to proceed')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', {
+        name: 'Acquire GPS Location (1 Tap)',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Works offline with cached satellite • Accuracy ~5-15m',
+      ),
+    ).toBeInTheDocument()
+  })
+
   it('shows the desktop breadcrumb, step count, and progress layout', () => {
     stubDesktopViewport()
 
@@ -89,6 +107,15 @@ describe('ReportFloodPage', () => {
       screen.getByRole('heading', {
         level: 1,
         name: 'Where is the flooding?',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('radio', { name: 'Device GPS Satellite' }),
+    ).toBeChecked()
+    expect(screen.getByText('Fastest & most accurate')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', {
+        name: 'Acquire GPS Location (1 Tap)',
       }),
     ).toBeInTheDocument()
   })
