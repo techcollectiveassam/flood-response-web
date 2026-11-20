@@ -6,6 +6,7 @@ import {
   type LocationMethod,
 } from '../utils/location-method'
 import { MobileDeviceCard } from './mobile-device-card'
+import { MobileLocationFooter } from './mobile-location-footer'
 import { MobileLocationMethodCard } from './mobile-location-method-card'
 import { MobileReportProgress } from './mobile-report-progress'
 
@@ -61,6 +62,8 @@ export function ReportFloodMobile() {
           onSelect={() => setMethod('map')}
         />
       </fieldset>
+
+      <MobileLocationFooter />
     </div>
   )
 }

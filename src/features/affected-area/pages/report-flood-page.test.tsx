@@ -108,6 +108,19 @@ describe('ReportFloodPage', () => {
     expect(searchRadio).not.toBeChecked()
   })
 
+  it('shows the mobile local-save note and next action', () => {
+    renderWithProviders(<ReportFloodPage />)
+
+    expect(
+      screen.getByText(
+        'Saved securely on local storage • Zero connection needed',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Next' }),
+    ).toBeInTheDocument()
+  })
+
   it('shows and switches the desktop location methods', async () => {
     stubDesktopViewport()
 
@@ -190,5 +203,19 @@ describe('ReportFloodPage', () => {
     )
 
     expect(mapRadio).toBeChecked()
+
+    expect(
+      screen.getByText(
+        'Saved securely on local device storage • Zero data connection needed to submit',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Incident ref:/)).toBeInTheDocument()
+    expect(screen.getByText('#AS-26-TEMP')).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Back to Citizen Home' }),
+    ).toHaveAttribute('href', '/en')
+    expect(
+      screen.getByRole('button', { name: 'Next: Situation details' }),
+    ).toBeInTheDocument()
   })
 })

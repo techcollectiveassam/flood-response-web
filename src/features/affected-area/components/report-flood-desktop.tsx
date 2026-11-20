@@ -10,6 +10,7 @@ import {
   type LocationMethod,
 } from '../utils/location-method'
 import { DesktopDeviceCard } from './desktop-device-card'
+import { DesktopLocationFooter } from './desktop-location-footer'
 import { DesktopMapCard } from './desktop-map-card'
 import { DesktopReportProgress } from './desktop-report-progress'
 import { DesktopSearchCard } from './desktop-search-card'
@@ -91,6 +92,8 @@ export function ReportFloodDesktop() {
               onSelect={() => setMethod('map')}
             />
           </fieldset>
+
+          <DesktopLocationFooter />
         </div>
       </div>
     </div>

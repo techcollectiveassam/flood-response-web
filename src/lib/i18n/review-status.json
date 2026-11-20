@@ -158,7 +158,13 @@
     "affectedArea.location.map.grid",
     "affectedArea.location.map.previewLabel",
     "affectedArea.location.map.expand",
-    "affectedArea.location.map.embankment"
+    "affectedArea.location.map.embankment",
+    "affectedArea.location.saved",
+    "affectedArea.location.savedDesktop",
+    "affectedArea.location.incidentRef",
+    "affectedArea.next",
+    "affectedArea.nextSituation",
+    "affectedArea.backToHome"
   ],
   "hi": [
     "desktopHeader.volunteer",
@@ -319,7 +325,13 @@
     "affectedArea.location.map.grid",
     "affectedArea.location.map.previewLabel",
     "affectedArea.location.map.expand",
-    "affectedArea.location.map.embankment"
+    "affectedArea.location.map.embankment",
+    "affectedArea.location.saved",
+    "affectedArea.location.savedDesktop",
+    "affectedArea.location.incidentRef",
+    "affectedArea.next",
+    "affectedArea.nextSituation",
+    "affectedArea.backToHome"
   ],
   "bn": [
     "desktopHeader.volunteer",
@@ -480,6 +492,12 @@
     "affectedArea.location.map.grid",
     "affectedArea.location.map.previewLabel",
     "affectedArea.location.map.expand",
-    "affectedArea.location.map.embankment"
+    "affectedArea.location.map.embankment",
+    "affectedArea.location.saved",
+    "affectedArea.location.savedDesktop",
+    "affectedArea.location.incidentRef",
+    "affectedArea.next",
+    "affectedArea.nextSituation",
+    "affectedArea.backToHome"
   ]
 }
