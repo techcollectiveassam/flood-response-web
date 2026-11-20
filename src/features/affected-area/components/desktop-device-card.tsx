@@ -4,7 +4,15 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { LocationRadioIndicator } from './location-radio-indicator'
 
-export function DesktopDeviceCard() {
+type DesktopDeviceCardProps = {
+  checked: boolean
+  onSelect: () => void
+}
+
+export function DesktopDeviceCard({
+  checked,
+  onSelect,
+}: DesktopDeviceCardProps) {
   const { t } = useTranslation()
   const hintId = useId()
 
@@ -15,11 +23,12 @@ export function DesktopDeviceCard() {
           type="radio"
           name="location-method"
           value="device"
-          defaultChecked
+          checked={checked}
+          onChange={onSelect}
           aria-label={t('affectedArea.location.device.desktopTitle')}
           className="sr-only"
         />
-        <LocationRadioIndicator checked />
+        <LocationRadioIndicator checked={checked} />
 
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-start justify-between gap-3">

@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -81,7 +82,33 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
   })
 
-  it('shows the desktop breadcrumb, step count, and progress layout', () => {
+  it('switches between the device, search, and map methods', async () => {
+    renderWithProviders(<ReportFloodPage />)
+
+    const deviceRadio = screen.getByRole('radio', { name: 'Device' })
+    const searchRadio = screen.getByRole('radio', {
+      name: 'Search Village or Landmark',
+    })
+    const mapRadio = screen.getByRole('radio', { name: 'Tap to Pin on Map' })
+
+    expect(deviceRadio).toBeChecked()
+    expect(searchRadio).not.toBeChecked()
+    expect(mapRadio).not.toBeChecked()
+
+    await userEvent.click(screen.getByText('Search Village or Landmark'))
+
+    expect(searchRadio).toBeChecked()
+    expect(deviceRadio).not.toBeChecked()
+    expect(mapRadio).not.toBeChecked()
+
+    await userEvent.click(screen.getByText('Tap to Pin on Map'))
+
+    expect(mapRadio).toBeChecked()
+    expect(deviceRadio).not.toBeChecked()
+    expect(searchRadio).not.toBeChecked()
+  })
+
+  it('shows and switches the desktop location methods', async () => {
     stubDesktopViewport()
 
     renderWithProviders(
@@ -109,14 +136,59 @@ describe('ReportFloodPage', () => {
         name: 'Where is the flooding?',
       }),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('radio', { name: 'Device GPS Satellite' }),
-    ).toBeChecked()
+
+    const deviceRadio = screen.getByRole('radio', {
+      name: 'Device GPS Satellite',
+    })
+    const searchRadio = screen.getByRole('radio', {
+      name: 'Search Village, Landmark, or Revenue Circle',
+    })
+    const mapRadio = screen.getByRole('radio', {
+      name: 'Tap or Pin on Interactive Flood Map',
+    })
+
+    expect(deviceRadio).toBeChecked()
     expect(screen.getByText('Fastest & most accurate')).toBeInTheDocument()
     expect(
       screen.getByRole('button', {
         name: 'Acquire GPS Location (1 Tap)',
       }),
     ).toBeInTheDocument()
+
+    const searchbox = screen.getByRole('searchbox', {
+      name: 'Search Village, Landmark, or Revenue Circle',
+    })
+
+    expect(searchbox).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Search by voice' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('img', { name: 'Flood map preview' }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(searchRadio)
+
+    expect(searchRadio).toBeChecked()
+    expect(deviceRadio).not.toBeChecked()
+
+    await userEvent.click(mapRadio)
+
+    expect(mapRadio).toBeChecked()
+    expect(searchRadio).not.toBeChecked()
+
+    await userEvent.click(searchbox)
+
+    expect(searchRadio).toBeChecked()
+
+    await userEvent.type(searchbox, 'Kamalabari')
+
+    expect(searchbox).toHaveValue('Kamalabari')
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Expand Fullscreen Map' }),
+    )
+
+    expect(mapRadio).toBeChecked()
   })
 })

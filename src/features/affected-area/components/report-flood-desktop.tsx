@@ -1,15 +1,23 @@
 import { Check } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useLanguage } from '@/hooks/use-language'
 import { formatNumber } from '@/lib/i18n/formatters'
 import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
+import {
+  DEFAULT_LOCATION_METHOD,
+  type LocationMethod,
+} from '../utils/location-method'
 import { DesktopDeviceCard } from './desktop-device-card'
+import { DesktopMapCard } from './desktop-map-card'
 import { DesktopReportProgress } from './desktop-report-progress'
+import { DesktopSearchCard } from './desktop-search-card'
 
 export function ReportFloodDesktop() {
   const { t } = useTranslation()
   const { language } = useLanguage()
+  const [method, setMethod] = useState<LocationMethod>(DEFAULT_LOCATION_METHOD)
 
   return (
     <div className="mx-auto flex w-full flex-col gap-5">
@@ -66,11 +74,22 @@ export function ReportFloodDesktop() {
             </div>
           </section>
 
-          <fieldset className="min-w-0">
+          <fieldset className="min-w-0 space-y-4">
             <legend className="sr-only">
               {t('affectedArea.location.methodLegend')}
             </legend>
-            <DesktopDeviceCard />
+            <DesktopDeviceCard
+              checked={method === 'device'}
+              onSelect={() => setMethod('device')}
+            />
+            <DesktopSearchCard
+              checked={method === 'search'}
+              onSelect={() => setMethod('search')}
+            />
+            <DesktopMapCard
+              checked={method === 'map'}
+              onSelect={() => setMethod('map')}
+            />
           </fieldset>
         </div>
       </div>

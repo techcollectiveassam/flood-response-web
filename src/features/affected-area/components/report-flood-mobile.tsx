@@ -1,10 +1,17 @@
-import { Check } from 'lucide-react'
+import { Check, MapPin, MapPinSearch } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import {
+  DEFAULT_LOCATION_METHOD,
+  type LocationMethod,
+} from '../utils/location-method'
 import { MobileDeviceCard } from './mobile-device-card'
+import { MobileLocationMethodCard } from './mobile-location-method-card'
 import { MobileReportProgress } from './mobile-report-progress'
 
 export function ReportFloodMobile() {
   const { t } = useTranslation()
+  const [method, setMethod] = useState<LocationMethod>(DEFAULT_LOCATION_METHOD)
 
   return (
     <div className="mx-auto w-full max-w-md">
@@ -29,11 +36,30 @@ export function ReportFloodMobile() {
         </p>
       </div>
 
-      <fieldset className="mt-4 min-w-0">
+      <fieldset className="mt-4 min-w-0 space-y-3">
         <legend className="sr-only">
           {t('affectedArea.location.methodLegend')}
         </legend>
-        <MobileDeviceCard />
+        <MobileDeviceCard
+          checked={method === 'device'}
+          onSelect={() => setMethod('device')}
+        />
+        <MobileLocationMethodCard
+          value="search"
+          icon={MapPinSearch}
+          titleKey="affectedArea.location.search.title"
+          descriptionKey="affectedArea.location.search.description"
+          checked={method === 'search'}
+          onSelect={() => setMethod('search')}
+        />
+        <MobileLocationMethodCard
+          value="map"
+          icon={MapPin}
+          titleKey="affectedArea.location.map.title"
+          descriptionKey="affectedArea.location.map.description"
+          checked={method === 'map'}
+          onSelect={() => setMethod('map')}
+        />
       </fieldset>
     </div>
   )
