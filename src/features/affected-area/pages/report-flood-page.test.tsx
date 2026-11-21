@@ -214,6 +214,9 @@ describe('ReportFloodPage', () => {
     await userEvent.type(details, 'Family stranded near the school')
 
     expect(details).toHaveValue('Family stranded near the school')
+    expect(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    ).toBeInTheDocument()
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Back to location' }),
@@ -399,6 +402,9 @@ describe('ReportFloodPage', () => {
       screen.getByRole('button', {
         name: 'Dictate additional details',
       }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
     ).toBeInTheDocument()
 
     await userEvent.click(

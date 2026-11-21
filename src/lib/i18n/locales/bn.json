@@ -162,6 +162,7 @@
   "affectedArea.location.draftStatus": "ড্রাফট · এখনও জমা দেওয়া হয়নি",
   "affectedArea.next": "পরবর্তী",
   "affectedArea.nextSituation": "পরবর্তী: পরিস্থিতির বিবরণ",
+  "affectedArea.nextPhotos": "পরবর্তী: ফটো সংযুক্ত করুন",
   "affectedArea.backToHome": "নাগরিক হোমে ফিরে যান",
   "affectedArea.support.ariaLabel": "জরুরি ও গোপনীয়তা নির্দেশনা",
   "affectedArea.support.emergency.title": "জীবন-হুমকির পরিস্থিতি?",

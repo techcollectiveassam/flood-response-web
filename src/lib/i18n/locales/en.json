@@ -162,6 +162,7 @@
   "affectedArea.location.draftStatus": "Draft · Not submitted",
   "affectedArea.next": "Next",
   "affectedArea.nextSituation": "Next: Situation details",
+  "affectedArea.nextPhotos": "Next: Attach photos",
   "affectedArea.backToHome": "Back to Citizen Home",
   "affectedArea.support.ariaLabel": "Emergency and privacy guidance",
   "affectedArea.support.emergency.title": "Life Threatening Situation?",

@@ -1,6 +1,6 @@
-import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DetailsField } from './details-field'
+import { MobileSituationFooter } from './mobile-situation-footer'
 import { SeverityLevelField } from './severity-level-field'
 
 type ReportSituationMobileProps = {
@@ -14,18 +14,7 @@ export function ReportSituationMobile({
 
   return (
     <>
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          {t('affectedArea.backToLocation')}
-        </button>
-      </div>
-
-      <header className="mt-4">
+      <header className="mt-6">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {t('affectedArea.situation.title')}
         </h1>
@@ -41,6 +30,8 @@ export function ReportSituationMobile({
       <div className="mt-6">
         <DetailsField />
       </div>
+
+      <MobileSituationFooter onBack={onBack} />
     </>
   )
 }
