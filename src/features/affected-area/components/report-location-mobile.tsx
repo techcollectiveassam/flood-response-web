@@ -1,8 +1,7 @@
 import { Check, MapPin, MapPinSearch } from 'lucide-react'
-import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReportDraft } from '../contexts/report-draft-context'
-import { hasResolvedLocation } from '../utils/location-method'
+import { useLocationStep } from '../hooks/use-location-step'
 import { MobileDeviceCard } from './mobile-device-card'
 import { MobileLocationFooter } from './mobile-location-footer'
 import { MobileLocationMethodCard } from './mobile-location-method-card'
@@ -14,21 +13,12 @@ type ReportLocationMobileProps = {
 export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
   const { t } = useTranslation()
   const { draft, updateLocation } = useReportDraft()
-  const [showLocationError, setShowLocationError] = useState(false)
-  const locationErrorId = useId()
+  const {
+    error: locationError,
+    errorId: locationErrorId,
+    handleNext,
+  } = useLocationStep(onNext)
   const method = draft.location.method
-  const hasLocation = hasResolvedLocation(draft.location)
-  const locationError = showLocationError && !hasLocation
-
-  function handleNext() {
-    if (!hasLocation) {
-      setShowLocationError(true)
-      return
-    }
-
-    setShowLocationError(false)
-    onNext()
-  }
 
   return (
     <>

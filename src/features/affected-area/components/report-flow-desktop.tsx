@@ -1,6 +1,10 @@
-import type { ReactNode } from 'react'
 import { DesktopReportStepLayout } from '../layouts/desktop-report-step-layout'
+import {
+  nextReportStep,
+  previousReportStep,
+} from '../utils/report-flow'
 import type { ReportStepNumber } from '../utils/report-steps'
+import { ReportFlowStepContent } from './report-flow-step-content'
 import { ReportLocationDesktop } from './report-location-desktop'
 import { ReportPhotosDesktop } from './report-photos-desktop'
 import { ReportReviewDesktop } from './report-review-desktop'
@@ -15,43 +19,37 @@ export function ReportFlowDesktop({
   currentStep,
   onStepChange,
 }: ReportFlowDesktopProps) {
-  let content: ReactNode
-
-  switch (currentStep) {
-    case 2:
-      content = (
-        <ReportSituationDesktop
-          onBack={() => onStepChange(1)}
-          onNext={() => onStepChange(3)}
-        />
-      )
-      break
-    case 3:
-      content = (
-        <ReportPhotosDesktop
-          onBack={() => onStepChange(2)}
-          onNext={() => onStepChange(4)}
-          onSkip={() => onStepChange(4)}
-        />
-      )
-      break
-    case 4:
-      content = (
-        <ReportReviewDesktop
-          onBack={() => onStepChange(3)}
-          onEditLocation={() => onStepChange(1)}
-          onEditSituation={() => onStepChange(2)}
-          onEditPhotos={() => onStepChange(3)}
-        />
-      )
-      break
-    default:
-      content = <ReportLocationDesktop onNext={() => onStepChange(2)} />
-  }
-
   return (
     <DesktopReportStepLayout currentStep={currentStep}>
-      {content}
+      <ReportFlowStepContent
+        currentStep={currentStep}
+        location={
+          <ReportLocationDesktop
+            onNext={() => onStepChange(nextReportStep[1])}
+          />
+        }
+        situation={
+          <ReportSituationDesktop
+            onBack={() => onStepChange(previousReportStep[2])}
+            onNext={() => onStepChange(nextReportStep[2])}
+          />
+        }
+        photos={
+          <ReportPhotosDesktop
+            onBack={() => onStepChange(previousReportStep[3])}
+            onNext={() => onStepChange(nextReportStep[3])}
+            onSkip={() => onStepChange(nextReportStep[3])}
+          />
+        }
+        review={
+          <ReportReviewDesktop
+            onBack={() => onStepChange(previousReportStep[4])}
+            onEditLocation={() => onStepChange(1)}
+            onEditSituation={() => onStepChange(2)}
+            onEditPhotos={() => onStepChange(3)}
+          />
+        }
+      />
     </DesktopReportStepLayout>
   )
 }

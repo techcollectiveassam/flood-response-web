@@ -1,8 +1,7 @@
 import { Check } from 'lucide-react'
-import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReportDraft } from '../contexts/report-draft-context'
-import { hasResolvedLocation } from '../utils/location-method'
+import { useLocationStep } from '../hooks/use-location-step'
 import { DesktopDeviceCard } from './desktop-device-card'
 import { DesktopLocationFooter } from './desktop-location-footer'
 import { DesktopMapCard } from './desktop-map-card'
@@ -15,22 +14,13 @@ type ReportLocationDesktopProps = {
 export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
   const { t } = useTranslation()
   const { draft, updateLocation } = useReportDraft()
-  const [showLocationError, setShowLocationError] = useState(false)
-  const locationErrorId = useId()
+  const {
+    error: locationError,
+    errorId: locationErrorId,
+    handleNext,
+  } = useLocationStep(onNext)
   const method = draft.location.method
   const query = draft.location.query ?? ''
-  const hasLocation = hasResolvedLocation(draft.location)
-  const locationError = showLocationError && !hasLocation
-
-  function handleNext() {
-    if (!hasLocation) {
-      setShowLocationError(true)
-      return
-    }
-
-    setShowLocationError(false)
-    onNext()
-  }
 
   return (
     <>

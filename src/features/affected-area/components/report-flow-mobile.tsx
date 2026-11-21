@@ -1,6 +1,10 @@
-import type { ReactNode } from 'react'
 import { MobileReportStepLayout } from '../layouts/mobile-report-step-layout'
+import {
+  nextReportStep,
+  previousReportStep,
+} from '../utils/report-flow'
 import type { ReportStepNumber } from '../utils/report-steps'
+import { ReportFlowStepContent } from './report-flow-step-content'
 import { ReportLocationMobile } from './report-location-mobile'
 import { ReportPhotosMobile } from './report-photos-mobile'
 import { ReportReviewMobile } from './report-review-mobile'
@@ -15,43 +19,37 @@ export function ReportFlowMobile({
   currentStep,
   onStepChange,
 }: ReportFlowMobileProps) {
-  let content: ReactNode
-
-  switch (currentStep) {
-    case 2:
-      content = (
-        <ReportSituationMobile
-          onBack={() => onStepChange(1)}
-          onNext={() => onStepChange(3)}
-        />
-      )
-      break
-    case 3:
-      content = (
-        <ReportPhotosMobile
-          onBack={() => onStepChange(2)}
-          onNext={() => onStepChange(4)}
-          onSkip={() => onStepChange(4)}
-        />
-      )
-      break
-    case 4:
-      content = (
-        <ReportReviewMobile
-          onBack={() => onStepChange(3)}
-          onEditLocation={() => onStepChange(1)}
-          onEditSituation={() => onStepChange(2)}
-          onEditPhotos={() => onStepChange(3)}
-        />
-      )
-      break
-    default:
-      content = <ReportLocationMobile onNext={() => onStepChange(2)} />
-  }
-
   return (
     <MobileReportStepLayout currentStep={currentStep}>
-      {content}
+      <ReportFlowStepContent
+        currentStep={currentStep}
+        location={
+          <ReportLocationMobile
+            onNext={() => onStepChange(nextReportStep[1])}
+          />
+        }
+        situation={
+          <ReportSituationMobile
+            onBack={() => onStepChange(previousReportStep[2])}
+            onNext={() => onStepChange(nextReportStep[2])}
+          />
+        }
+        photos={
+          <ReportPhotosMobile
+            onBack={() => onStepChange(previousReportStep[3])}
+            onNext={() => onStepChange(nextReportStep[3])}
+            onSkip={() => onStepChange(nextReportStep[3])}
+          />
+        }
+        review={
+          <ReportReviewMobile
+            onBack={() => onStepChange(previousReportStep[4])}
+            onEditLocation={() => onStepChange(1)}
+            onEditSituation={() => onStepChange(2)}
+            onEditPhotos={() => onStepChange(3)}
+          />
+        }
+      />
     </MobileReportStepLayout>
   )
 }
