@@ -7,6 +7,7 @@ import {
   within,
 } from '@/testing/test-utils'
 import { i18n } from '@/lib/i18n/i18n'
+import { ReportDraftProvider } from '../contexts/report-draft-provider'
 import { ReportFloodPage } from './report-flood-page'
 
 function stubDesktopViewport() {
@@ -21,6 +22,26 @@ function stubDesktopViewport() {
   )
 }
 
+function renderFlowPage() {
+  return renderWithProviders(
+    <ReportDraftProvider>
+      <ReportFloodPage />
+    </ReportDraftProvider>,
+  )
+}
+
+function renderDesktopFlowPage() {
+  stubDesktopViewport()
+
+  return renderWithProviders(
+    <MemoryRouter initialEntries={['/en/report-flood']}>
+      <ReportDraftProvider>
+        <ReportFloodPage />
+      </ReportDraftProvider>
+    </MemoryRouter>,
+  )
+}
+
 describe('ReportFloodPage', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
@@ -31,7 +52,7 @@ describe('ReportFloodPage', () => {
   })
 
   it('shows the mobile progress with location as the current step', () => {
-    renderWithProviders(<ReportFloodPage />)
+    renderFlowPage()
 
     const progress = screen.getByRole('navigation', { name: 'Report progress' })
 
@@ -49,7 +70,7 @@ describe('ReportFloodPage', () => {
   })
 
   it('asks where the flooding is and how to share location', () => {
-    renderWithProviders(<ReportFloodPage />)
+    renderFlowPage()
 
     expect(
       screen.getByRole('heading', {
@@ -65,7 +86,7 @@ describe('ReportFloodPage', () => {
   })
 
   it('selects the device GPS method and shows the one-tap action', () => {
-    renderWithProviders(<ReportFloodPage />)
+    renderFlowPage()
 
     expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
     expect(screen.getByText('Any 1 method required')).toBeInTheDocument()
@@ -83,7 +104,7 @@ describe('ReportFloodPage', () => {
   })
 
   it('switches between the device, search, and map methods', async () => {
-    renderWithProviders(<ReportFloodPage />)
+    renderFlowPage()
 
     const deviceRadio = screen.getByRole('radio', { name: 'Device' })
     const searchRadio = screen.getByRole('radio', {
@@ -109,7 +130,7 @@ describe('ReportFloodPage', () => {
   })
 
   it('shows the mobile local-save note and next action', () => {
-    renderWithProviders(<ReportFloodPage />)
+    renderFlowPage()
 
     expect(
       screen.queryByRole('complementary', {
@@ -127,8 +148,9 @@ describe('ReportFloodPage', () => {
   })
 
   it('moves between the location and situation steps in one route', async () => {
-    renderWithProviders(<ReportFloodPage />)
+    renderFlowPage()
 
+    await userEvent.click(screen.getByText('Tap to Pin on Map'))
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(
@@ -155,16 +177,13 @@ describe('ReportFloodPage', () => {
         name: 'Where is the flooding?',
       }),
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('radio', { name: 'Tap to Pin on Map' }),
+    ).toBeChecked()
   })
 
   it('shows and switches the desktop location methods', async () => {
-    stubDesktopViewport()
-
-    renderWithProviders(
-      <MemoryRouter initialEntries={['/en/report-flood']}>
-        <ReportFloodPage />
-      </MemoryRouter>,
-    )
+    renderDesktopFlowPage()
 
     const breadcrumb = screen.getByRole('navigation', { name: 'Breadcrumb' })
 
@@ -329,5 +348,15 @@ describe('ReportFloodPage', () => {
       }),
     ).toBeInTheDocument()
     expect(screen.getByText('Step 1')).toBeInTheDocument()
+    expect(
+      screen.getByRole('radio', {
+        name: 'Tap or Pin on Interactive Flood Map',
+      }),
+    ).toBeChecked()
+    expect(
+      screen.getByRole('searchbox', {
+        name: 'Search Village, Landmark, or Revenue Circle',
+      }),
+    ).toHaveValue('Kamalabari')
   })
 })

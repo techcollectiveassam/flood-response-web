@@ -57,10 +57,10 @@ function renderDraftProbe() {
 }
 
 describe('ReportDraftProvider', () => {
-  it('starts with an empty draft', () => {
+  it('starts with the default location method', () => {
     renderDraftProbe()
 
-    expect(screen.getByTestId('location-method')).toHaveTextContent('none')
+    expect(screen.getByTestId('location-method')).toHaveTextContent('device')
     expect(screen.getByTestId('location-query')).toHaveTextContent('none')
     expect(screen.getByTestId('severity')).toHaveTextContent('none')
     expect(screen.getByTestId('details')).toHaveTextContent('none')
@@ -89,7 +89,7 @@ describe('ReportDraftProvider', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Set situation' }))
     await userEvent.click(screen.getByRole('button', { name: 'Reset draft' }))
 
-    expect(screen.getByTestId('location-method')).toHaveTextContent('none')
+    expect(screen.getByTestId('location-method')).toHaveTextContent('device')
     expect(screen.getByTestId('location-query')).toHaveTextContent('none')
     expect(screen.getByTestId('severity')).toHaveTextContent('none')
     expect(screen.getByTestId('details')).toHaveTextContent('none')

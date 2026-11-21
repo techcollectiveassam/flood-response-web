@@ -1,5 +1,4 @@
 import { MapPinSearch, Mic, Search } from 'lucide-react'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { normalizeDigits } from '@/lib/normalize-digits'
 import { LocationRadioIndicator } from './location-radio-indicator'
@@ -7,14 +6,17 @@ import { LocationRadioIndicator } from './location-radio-indicator'
 type DesktopSearchCardProps = {
   checked: boolean
   onSelect: () => void
+  query: string
+  onQueryChange: (query: string) => void
 }
 
 export function DesktopSearchCard({
   checked,
   onSelect,
+  query,
+  onQueryChange,
 }: DesktopSearchCardProps) {
   const { t } = useTranslation()
-  const [query, setQuery] = useState('')
 
   return (
     <div className="rounded-2xl border border-border-subtle bg-card p-5">
@@ -61,7 +63,7 @@ export function DesktopSearchCard({
           value={query}
           onFocus={onSelect}
           onChange={(event) =>
-            setQuery(normalizeDigits(event.target.value))
+            onQueryChange(normalizeDigits(event.target.value))
           }
           aria-label={t('affectedArea.location.search.desktopTitle')}
           placeholder={t('affectedArea.location.search.placeholder')}

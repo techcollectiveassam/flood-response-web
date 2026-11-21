@@ -1,10 +1,6 @@
 import { Check, MapPin, MapPinSearch } from 'lucide-react'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  DEFAULT_LOCATION_METHOD,
-  type LocationMethod,
-} from '../utils/location-method'
+import { useReportDraft } from '../contexts/report-draft-context'
 import { MobileDeviceCard } from './mobile-device-card'
 import { MobileLocationFooter } from './mobile-location-footer'
 import { MobileLocationMethodCard } from './mobile-location-method-card'
@@ -15,7 +11,8 @@ type ReportLocationMobileProps = {
 
 export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
   const { t } = useTranslation()
-  const [method, setMethod] = useState<LocationMethod>(DEFAULT_LOCATION_METHOD)
+  const { draft, updateLocation } = useReportDraft()
+  const method = draft.location.method
 
   return (
     <>
@@ -44,7 +41,7 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
         </legend>
         <MobileDeviceCard
           checked={method === 'device'}
-          onSelect={() => setMethod('device')}
+          onSelect={() => updateLocation({ method: 'device' })}
         />
         <MobileLocationMethodCard
           value="search"
@@ -52,7 +49,7 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
           titleKey="affectedArea.location.search.title"
           descriptionKey="affectedArea.location.search.description"
           checked={method === 'search'}
-          onSelect={() => setMethod('search')}
+          onSelect={() => updateLocation({ method: 'search' })}
         />
         <MobileLocationMethodCard
           value="map"
@@ -60,7 +57,7 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
           titleKey="affectedArea.location.map.title"
           descriptionKey="affectedArea.location.map.description"
           checked={method === 'map'}
-          onSelect={() => setMethod('map')}
+          onSelect={() => updateLocation({ method: 'map' })}
         />
       </fieldset>
 

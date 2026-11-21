@@ -1,10 +1,6 @@
 import { Check } from 'lucide-react'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  DEFAULT_LOCATION_METHOD,
-  type LocationMethod,
-} from '../utils/location-method'
+import { useReportDraft } from '../contexts/report-draft-context'
 import { DesktopDeviceCard } from './desktop-device-card'
 import { DesktopLocationFooter } from './desktop-location-footer'
 import { DesktopMapCard } from './desktop-map-card'
@@ -16,7 +12,9 @@ type ReportLocationDesktopProps = {
 
 export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
   const { t } = useTranslation()
-  const [method, setMethod] = useState<LocationMethod>(DEFAULT_LOCATION_METHOD)
+  const { draft, updateLocation } = useReportDraft()
+  const method = draft.location.method
+  const query = draft.location.query ?? ''
 
   return (
     <>
@@ -46,15 +44,17 @@ export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
         </legend>
         <DesktopDeviceCard
           checked={method === 'device'}
-          onSelect={() => setMethod('device')}
+          onSelect={() => updateLocation({ method: 'device' })}
         />
         <DesktopSearchCard
           checked={method === 'search'}
-          onSelect={() => setMethod('search')}
+          onSelect={() => updateLocation({ method: 'search' })}
+          query={query}
+          onQueryChange={(nextQuery) => updateLocation({ query: nextQuery })}
         />
         <DesktopMapCard
           checked={method === 'map'}
-          onSelect={() => setMethod('map')}
+          onSelect={() => updateLocation({ method: 'map' })}
         />
       </fieldset>
 
