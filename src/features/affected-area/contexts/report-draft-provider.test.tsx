@@ -5,7 +5,13 @@ import { ReportDraftProvider } from './report-draft-provider'
 import { useReportDraft } from './report-draft-context'
 
 function DraftProbe() {
-  const { draft, updateLocation, updateSituation, resetDraft } = useReportDraft()
+  const {
+    draft,
+    updateLocation,
+    updateSituation,
+    updateReporter,
+    resetDraft,
+  } = useReportDraft()
 
   return (
     <div>
@@ -20,6 +26,12 @@ function DraftProbe() {
       </output>
       <output data-testid="details">
         {draft.situation.details ?? 'none'}
+      </output>
+      <output data-testid="reporter-name">
+        {draft.reporter.name ?? 'none'}
+      </output>
+      <output data-testid="reporter-mobile">
+        {draft.reporter.mobile ?? 'none'}
       </output>
 
       <button
@@ -40,6 +52,17 @@ function DraftProbe() {
         }
       >
         Set situation
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          updateReporter({
+            name: 'Anjali Das',
+            mobile: '9800000012',
+          })
+        }
+      >
+        Set reporter
       </button>
       <button type="button" onClick={resetDraft}>
         Reset draft
@@ -80,6 +103,24 @@ describe('ReportDraftProvider', () => {
     expect(screen.getByTestId('details')).toHaveTextContent(
       'Stranded family',
     )
+  })
+
+  it('stores and resets reporter contact details', async () => {
+    renderDraftProbe()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Set reporter' }))
+
+    expect(screen.getByTestId('reporter-name')).toHaveTextContent(
+      'Anjali Das',
+    )
+    expect(screen.getByTestId('reporter-mobile')).toHaveTextContent(
+      '9800000012',
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset draft' }))
+
+    expect(screen.getByTestId('reporter-name')).toHaveTextContent('none')
+    expect(screen.getByTestId('reporter-mobile')).toHaveTextContent('none')
   })
 
   it('resets all draft data', async () => {

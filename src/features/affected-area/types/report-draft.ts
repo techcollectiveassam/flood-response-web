@@ -19,9 +19,15 @@ const situationDraftSchema = z.object({
   details: z.string().max(2000).optional(),
 })
 
+const reporterDraftSchema = z.object({
+  name: z.string().max(100).optional(),
+  mobile: z.string().max(10).optional(),
+})
+
 export const reportDraftSchema = z.object({
   location: locationDraftSchema,
   situation: situationDraftSchema,
+  reporter: reporterDraftSchema,
 })
 
 export type ReportDraft = z.infer<typeof reportDraftSchema>
@@ -31,5 +37,6 @@ export function createEmptyReportDraft(): ReportDraft {
   return {
     location: { method: DEFAULT_LOCATION_METHOD },
     situation: {},
+    reporter: {},
   }
 }

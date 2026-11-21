@@ -15,6 +15,10 @@ type ReportDraftAction =
       type: 'updateSituation'
       patch: Partial<ReportDraft['situation']>
     }
+  | {
+      type: 'updateReporter'
+      patch: Partial<ReportDraft['reporter']>
+    }
   | { type: 'reset' }
 
 function reportDraftReducer(
@@ -31,6 +35,11 @@ function reportDraftReducer(
       return {
         ...state,
         situation: { ...state.situation, ...action.patch },
+      }
+    case 'updateReporter':
+      return {
+        ...state,
+        reporter: { ...state.reporter, ...action.patch },
       }
     case 'reset':
       return createEmptyReportDraft()
@@ -64,6 +73,13 @@ export function ReportDraftProvider({ children }: ReportDraftProviderProps) {
     [],
   )
 
+  const updateReporter = useCallback(
+    (patch: Partial<ReportDraft['reporter']>) => {
+      dispatch({ type: 'updateReporter', patch })
+    },
+    [],
+  )
+
   const resetDraft = useCallback(() => {
     dispatch({ type: 'reset' })
   }, [])
@@ -73,9 +89,16 @@ export function ReportDraftProvider({ children }: ReportDraftProviderProps) {
       draft,
       updateLocation,
       updateSituation,
+      updateReporter,
       resetDraft,
     }),
-    [draft, resetDraft, updateLocation, updateSituation],
+    [
+      draft,
+      resetDraft,
+      updateLocation,
+      updateReporter,
+      updateSituation,
+    ],
   )
 
   return (

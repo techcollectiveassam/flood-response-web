@@ -5,6 +5,7 @@ export type ReportDraftContextValue = {
   draft: ReportDraft
   updateLocation: (patch: Partial<ReportDraft['location']>) => void
   updateSituation: (patch: Partial<ReportDraft['situation']>) => void
+  updateReporter: (patch: Partial<ReportDraft['reporter']>) => void
   resetDraft: () => void
 }
 

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { DesktopReviewFooter } from './desktop-review-footer'
+import { ReporterContactCard } from './reporter-contact-card'
 import { ReviewSummary } from './review-summary'
 
 type ReportReviewDesktopProps = {
@@ -33,6 +34,8 @@ export function ReportReviewDesktop({
         onEditSituation={onEditSituation}
         onEditPhotos={onEditPhotos}
       />
+
+      <ReporterContactCard />
 
       <DesktopReviewFooter onBack={onBack} />
     </>

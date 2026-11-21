@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { MobileReviewFooter } from './mobile-review-footer'
+import { ReporterContactCard } from './reporter-contact-card'
 import { ReviewSummary } from './review-summary'
 
 type ReportReviewMobileProps = {
@@ -28,12 +29,13 @@ export function ReportReviewMobile({
         </p>
       </header>
 
-      <div className="mt-6">
+      <div className="mt-6 space-y-4">
         <ReviewSummary
           onEditLocation={onEditLocation}
           onEditSituation={onEditSituation}
           onEditPhotos={onEditPhotos}
         />
+        <ReporterContactCard />
       </div>
 
       <MobileReviewFooter onBack={onBack} />

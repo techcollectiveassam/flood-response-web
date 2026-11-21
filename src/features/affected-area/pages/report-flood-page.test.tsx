@@ -429,6 +429,43 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
   })
 
+  it('stores optional reporter contact details on review', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Review report' }),
+    )
+
+    const nameInput = screen.getByRole('textbox', { name: 'Full name' })
+    const mobileInput = screen.getByRole('textbox', {
+      name: 'Mobile number',
+    })
+
+    await userEvent.type(nameInput, 'Anjali Das')
+    await userEvent.type(mobileInput, '৯৮০০০০০০১২')
+
+    expect(nameInput).toHaveValue('Anjali Das')
+    expect(mobileInput).toHaveValue('9800000012')
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to photos' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Review report' }),
+    )
+
+    expect(
+      screen.getByRole('textbox', { name: 'Full name' }),
+    ).toHaveValue('Anjali Das')
+    expect(
+      screen.getByRole('textbox', { name: 'Mobile number' }),
+    ).toHaveValue('9800000012')
+  })
+
   it('shows and switches the desktop location methods', async () => {
     renderDesktopFlowPage()
 
