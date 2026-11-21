@@ -1,11 +1,20 @@
-import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { MobileReviewFooter } from './mobile-review-footer'
+import { ReviewSummary } from './review-summary'
 
 type ReportReviewMobileProps = {
   onBack: () => void
+  onEditLocation: () => void
+  onEditSituation: () => void
+  onEditPhotos: () => void
 }
 
-export function ReportReviewMobile({ onBack }: ReportReviewMobileProps) {
+export function ReportReviewMobile({
+  onBack,
+  onEditLocation,
+  onEditSituation,
+  onEditPhotos,
+}: ReportReviewMobileProps) {
   const { t } = useTranslation()
 
   return (
@@ -20,15 +29,14 @@ export function ReportReviewMobile({ onBack }: ReportReviewMobileProps) {
       </header>
 
       <div className="mt-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          {t('affectedArea.backToPhotos')}
-        </button>
+        <ReviewSummary
+          onEditLocation={onEditLocation}
+          onEditSituation={onEditSituation}
+          onEditPhotos={onEditPhotos}
+        />
       </div>
+
+      <MobileReviewFooter onBack={onBack} />
     </>
   )
 }

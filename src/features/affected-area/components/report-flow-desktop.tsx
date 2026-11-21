@@ -36,7 +36,14 @@ export function ReportFlowDesktop({
       )
       break
     case 4:
-      content = <ReportReviewDesktop onBack={() => onStepChange(3)} />
+      content = (
+        <ReportReviewDesktop
+          onBack={() => onStepChange(3)}
+          onEditLocation={() => onStepChange(1)}
+          onEditSituation={() => onStepChange(2)}
+          onEditPhotos={() => onStepChange(3)}
+        />
+      )
       break
     default:
       content = <ReportLocationDesktop onNext={() => onStepChange(2)} />

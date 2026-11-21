@@ -1,6 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { cn } from '@/lib/utils'
 
-export function DesktopMapPreview() {
+type MapPreviewProps = {
+  className?: string
+}
+
+export function MapPreview({ className = 'h-48' }: MapPreviewProps) {
   const { t } = useTranslation()
 
   return (
@@ -8,7 +13,7 @@ export function DesktopMapPreview() {
       viewBox="0 0 640 220"
       role="img"
       aria-label={t('affectedArea.location.map.previewLabel')}
-      className="h-48 w-full"
+      className={cn('w-full', className)}
     >
       <rect width="640" height="220" fill="#e8f2e6" />
 

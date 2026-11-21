@@ -1,11 +1,20 @@
-import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DesktopReviewFooter } from './desktop-review-footer'
+import { ReviewSummary } from './review-summary'
 
 type ReportReviewDesktopProps = {
   onBack: () => void
+  onEditLocation: () => void
+  onEditSituation: () => void
+  onEditPhotos: () => void
 }
 
-export function ReportReviewDesktop({ onBack }: ReportReviewDesktopProps) {
+export function ReportReviewDesktop({
+  onBack,
+  onEditLocation,
+  onEditSituation,
+  onEditPhotos,
+}: ReportReviewDesktopProps) {
   const { t } = useTranslation()
 
   return (
@@ -19,16 +28,13 @@ export function ReportReviewDesktop({ onBack }: ReportReviewDesktopProps) {
         </p>
       </section>
 
-      <div>
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          {t('affectedArea.backToPhotos')}
-        </button>
-      </div>
+      <ReviewSummary
+        onEditLocation={onEditLocation}
+        onEditSituation={onEditSituation}
+        onEditPhotos={onEditPhotos}
+      />
+
+      <DesktopReviewFooter onBack={onBack} />
     </>
   )
 }

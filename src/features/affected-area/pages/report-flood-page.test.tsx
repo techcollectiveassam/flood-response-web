@@ -264,6 +264,28 @@ describe('ReportFloodPage', () => {
         name: 'Review and submit',
       }),
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Location' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Situation' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Photos' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Edit Location' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Edit Situation' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Edit Photos' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Submit report' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('No photos attached.')).toBeInTheDocument()
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Back to photos' }),
@@ -292,6 +314,28 @@ describe('ReportFloodPage', () => {
     )
     await userEvent.click(
       screen.getByRole('button', { name: 'Back to situation' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('opens a review section for editing', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Review report' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Edit Situation' }),
     )
 
     expect(
@@ -536,6 +580,15 @@ describe('ReportFloodPage', () => {
       }),
     ).toBeInTheDocument()
     expect(screen.getByText('Step 4')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Location' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Edit Photos' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Submit report' }),
+    ).toBeInTheDocument()
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Back to photos' }),

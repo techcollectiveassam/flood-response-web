@@ -36,7 +36,14 @@ export function ReportFlowMobile({
       )
       break
     case 4:
-      content = <ReportReviewMobile onBack={() => onStepChange(3)} />
+      content = (
+        <ReportReviewMobile
+          onBack={() => onStepChange(3)}
+          onEditLocation={() => onStepChange(1)}
+          onEditSituation={() => onStepChange(2)}
+          onEditPhotos={() => onStepChange(3)}
+        />
+      )
       break
     default:
       content = <ReportLocationMobile onNext={() => onStepChange(2)} />

@@ -1,6 +1,6 @@
 import { Expand, Map, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { DesktopMapPreview } from './desktop-map-preview'
+import { MapPreview } from './map-preview'
 import { OptionRadioIndicator } from './option-radio-indicator'
 
 type DesktopMapCardProps = {
@@ -41,7 +41,7 @@ export function DesktopMapCard({ checked, onSelect }: DesktopMapCardProps) {
       </label>
 
       <div className="relative mt-4 ml-8 overflow-hidden rounded-xl border border-border-subtle">
-        <DesktopMapPreview />
+        <MapPreview />
 
         <span className="absolute left-3 top-3 rounded bg-card/95 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-foreground shadow-sm">
           {t('affectedArea.location.map.embankment')}
