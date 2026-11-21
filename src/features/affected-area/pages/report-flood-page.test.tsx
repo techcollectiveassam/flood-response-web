@@ -22,6 +22,37 @@ function stubDesktopViewport() {
   )
 }
 
+const originalGeolocation = Object.getOwnPropertyDescriptor(
+  navigator,
+  'geolocation',
+)
+
+function stubGeolocation(
+  implementation: (
+    success: PositionCallback,
+    error?: PositionErrorCallback | null,
+  ) => void,
+) {
+  Object.defineProperty(navigator, 'geolocation', {
+    configurable: true,
+    value: {
+      getCurrentPosition: vi.fn(implementation),
+    },
+  })
+}
+
+function stubSuccessfulGeolocation() {
+  stubGeolocation((success) => {
+    success({
+      coords: {
+        latitude: 26.7509,
+        longitude: 94.2037,
+        accuracy: 8,
+      },
+    } as GeolocationPosition)
+  })
+}
+
 function renderFlowPage() {
   return renderWithProviders(
     <ReportDraftProvider>
@@ -49,6 +80,12 @@ describe('ReportFloodPage', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals()
+
+    if (originalGeolocation) {
+      Object.defineProperty(navigator, 'geolocation', originalGeolocation)
+    } else {
+      Reflect.deleteProperty(navigator, 'geolocation')
+    }
   })
 
   it('shows the mobile progress with location as the current step', () => {
@@ -96,6 +133,52 @@ describe('ReportFloodPage', () => {
         name: 'Acquire GPS Location (1 Tap)',
       }),
     ).toBeInTheDocument()
+  })
+
+  it('captures GPS coordinates and shows them in review', async () => {
+    stubSuccessfulGeolocation()
+    renderFlowPage()
+
+    await userEvent.click(screen.getByText('Search Village or Landmark'))
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'Acquire GPS Location (1 Tap)',
+      }),
+    )
+
+    expect(await screen.findByText('Location captured')).toBeInTheDocument()
+    expect(screen.getByText(/26\.75090° N/)).toBeInTheDocument()
+    expect(screen.getByText(/94\.20370° E/)).toBeInTheDocument()
+    expect(screen.getByText('Accuracy: 8 m')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Review report' }),
+    )
+
+    expect(screen.getByText(/26\.75090° N/)).toBeInTheDocument()
+    expect(screen.getByText(/Accuracy: 8 m/)).toBeInTheDocument()
+  })
+
+  it('shows a localized GPS permission error', async () => {
+    stubGeolocation((_success, error) => {
+      error?.({ code: 1 } as GeolocationPositionError)
+    })
+    renderFlowPage()
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'Acquire GPS Location (1 Tap)',
+      }),
+    )
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Location permission was denied',
+    )
   })
 
   it('switches between the device, search, and map methods', async () => {

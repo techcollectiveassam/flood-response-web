@@ -7,8 +7,10 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { TranslationKey } from '@/lib/i18n/catalog'
+import { resolveLanguage } from '@/lib/i18n/config'
 import { useReportDraft } from '../contexts/report-draft-context'
 import type { ReportSeverity } from '../types/report-draft'
+import { formatGpsDescription } from '../utils/gps'
 import { ReviewLocationMap } from './review-location-map'
 
 type ReviewSummaryProps = {
@@ -50,26 +52,35 @@ export function ReviewSummary({
   onEditSituation,
   onEditPhotos,
 }: ReviewSummaryProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const language = resolveLanguage(i18n.resolvedLanguage ?? i18n.language)
   const { draft } = useReportDraft()
-  const { method, query } = draft.location
+  const { method, query, coordinates } = draft.location
   const trimmedQuery = query?.trim() ?? ''
   const severity = draft.situation.severity
   const details = draft.situation.details?.trim()
 
-  const locationTitle = trimmedQuery
-    ? trimmedQuery
-    : method === 'device'
+  const locationTitle =
+    method === 'device'
       ? t('affectedArea.review.deviceLocation')
-      : method === 'map'
-        ? t('affectedArea.review.mapLocation')
-        : t('affectedArea.review.searchLocation')
+      : method === 'search'
+        ? trimmedQuery || t('affectedArea.review.searchLocation')
+        : t('affectedArea.review.mapLocation')
 
-  const locationSubtitle = trimmedQuery
-    ? t('affectedArea.review.searchLocation')
-    : method === 'search'
-      ? t('affectedArea.review.noPlace')
-      : t('affectedArea.review.locationPending')
+  const locationSubtitle =
+    method === 'device'
+      ? coordinates
+        ? formatGpsDescription(
+            coordinates,
+            language,
+            t('affectedArea.location.gps.accuracy'),
+          )
+        : t('affectedArea.review.locationPending')
+      : method === 'search'
+        ? trimmedQuery
+          ? t('affectedArea.review.searchLocation')
+          : t('affectedArea.review.noPlace')
+        : t('affectedArea.review.locationPending')
 
   return (
     <div className="space-y-4">

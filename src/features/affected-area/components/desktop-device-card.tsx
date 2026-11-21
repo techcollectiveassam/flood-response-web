@@ -1,6 +1,10 @@
-import { Crosshair, Navigation } from 'lucide-react'
+import { Crosshair, Loader2, Navigation } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
+import { useReportDraft } from '../contexts/report-draft-context'
+import { useGpsLocation } from '../hooks/use-gps-location'
+import { GPS_ERROR_KEYS } from '../utils/gps'
+import { GpsLocationResult } from './gps-location-result'
 import { OptionRadioIndicator } from './option-radio-indicator'
 
 type DesktopDeviceCardProps = {
@@ -13,6 +17,18 @@ export function DesktopDeviceCard({
   onSelect,
 }: DesktopDeviceCardProps) {
   const { t } = useTranslation()
+  const { draft, updateLocation } = useReportDraft()
+  const { isLocating, error, request } = useGpsLocation()
+  const coordinates = draft.location.coordinates
+
+  function handleGpsRequest() {
+    request((nextCoordinates) => {
+      updateLocation({
+        method: 'device',
+        coordinates: nextCoordinates,
+      })
+    })
+  }
 
   return (
     <div className="rounded-2xl border border-border-subtle bg-card p-5">
@@ -51,12 +67,37 @@ export function DesktopDeviceCard({
       <div className="mt-4 flex flex-wrap items-start gap-4">
         <Button
           type="button"
+          onClick={handleGpsRequest}
+          disabled={isLocating}
+          aria-busy={isLocating}
           className="h-12 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
         >
-          <Navigation className="size-5" aria-hidden="true" />
-          {t('affectedArea.location.device.action')}
+          {isLocating ? (
+            <Loader2
+              className="size-5 motion-safe:animate-spin"
+              aria-hidden="true"
+            />
+          ) : (
+            <Navigation className="size-5" aria-hidden="true" />
+          )}
+          {isLocating
+            ? t('affectedArea.location.gps.locating')
+            : t('affectedArea.location.device.action')}
         </Button>
       </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="mt-2 text-xs font-semibold leading-relaxed text-destructive"
+        >
+          {t(GPS_ERROR_KEYS[error])}
+        </p>
+      )}
+
+      {coordinates && (
+        <GpsLocationResult coordinates={coordinates} variant="desktop" />
+      )}
     </div>
   )
 }
