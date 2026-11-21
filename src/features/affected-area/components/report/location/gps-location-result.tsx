@@ -4,8 +4,8 @@ import { resolveLanguage } from '@/lib/i18n/config'
 import {
   formatGpsAccuracy,
   formatGpsCoordinates,
-} from '../utils/gps'
-import type { GpsCoordinates } from '../utils/gps'
+} from '../../../utils/gps'
+import type { GpsCoordinates } from '../../../utils/gps'
 
 type GpsLocationResultProps = {
   coordinates: GpsCoordinates

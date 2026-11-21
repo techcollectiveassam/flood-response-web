@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useIsDesktop } from '@/hooks/use-is-desktop'
-import { ReportFlowDesktop } from '../components/report-flow-desktop'
-import { ReportFlowMobile } from '../components/report-flow-mobile'
+import { ReportFlowDesktop } from '../components/report/flow/report-flow-desktop'
+import { ReportFlowMobile } from '../components/report/flow/report-flow-mobile'
 import type { ReportStepNumber } from '../utils/report-steps'
 
 export function ReportFloodPage() {

@@ -1,8 +1,8 @@
 import { Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { reportSteps } from '../utils/report-steps'
-import type { ReportStepNumber } from '../utils/report-steps'
+import { reportSteps } from '../../../utils/report-steps'
+import type { ReportStepNumber } from '../../../utils/report-steps'
 
 type MobileReportProgressProps = {
   currentStep: ReportStepNumber

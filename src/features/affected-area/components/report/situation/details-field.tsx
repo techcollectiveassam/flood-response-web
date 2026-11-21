@@ -2,7 +2,7 @@ import { Mic } from 'lucide-react'
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { normalizeDigits } from '@/lib/normalize-digits'
-import { useReportDraft } from '../contexts/report-draft-context'
+import { useReportDraft } from '../../../contexts/report-draft-context'
 
 export function DetailsField() {
   const { t } = useTranslation()

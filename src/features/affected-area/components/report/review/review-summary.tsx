@@ -8,9 +8,9 @@ import {
 import { useTranslation } from 'react-i18next'
 import type { TranslationKey } from '@/lib/i18n/catalog'
 import { resolveLanguage } from '@/lib/i18n/config'
-import { useReportDraft } from '../contexts/report-draft-context'
-import type { ReportSeverity } from '../types/report-draft'
-import { formatGpsDescription } from '../utils/gps'
+import { useReportDraft } from '../../../contexts/report-draft-context'
+import type { ReportSeverity } from '../../../types/report-draft'
+import { formatGpsDescription } from '../../../utils/gps'
 import { ReviewLocationMap } from './review-location-map'
 
 type ReviewSummaryProps = {

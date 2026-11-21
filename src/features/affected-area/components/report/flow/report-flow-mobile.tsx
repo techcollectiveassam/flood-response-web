@@ -1,14 +1,14 @@
-import { MobileReportStepLayout } from '../layouts/mobile-report-step-layout'
+import { MobileReportStepLayout } from '../../../layouts/mobile-report-step-layout'
 import {
   nextReportStep,
   previousReportStep,
-} from '../utils/report-flow'
-import type { ReportStepNumber } from '../utils/report-steps'
+} from '../../../utils/report-flow'
+import type { ReportStepNumber } from '../../../utils/report-steps'
 import { ReportFlowStepContent } from './report-flow-step-content'
-import { ReportLocationMobile } from './report-location-mobile'
-import { ReportPhotosMobile } from './report-photos-mobile'
-import { ReportReviewMobile } from './report-review-mobile'
-import { ReportSituationMobile } from './report-situation-mobile'
+import { ReportLocationMobile } from '../location/report-location-mobile'
+import { ReportPhotosMobile } from '../photos/report-photos-mobile'
+import { ReportReviewMobile } from '../review/report-review-mobile'
+import { ReportSituationMobile } from '../situation/report-situation-mobile'
 
 type ReportFlowMobileProps = {
   currentStep: ReportStepNumber

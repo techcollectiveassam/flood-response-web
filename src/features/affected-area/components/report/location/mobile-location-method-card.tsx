@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import type { LucideIcon } from 'lucide-react'
 import type { TranslationKey } from '@/lib/i18n/catalog'
 import { cn } from '@/lib/utils'
-import type { LocationMethod } from '../utils/location-method'
-import { OptionRadioIndicator } from './option-radio-indicator'
+import type { LocationMethod } from '../../../utils/location-method'
+import { OptionRadioIndicator } from '../shared/option-radio-indicator'
 
 type MobileLocationMethodCardProps = {
   value: LocationMethod

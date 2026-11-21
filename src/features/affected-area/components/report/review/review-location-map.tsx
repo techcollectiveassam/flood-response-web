@@ -1,8 +1,8 @@
 import { MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { TranslationKey } from '@/lib/i18n/catalog'
-import type { LocationMethod } from '../utils/location-method'
-import { MapPreview } from './map-preview'
+import type { LocationMethod } from '../../../utils/location-method'
+import { MapPreview } from '../shared/map-preview'
 
 type ReviewLocationMapProps = {
   method: LocationMethod

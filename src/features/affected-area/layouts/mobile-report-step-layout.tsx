@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { MobileReportProgress } from '../components/mobile-report-progress'
+import { MobileReportProgress } from '../components/report/flow/mobile-report-progress'
 import type { ReportStepNumber } from '../utils/report-steps'
 
 type MobileReportStepLayoutProps = {

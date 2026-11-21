@@ -1,14 +1,14 @@
-import { DesktopReportStepLayout } from '../layouts/desktop-report-step-layout'
+import { DesktopReportStepLayout } from '../../../layouts/desktop-report-step-layout'
 import {
   nextReportStep,
   previousReportStep,
-} from '../utils/report-flow'
-import type { ReportStepNumber } from '../utils/report-steps'
+} from '../../../utils/report-flow'
+import type { ReportStepNumber } from '../../../utils/report-steps'
 import { ReportFlowStepContent } from './report-flow-step-content'
-import { ReportLocationDesktop } from './report-location-desktop'
-import { ReportPhotosDesktop } from './report-photos-desktop'
-import { ReportReviewDesktop } from './report-review-desktop'
-import { ReportSituationDesktop } from './report-situation-desktop'
+import { ReportLocationDesktop } from '../location/report-location-desktop'
+import { ReportPhotosDesktop } from '../photos/report-photos-desktop'
+import { ReportReviewDesktop } from '../review/report-review-desktop'
+import { ReportSituationDesktop } from '../situation/report-situation-desktop'
 
 type ReportFlowDesktopProps = {
   currentStep: ReportStepNumber

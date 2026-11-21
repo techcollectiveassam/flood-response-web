@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { resolveLanguage } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/formatters'
 import { cn } from '@/lib/utils'
-import { reportSteps } from '../utils/report-steps'
-import type { ReportStepNumber } from '../utils/report-steps'
+import { reportSteps } from '../../../utils/report-steps'
+import type { ReportStepNumber } from '../../../utils/report-steps'
 
 type DesktopReportProgressProps = {
   currentStep: ReportStepNumber

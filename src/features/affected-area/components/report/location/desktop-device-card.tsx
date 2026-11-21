@@ -1,10 +1,10 @@
 import { Crosshair, Loader2, Navigation } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { useDeviceGpsCapture } from '../hooks/use-device-gps-capture'
-import { GPS_ERROR_KEYS } from '../utils/gps'
+import { useDeviceGpsCapture } from '../../../hooks/use-device-gps-capture'
+import { GPS_ERROR_KEYS } from '../../../utils/gps'
 import { GpsLocationResult } from './gps-location-result'
-import { OptionRadioIndicator } from './option-radio-indicator'
+import { OptionRadioIndicator } from '../shared/option-radio-indicator'
 
 type DesktopDeviceCardProps = {
   checked: boolean

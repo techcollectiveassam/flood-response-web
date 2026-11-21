@@ -2,7 +2,7 @@ import { MapPinSearch, Mic, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { normalizeDigits } from '@/lib/normalize-digits'
 import { cn } from '@/lib/utils'
-import { OptionRadioIndicator } from './option-radio-indicator'
+import { OptionRadioIndicator } from '../shared/option-radio-indicator'
 
 type DesktopSearchCardProps = {
   checked: boolean

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useSituationStep } from '../hooks/use-situation-step'
+import { useSituationStep } from '../../../hooks/use-situation-step'
 import { DesktopSituationFooter } from './desktop-situation-footer'
 import { DetailsField } from './details-field'
 import { SeverityLevelField } from './severity-level-field'

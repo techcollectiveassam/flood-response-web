@@ -1,8 +1,8 @@
 import { Expand, Map, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { MapPreview } from './map-preview'
-import { OptionRadioIndicator } from './option-radio-indicator'
+import { MapPreview } from '../shared/map-preview'
+import { OptionRadioIndicator } from '../shared/option-radio-indicator'
 
 type DesktopMapCardProps = {
   checked: boolean

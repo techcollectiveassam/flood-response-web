@@ -9,9 +9,9 @@ import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TranslationKey } from '@/lib/i18n/catalog'
 import { cn } from '@/lib/utils'
-import { useReportDraft } from '../contexts/report-draft-context'
-import type { ReportSeverity } from '../types/report-draft'
-import { OptionRadioIndicator } from './option-radio-indicator'
+import { useReportDraft } from '../../../contexts/report-draft-context'
+import type { ReportSeverity } from '../../../types/report-draft'
+import { OptionRadioIndicator } from '../shared/option-radio-indicator'
 
 type SeverityOption = {
   value: ReportSeverity

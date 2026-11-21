@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { ReportStepNumber } from '../utils/report-steps'
+import type { ReportStepNumber } from '../../../utils/report-steps'
 
 type ReportFlowStepContentProps = {
   currentStep: ReportStepNumber

@@ -4,8 +4,8 @@ import { Link } from 'react-router'
 import { useLanguage } from '@/hooks/use-language'
 import { formatNumber } from '@/lib/i18n/formatters'
 import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
-import { DesktopReportProgress } from '../components/desktop-report-progress'
-import { DesktopSupportColumn } from '../components/desktop-support-column'
+import { DesktopReportProgress } from '../components/report/flow/desktop-report-progress'
+import { DesktopSupportColumn } from '../components/report/support/desktop-support-column'
 import type { ReportStepNumber } from '../utils/report-steps'
 
 type DesktopReportStepLayoutProps = {
