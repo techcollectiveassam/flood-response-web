@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react'
+import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   renderWithProviders,
@@ -8,6 +10,12 @@ import { i18n } from '@/lib/i18n/i18n'
 import { SosQuickActions } from './sos-quick-actions'
 import { SosQuickActionsDesktop } from './sos-quick-actions-desktop'
 import { SosQuickActionsMobile } from './sos-quick-actions-mobile'
+
+function renderQuickActions(ui: ReactElement) {
+  return renderWithProviders(
+    <MemoryRouter initialEntries={['/en']}>{ui}</MemoryRouter>,
+  )
+}
 
 function expectSosTrigger() {
   expect(
@@ -27,11 +35,11 @@ describe('SosQuickActions', () => {
   })
 
   it('renders the mobile report, relief, and SOS actions', () => {
-    renderWithProviders(<SosQuickActionsMobile />)
+    renderQuickActions(<SosQuickActionsMobile />)
 
     expect(
       screen.getByRole('link', { name: /Report flooded area/i }),
-    ).toHaveAttribute('href', '#')
+    ).toHaveAttribute('href', '/en/report-flood')
     expect(screen.getByText('Share real-time data')).toBeInTheDocument()
 
     expect(
@@ -43,11 +51,11 @@ describe('SosQuickActions', () => {
   })
 
   it('renders the desktop report, relief, and SOS actions', () => {
-    renderWithProviders(<SosQuickActionsDesktop />)
+    renderQuickActions(<SosQuickActionsDesktop />)
 
     expect(
       screen.getByRole('link', { name: /Report flooded area/i }),
-    ).toHaveAttribute('href', '#')
+    ).toHaveAttribute('href', '/en/report-flood')
     expect(screen.getByText('2 min form')).toBeInTheDocument()
     expect(
       screen.getByText(
@@ -127,7 +135,7 @@ describe('SosQuickActions', () => {
       })),
     )
 
-    renderWithProviders(<SosQuickActions />)
+    renderQuickActions(<SosQuickActions />)
 
     expect(
       screen.getByRole('heading', {
