@@ -51,10 +51,12 @@ export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
           onSelect={() => updateLocation({ method: 'search' })}
           query={query}
           onQueryChange={(nextQuery) => updateLocation({ query: nextQuery })}
+          available={false}
         />
         <DesktopMapCard
           checked={method === 'map'}
           onSelect={() => updateLocation({ method: 'map' })}
+          available={false}
         />
       </fieldset>
 

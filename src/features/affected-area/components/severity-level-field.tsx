@@ -56,11 +56,17 @@ const severityOptions: SeverityOption[] = [
   },
 ]
 
-export function SeverityLevelField() {
+export function SeverityLevelField({
+  error = false,
+}: {
+  error?: boolean
+}) {
   const { t } = useTranslation()
   const { draft, updateSituation } = useReportDraft()
   const headingId = useId()
+  const errorId = useId()
   const severity = draft.situation.severity
+  const showError = error && !severity
 
   return (
     <section aria-labelledby={headingId}>
@@ -85,6 +91,7 @@ export function SeverityLevelField() {
 
       <fieldset
         aria-labelledby={headingId}
+        aria-describedby={showError ? errorId : undefined}
         aria-required="true"
         className="mt-3 grid grid-cols-2 gap-3"
       >
@@ -134,6 +141,16 @@ export function SeverityLevelField() {
           )
         })}
       </fieldset>
+
+      {showError && (
+        <p
+          id={errorId}
+          role="alert"
+          className="mt-2 text-xs font-semibold text-destructive"
+        >
+          {t('affectedArea.situation.severity.requiredError')}
+        </p>
+      )}
     </section>
   )
 }

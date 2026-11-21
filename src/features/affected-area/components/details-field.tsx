@@ -35,8 +35,10 @@ export function DetailsField() {
 
         <button
           type="button"
-          aria-label={t('affectedArea.situation.details.voice')}
-          className="absolute bottom-3 right-3 flex size-10 items-center justify-center rounded-lg bg-primary-soft text-primary transition-colors hover:bg-primary-soft/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          disabled
+          aria-label={t('affectedArea.voiceUnavailable')}
+          title={t('affectedArea.voiceUnavailable')}
+          className="absolute bottom-3 right-3 flex size-10 items-center justify-center rounded-lg bg-primary-soft text-primary transition-colors hover:bg-primary-soft/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Mic className="size-4" aria-hidden="true" />
         </button>

@@ -1,8 +1,7 @@
 import { Crosshair, Loader2, Navigation } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { useReportDraft } from '../contexts/report-draft-context'
-import { useGpsLocation } from '../hooks/use-gps-location'
+import { useDeviceGpsCapture } from '../hooks/use-device-gps-capture'
 import { GPS_ERROR_KEYS } from '../utils/gps'
 import { GpsLocationResult } from './gps-location-result'
 import { OptionRadioIndicator } from './option-radio-indicator'
@@ -17,18 +16,8 @@ export function MobileDeviceCard({
   onSelect,
 }: MobileDeviceCardProps) {
   const { t } = useTranslation()
-  const { draft, updateLocation } = useReportDraft()
-  const { isLocating, error, request } = useGpsLocation()
-  const coordinates = draft.location.coordinates
-
-  function handleGpsRequest() {
-    request((nextCoordinates) => {
-      updateLocation({
-        method: 'device',
-        coordinates: nextCoordinates,
-      })
-    })
-  }
+  const { isLocating, error, requestGps, coordinates } =
+    useDeviceGpsCapture()
 
   return (
     <div className="rounded-2xl border border-border-subtle bg-card p-4">
@@ -59,7 +48,7 @@ export function MobileDeviceCard({
 
         <Button
           type="button"
-          onClick={handleGpsRequest}
+          onClick={requestGps}
           disabled={isLocating}
           aria-busy={isLocating}
           className="mt-2 h-12 w-full rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary-hover"

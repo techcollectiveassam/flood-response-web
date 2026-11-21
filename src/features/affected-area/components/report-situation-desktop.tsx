@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useReportDraft } from '../contexts/report-draft-context'
 import { DesktopSituationFooter } from './desktop-situation-footer'
 import { DetailsField } from './details-field'
 import { SeverityLevelField } from './severity-level-field'
@@ -13,6 +15,18 @@ export function ReportSituationDesktop({
   onNext,
 }: ReportSituationDesktopProps) {
   const { t } = useTranslation()
+  const { draft } = useReportDraft()
+  const [showSeverityError, setShowSeverityError] = useState(false)
+
+  function handleNext() {
+    if (!draft.situation.severity) {
+      setShowSeverityError(true)
+      return
+    }
+
+    setShowSeverityError(false)
+    onNext()
+  }
 
   return (
     <>
@@ -25,11 +39,11 @@ export function ReportSituationDesktop({
         </p>
       </section>
 
-      <SeverityLevelField />
+      <SeverityLevelField error={showSeverityError} />
 
       <DetailsField />
 
-      <DesktopSituationFooter onBack={onBack} onNext={onNext} />
+      <DesktopSituationFooter onBack={onBack} onNext={handleNext} />
     </>
   )
 }

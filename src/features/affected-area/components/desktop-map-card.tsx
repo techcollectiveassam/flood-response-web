@@ -1,25 +1,43 @@
 import { Expand, Map, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { cn } from '@/lib/utils'
 import { MapPreview } from './map-preview'
 import { OptionRadioIndicator } from './option-radio-indicator'
 
 type DesktopMapCardProps = {
   checked: boolean
   onSelect: () => void
+  available?: boolean
 }
 
-export function DesktopMapCard({ checked, onSelect }: DesktopMapCardProps) {
+export function DesktopMapCard({
+  checked,
+  onSelect,
+  available = true,
+}: DesktopMapCardProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="rounded-2xl border border-border-subtle bg-card p-5">
-      <label className="flex min-w-0 cursor-pointer items-start gap-3 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-ring/50">
+    <div
+      className={cn(
+        'rounded-2xl border border-border-subtle bg-card p-5',
+        !available && 'opacity-60',
+      )}
+    >
+      <label
+        aria-disabled={!available || undefined}
+        className={cn(
+          'flex min-w-0 items-start gap-3 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-ring/50',
+          available ? 'cursor-pointer' : 'cursor-not-allowed',
+        )}
+      >
         <input
           type="radio"
           name="location-method"
           value="map"
           checked={checked}
           onChange={onSelect}
+          disabled={!available}
           aria-label={t('affectedArea.location.map.desktopTitle')}
           className="sr-only"
         />
@@ -30,8 +48,15 @@ export function DesktopMapCard({ checked, onSelect }: DesktopMapCardProps) {
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="block text-lg font-bold leading-tight text-foreground">
-            {t('affectedArea.location.map.desktopTitle')}
+          <span className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-lg font-bold leading-tight text-foreground">
+              {t('affectedArea.location.map.desktopTitle')}
+            </span>
+            {!available && (
+              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+                {t('affectedArea.location.methodUnavailable')}
+              </span>
+            )}
           </span>
 
           <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
@@ -58,7 +83,8 @@ export function DesktopMapCard({ checked, onSelect }: DesktopMapCardProps) {
         <button
           type="button"
           onClick={onSelect}
-          className="absolute bottom-3 right-3 inline-flex items-center gap-2 rounded-lg bg-card px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          disabled={!available}
+          className="absolute bottom-3 right-3 inline-flex items-center gap-2 rounded-lg bg-card px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Expand className="size-4" aria-hidden="true" />
           {t('affectedArea.location.map.expand')}

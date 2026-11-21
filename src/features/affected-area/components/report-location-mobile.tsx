@@ -50,6 +50,7 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
           descriptionKey="affectedArea.location.search.description"
           checked={method === 'search'}
           onSelect={() => updateLocation({ method: 'search' })}
+          available={false}
         />
         <MobileLocationMethodCard
           value="map"
@@ -58,6 +59,7 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
           descriptionKey="affectedArea.location.map.description"
           checked={method === 'map'}
           onSelect={() => updateLocation({ method: 'map' })}
+          available={false}
         />
       </fieldset>
 

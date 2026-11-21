@@ -139,7 +139,6 @@ describe('ReportFloodPage', () => {
     stubSuccessfulGeolocation()
     renderFlowPage()
 
-    await userEvent.click(screen.getByText('Search Village or Landmark'))
     await userEvent.click(
       screen.getByRole('button', {
         name: 'Acquire GPS Location (1 Tap)',
@@ -153,6 +152,7 @@ describe('ReportFloodPage', () => {
     expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
     )
@@ -181,7 +181,7 @@ describe('ReportFloodPage', () => {
     )
   })
 
-  it('switches between the device, search, and map methods', async () => {
+  it('marks unfinished search and map methods as unavailable', async () => {
     renderFlowPage()
 
     const deviceRadio = screen.getByRole('radio', { name: 'Device' })
@@ -191,20 +191,17 @@ describe('ReportFloodPage', () => {
     const mapRadio = screen.getByRole('radio', { name: 'Tap to Pin on Map' })
 
     expect(deviceRadio).toBeChecked()
-    expect(searchRadio).not.toBeChecked()
-    expect(mapRadio).not.toBeChecked()
+    expect(deviceRadio).toBeEnabled()
+    expect(searchRadio).toBeDisabled()
+    expect(mapRadio).toBeDisabled()
+    expect(screen.getAllByText('Not available yet')).toHaveLength(2)
 
     await userEvent.click(screen.getByText('Search Village or Landmark'))
-
-    expect(searchRadio).toBeChecked()
-    expect(deviceRadio).not.toBeChecked()
-    expect(mapRadio).not.toBeChecked()
-
     await userEvent.click(screen.getByText('Tap to Pin on Map'))
 
-    expect(mapRadio).toBeChecked()
-    expect(deviceRadio).not.toBeChecked()
+    expect(deviceRadio).toBeChecked()
     expect(searchRadio).not.toBeChecked()
+    expect(mapRadio).not.toBeChecked()
   })
 
   it('shows the mobile local-save note and next action', () => {
@@ -228,7 +225,6 @@ describe('ReportFloodPage', () => {
   it('moves between the location and situation steps in one route', async () => {
     renderFlowPage()
 
-    await userEvent.click(screen.getByText('Tap to Pin on Map'))
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(
@@ -255,9 +251,41 @@ describe('ReportFloodPage', () => {
         name: 'Where is the flooding?',
       }),
     ).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
+  })
+
+  it('blocks the situation step until severity is selected', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+
     expect(
-      screen.getByRole('radio', { name: 'Tap to Pin on Map' }),
-    ).toBeChecked()
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Select a severity level to continue.',
+    )
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Not sure' }))
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Show us what you see',
+      }),
+    ).toBeInTheDocument()
   })
 
   it('keeps the selected severity when moving between steps', async () => {
@@ -315,6 +343,7 @@ describe('ReportFloodPage', () => {
     renderFlowPage()
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
     )
@@ -411,6 +440,7 @@ describe('ReportFloodPage', () => {
     renderFlowPage()
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
     )
@@ -433,6 +463,7 @@ describe('ReportFloodPage', () => {
     renderFlowPage()
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
     )
@@ -466,7 +497,7 @@ describe('ReportFloodPage', () => {
     ).toHaveValue('9800000012')
   })
 
-  it('shows and switches the desktop location methods', async () => {
+  it('shows the desktop location methods with unfinished options disabled', async () => {
     renderDesktopFlowPage()
 
     const breadcrumb = screen.getByRole('navigation', { name: 'Breadcrumb' })
@@ -511,37 +542,21 @@ describe('ReportFloodPage', () => {
       name: 'Search Village, Landmark, or Revenue Circle',
     })
 
-    expect(searchbox).toBeInTheDocument()
+    expect(searchbox).toBeDisabled()
+    expect(searchRadio).toBeDisabled()
+    expect(mapRadio).toBeDisabled()
+    expect(screen.getAllByText('Not available yet')).toHaveLength(2)
     expect(
-      screen.getByRole('button', { name: 'Search by voice' }),
-    ).toBeInTheDocument()
+      screen.getByRole('button', {
+        name: 'Voice input is not available yet.',
+      }),
+    ).toBeDisabled()
     expect(
       screen.getByRole('img', { name: 'Flood map preview' }),
     ).toBeInTheDocument()
-
-    await userEvent.click(searchRadio)
-
-    expect(searchRadio).toBeChecked()
-    expect(deviceRadio).not.toBeChecked()
-
-    await userEvent.click(mapRadio)
-
-    expect(mapRadio).toBeChecked()
-    expect(searchRadio).not.toBeChecked()
-
-    await userEvent.click(searchbox)
-
-    expect(searchRadio).toBeChecked()
-
-    await userEvent.type(searchbox, 'Kamalabari')
-
-    expect(searchbox).toHaveValue('Kamalabari')
-
-    await userEvent.click(
+    expect(
       screen.getByRole('button', { name: 'Expand Fullscreen Map' }),
-    )
-
-    expect(mapRadio).toBeChecked()
+    ).toBeDisabled()
 
     expect(
       screen.getByText(
@@ -638,9 +653,9 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole('button', {
-        name: 'Dictate additional details',
+        name: 'Voice input is not available yet.',
       }),
-    ).toBeInTheDocument()
+    ).toBeDisabled()
     expect(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
     ).toBeInTheDocument()
@@ -658,14 +673,9 @@ describe('ReportFloodPage', () => {
     expect(screen.getByText('Step 1')).toBeInTheDocument()
     expect(
       screen.getByRole('radio', {
-        name: 'Tap or Pin on Interactive Flood Map',
+        name: 'Device GPS Satellite',
       }),
     ).toBeChecked()
-    expect(
-      screen.getByRole('searchbox', {
-        name: 'Search Village, Landmark, or Revenue Circle',
-      }),
-    ).toHaveValue('Kamalabari')
   })
 
   it('shows the desktop photos and review frames', async () => {
@@ -674,6 +684,7 @@ describe('ReportFloodPage', () => {
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Situation details' }),
     )
+    await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
     )

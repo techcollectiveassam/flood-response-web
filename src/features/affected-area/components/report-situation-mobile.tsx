@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useReportDraft } from '../contexts/report-draft-context'
 import { DetailsField } from './details-field'
 import { MobileSituationFooter } from './mobile-situation-footer'
 import { SeverityLevelField } from './severity-level-field'
@@ -13,6 +15,18 @@ export function ReportSituationMobile({
   onNext,
 }: ReportSituationMobileProps) {
   const { t } = useTranslation()
+  const { draft } = useReportDraft()
+  const [showSeverityError, setShowSeverityError] = useState(false)
+
+  function handleNext() {
+    if (!draft.situation.severity) {
+      setShowSeverityError(true)
+      return
+    }
+
+    setShowSeverityError(false)
+    onNext()
+  }
 
   return (
     <>
@@ -26,14 +40,14 @@ export function ReportSituationMobile({
       </header>
 
       <div className="mt-6">
-        <SeverityLevelField />
+        <SeverityLevelField error={showSeverityError} />
       </div>
 
       <div className="mt-6">
         <DetailsField />
       </div>
 
-      <MobileSituationFooter onBack={onBack} onNext={onNext} />
+      <MobileSituationFooter onBack={onBack} onNext={handleNext} />
     </>
   )
 }
