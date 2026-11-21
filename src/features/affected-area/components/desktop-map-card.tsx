@@ -1,7 +1,7 @@
 import { Expand, Map, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DesktopMapPreview } from './desktop-map-preview'
-import { LocationRadioIndicator } from './location-radio-indicator'
+import { OptionRadioIndicator } from './option-radio-indicator'
 
 type DesktopMapCardProps = {
   checked: boolean
@@ -23,7 +23,7 @@ export function DesktopMapCard({ checked, onSelect }: DesktopMapCardProps) {
           aria-label={t('affectedArea.location.map.desktopTitle')}
           className="sr-only"
         />
-        <LocationRadioIndicator checked={checked} />
+        <OptionRadioIndicator checked={checked} />
 
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
           <Map className="size-5" aria-hidden="true" />

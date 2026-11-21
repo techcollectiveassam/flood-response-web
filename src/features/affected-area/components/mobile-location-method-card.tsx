@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { LucideIcon } from 'lucide-react'
 import type { TranslationKey } from '@/lib/i18n/catalog'
 import type { LocationMethod } from '../utils/location-method'
-import { LocationRadioIndicator } from './location-radio-indicator'
+import { OptionRadioIndicator } from './option-radio-indicator'
 
 type MobileLocationMethodCardProps = {
   value: LocationMethod
@@ -48,7 +48,7 @@ export function MobileLocationMethodCard({
         </span>
       </span>
 
-      <LocationRadioIndicator checked={checked} />
+      <OptionRadioIndicator checked={checked} />
     </label>
   )
 }

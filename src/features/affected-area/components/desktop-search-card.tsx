@@ -1,7 +1,7 @@
 import { MapPinSearch, Mic, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { normalizeDigits } from '@/lib/normalize-digits'
-import { LocationRadioIndicator } from './location-radio-indicator'
+import { OptionRadioIndicator } from './option-radio-indicator'
 
 type DesktopSearchCardProps = {
   checked: boolean
@@ -30,7 +30,7 @@ export function DesktopSearchCard({
           aria-label={t('affectedArea.location.search.desktopTitle')}
           className="sr-only"
         />
-        <LocationRadioIndicator checked={checked} />
+        <OptionRadioIndicator checked={checked} />
 
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
           <MapPinSearch className="size-5" aria-hidden="true" />

@@ -182,6 +182,31 @@ describe('ReportFloodPage', () => {
     ).toBeChecked()
   })
 
+  it('keeps the selected severity when moving between steps', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(
+      screen.getByRole('group', { name: /Severity level/ }),
+    ).toBeInTheDocument()
+
+    const criticalRadio = screen.getByRole('radio', { name: 'Critical' })
+
+    expect(criticalRadio).not.toBeChecked()
+
+    await userEvent.click(criticalRadio)
+
+    expect(criticalRadio).toBeChecked()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to location' }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(screen.getByRole('radio', { name: 'Critical' })).toBeChecked()
+  })
+
   it('shows and switches the desktop location methods', async () => {
     renderDesktopFlowPage()
 
@@ -336,6 +361,19 @@ describe('ReportFloodPage', () => {
     expect(
       within(situationProgress).getByText('Situation').closest('li'),
     ).toHaveAttribute('aria-current', 'step')
+
+    const severityGroup = screen.getByRole('group', {
+      name: /Severity level/,
+    })
+    const urgentRadio = within(severityGroup).getByRole('radio', {
+      name: 'Urgent',
+    })
+
+    expect(urgentRadio).not.toBeChecked()
+
+    await userEvent.click(urgentRadio)
+
+    expect(urgentRadio).toBeChecked()
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Back to location' }),

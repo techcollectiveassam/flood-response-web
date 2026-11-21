@@ -2,7 +2,7 @@ import { Crosshair, Navigation, Satellite } from 'lucide-react'
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { LocationRadioIndicator } from './location-radio-indicator'
+import { OptionRadioIndicator } from './option-radio-indicator'
 
 type DesktopDeviceCardProps = {
   checked: boolean
@@ -28,7 +28,7 @@ export function DesktopDeviceCard({
           aria-label={t('affectedArea.location.device.desktopTitle')}
           className="sr-only"
         />
-        <LocationRadioIndicator checked={checked} />
+        <OptionRadioIndicator checked={checked} />
 
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-start justify-between gap-3">

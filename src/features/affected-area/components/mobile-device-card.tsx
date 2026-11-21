@@ -2,7 +2,7 @@ import { Crosshair, Navigation, Satellite } from 'lucide-react'
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
-import { LocationRadioIndicator } from './location-radio-indicator'
+import { OptionRadioIndicator } from './option-radio-indicator'
 
 type MobileDeviceCardProps = {
   checked: boolean
@@ -29,7 +29,7 @@ export function MobileDeviceCard({
             aria-label={t('affectedArea.location.device.title')}
             className="sr-only"
           />
-          <LocationRadioIndicator checked={checked} />
+          <OptionRadioIndicator checked={checked} />
           <span className="text-lg font-bold leading-tight text-foreground">
             {t('affectedArea.location.device.title')}
           </span>

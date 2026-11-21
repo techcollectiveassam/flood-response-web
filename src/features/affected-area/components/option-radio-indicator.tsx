@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils'
 
-type LocationRadioIndicatorProps = {
+type OptionRadioIndicatorProps = {
   checked: boolean
 }
 
-export function LocationRadioIndicator({
+export function OptionRadioIndicator({
   checked,
-}: LocationRadioIndicatorProps) {
+}: OptionRadioIndicatorProps) {
   return (
     <span
       aria-hidden="true"
