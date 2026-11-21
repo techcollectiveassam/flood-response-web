@@ -137,6 +137,7 @@
   "affectedArea.location.description": "অবস্থান শেয়ার করার জন্য যেকোনো একটি পদ্ধতি বেছে নিন — যা এখন আপনার জন্য সবচেয়ে সহজ।",
   "affectedArea.location.requiredBadge": "যেকোনো ১টি পদ্ধতি প্রয়োজন",
   "affectedArea.location.requiredHint": "এগিয়ে যেতে শুধু ১টি প্রয়োজন",
+  "affectedArea.location.requiredError": "এগিয়ে যেতে একটি অবস্থান নিন বা নির্বাচন করুন।",
   "affectedArea.location.methodLegend": "অবস্থান শেয়ার করার পদ্ধতি",
   "affectedArea.location.methodUnavailable": "এখনও উপলব্ধ নয়",
   "affectedArea.location.device.title": "ডিভাইস",

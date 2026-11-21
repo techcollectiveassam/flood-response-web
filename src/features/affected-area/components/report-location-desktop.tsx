@@ -1,6 +1,8 @@
 import { Check } from 'lucide-react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReportDraft } from '../contexts/report-draft-context'
+import { hasResolvedLocation } from '../utils/location-method'
 import { DesktopDeviceCard } from './desktop-device-card'
 import { DesktopLocationFooter } from './desktop-location-footer'
 import { DesktopMapCard } from './desktop-map-card'
@@ -13,8 +15,22 @@ type ReportLocationDesktopProps = {
 export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
   const { t } = useTranslation()
   const { draft, updateLocation } = useReportDraft()
+  const [showLocationError, setShowLocationError] = useState(false)
+  const locationErrorId = useId()
   const method = draft.location.method
   const query = draft.location.query ?? ''
+  const hasLocation = hasResolvedLocation(draft.location)
+  const locationError = showLocationError && !hasLocation
+
+  function handleNext() {
+    if (!hasLocation) {
+      setShowLocationError(true)
+      return
+    }
+
+    setShowLocationError(false)
+    onNext()
+  }
 
   return (
     <>
@@ -38,7 +54,10 @@ export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
         </div>
       </section>
 
-      <fieldset className="min-w-0 space-y-4">
+      <fieldset
+        aria-describedby={locationError ? locationErrorId : undefined}
+        className="min-w-0 space-y-4"
+      >
         <legend className="sr-only">
           {t('affectedArea.location.methodLegend')}
         </legend>
@@ -60,7 +79,17 @@ export function ReportLocationDesktop({ onNext }: ReportLocationDesktopProps) {
         />
       </fieldset>
 
-      <DesktopLocationFooter onNext={onNext} />
+      {locationError && (
+        <p
+          id={locationErrorId}
+          role="alert"
+          className="text-xs font-semibold text-destructive"
+        >
+          {t('affectedArea.location.requiredError')}
+        </p>
+      )}
+
+      <DesktopLocationFooter onNext={handleNext} />
     </>
   )
 }

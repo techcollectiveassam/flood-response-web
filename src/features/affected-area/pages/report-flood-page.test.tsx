@@ -73,9 +73,19 @@ function renderDesktopFlowPage() {
   )
 }
 
+async function captureGps() {
+  await userEvent.click(
+    screen.getByRole('button', {
+      name: 'Acquire GPS Location (1 Tap)',
+    }),
+  )
+  await screen.findByText(/Location captured/)
+}
+
 describe('ReportFloodPage', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
+    stubSuccessfulGeolocation()
   })
 
   afterEach(() => {
@@ -181,6 +191,35 @@ describe('ReportFloodPage', () => {
     )
   })
 
+  it('requires a captured location before advancing', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Where is the flooding?',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Capture or select a location to continue.',
+    )
+
+    await captureGps()
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
+  })
+
   it('marks unfinished search and map methods as unavailable', async () => {
     renderFlowPage()
 
@@ -225,6 +264,7 @@ describe('ReportFloodPage', () => {
   it('moves between the location and situation steps in one route', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(
@@ -257,6 +297,7 @@ describe('ReportFloodPage', () => {
   it('blocks the situation step until severity is selected', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Attach photos' }),
@@ -291,6 +332,7 @@ describe('ReportFloodPage', () => {
   it('keeps the selected severity when moving between steps', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(
@@ -316,6 +358,7 @@ describe('ReportFloodPage', () => {
   it('keeps additional details when moving between steps', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     const details = screen.getByRole('textbox', {
@@ -342,6 +385,7 @@ describe('ReportFloodPage', () => {
   it('moves through the photos and review steps', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
@@ -439,6 +483,7 @@ describe('ReportFloodPage', () => {
   it('opens a review section for editing', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
@@ -462,6 +507,7 @@ describe('ReportFloodPage', () => {
   it('stores optional reporter contact details on review', async () => {
     renderFlowPage()
 
+    await captureGps()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
     await userEvent.click(
@@ -612,6 +658,8 @@ describe('ReportFloodPage', () => {
       }),
     ).toBeInTheDocument()
 
+    await captureGps()
+
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Situation details' }),
     )
@@ -681,6 +729,7 @@ describe('ReportFloodPage', () => {
   it('shows the desktop photos and review frames', async () => {
     renderDesktopFlowPage()
 
+    await captureGps()
     await userEvent.click(
       screen.getByRole('button', { name: 'Next: Situation details' }),
     )

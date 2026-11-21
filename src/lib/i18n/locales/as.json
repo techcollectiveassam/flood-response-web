@@ -137,6 +137,7 @@
   "affectedArea.location.description": "অৱস্থান শ্বেয়াৰ কৰিবলৈ যিকোনো এটা পদ্ধতি বাছনি কৰক — যিটো এতিয়া আপোনাৰ বাবে সৰ্বাধিক সহজ।",
   "affectedArea.location.requiredBadge": "যিকোনো ১টা পদ্ধতি প্ৰয়োজন",
   "affectedArea.location.requiredHint": "আগবাঢ়িবলৈ মাত্ৰ ১টা প্ৰয়োজন",
+  "affectedArea.location.requiredError": "আগবাঢ়িবলৈ এটা অৱস্থান লওক বা বাছনি কৰক।",
   "affectedArea.location.methodLegend": "অৱস্থান শ্বেয়াৰৰ পদ্ধতি",
   "affectedArea.location.methodUnavailable": "এতিয়ালৈকে উপলব্ধ নহয়",
   "affectedArea.location.device.title": "ডিভাইচ",

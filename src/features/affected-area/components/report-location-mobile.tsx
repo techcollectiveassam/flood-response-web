@@ -1,6 +1,8 @@
 import { Check, MapPin, MapPinSearch } from 'lucide-react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useReportDraft } from '../contexts/report-draft-context'
+import { hasResolvedLocation } from '../utils/location-method'
 import { MobileDeviceCard } from './mobile-device-card'
 import { MobileLocationFooter } from './mobile-location-footer'
 import { MobileLocationMethodCard } from './mobile-location-method-card'
@@ -12,7 +14,21 @@ type ReportLocationMobileProps = {
 export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
   const { t } = useTranslation()
   const { draft, updateLocation } = useReportDraft()
+  const [showLocationError, setShowLocationError] = useState(false)
+  const locationErrorId = useId()
   const method = draft.location.method
+  const hasLocation = hasResolvedLocation(draft.location)
+  const locationError = showLocationError && !hasLocation
+
+  function handleNext() {
+    if (!hasLocation) {
+      setShowLocationError(true)
+      return
+    }
+
+    setShowLocationError(false)
+    onNext()
+  }
 
   return (
     <>
@@ -35,7 +51,10 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
         </p>
       </div>
 
-      <fieldset className="mt-4 min-w-0 space-y-3">
+      <fieldset
+        aria-describedby={locationError ? locationErrorId : undefined}
+        className="mt-4 min-w-0 space-y-3"
+      >
         <legend className="sr-only">
           {t('affectedArea.location.methodLegend')}
         </legend>
@@ -63,7 +82,17 @@ export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
         />
       </fieldset>
 
-      <MobileLocationFooter onNext={onNext} />
+      {locationError && (
+        <p
+          id={locationErrorId}
+          role="alert"
+          className="mt-3 text-xs font-semibold text-destructive"
+        >
+          {t('affectedArea.location.requiredError')}
+        </p>
+      )}
+
+      <MobileLocationFooter onNext={handleNext} />
     </>
   )
 }

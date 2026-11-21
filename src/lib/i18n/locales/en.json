@@ -137,6 +137,7 @@
   "affectedArea.location.description": "Choose any ONE method to share location — whichever is easiest for you right now.",
   "affectedArea.location.requiredBadge": "Any 1 method required",
   "affectedArea.location.requiredHint": "Only 1 needed to proceed",
+  "affectedArea.location.requiredError": "Capture or select a location to continue.",
   "affectedArea.location.methodLegend": "Location sharing method",
   "affectedArea.location.methodUnavailable": "Not available yet",
   "affectedArea.location.device.title": "Device",

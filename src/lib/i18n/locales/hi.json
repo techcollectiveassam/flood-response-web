@@ -137,6 +137,7 @@
   "affectedArea.location.description": "स्थान साझा करने के लिए कोई भी एक तरीका चुनें — जो अभी आपके लिए सबसे आसान हो।",
   "affectedArea.location.requiredBadge": "कोई 1 तरीका आवश्यक",
   "affectedArea.location.requiredHint": "आगे बढ़ने के लिए केवल 1 ज़रूरी",
+  "affectedArea.location.requiredError": "आगे बढ़ने के लिए स्थान प्राप्त करें या चुनें।",
   "affectedArea.location.methodLegend": "स्थान साझा करने का तरीका",
   "affectedArea.location.methodUnavailable": "अभी उपलब्ध नहीं",
   "affectedArea.location.device.title": "डिवाइस",
