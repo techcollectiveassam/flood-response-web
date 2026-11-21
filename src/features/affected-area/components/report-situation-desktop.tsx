@@ -5,10 +5,12 @@ import { SeverityLevelField } from './severity-level-field'
 
 type ReportSituationDesktopProps = {
   onBack: () => void
+  onNext: () => void
 }
 
 export function ReportSituationDesktop({
   onBack,
+  onNext,
 }: ReportSituationDesktopProps) {
   const { t } = useTranslation()
 
@@ -27,7 +29,7 @@ export function ReportSituationDesktop({
 
       <DetailsField />
 
-      <DesktopSituationFooter onBack={onBack} />
+      <DesktopSituationFooter onBack={onBack} onNext={onNext} />
     </>
   )
 }

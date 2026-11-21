@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button'
 
 type DesktopSituationFooterProps = {
   onBack: () => void
+  onNext: () => void
 }
 
 export function DesktopSituationFooter({
   onBack,
+  onNext,
 }: DesktopSituationFooterProps) {
   const { t } = useTranslation()
 
@@ -39,6 +41,7 @@ export function DesktopSituationFooter({
 
         <Button
           type="button"
+          onClick={onNext}
           className="h-12 rounded-xl bg-primary px-5 text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground hover:bg-primary-hover"
         >
           {t('affectedArea.nextPhotos')}

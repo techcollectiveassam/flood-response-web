@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button'
 
 type MobileSituationFooterProps = {
   onBack: () => void
+  onNext: () => void
 }
 
 export function MobileSituationFooter({
   onBack,
+  onNext,
 }: MobileSituationFooterProps) {
   const { t } = useTranslation()
 
@@ -25,6 +27,7 @@ export function MobileSituationFooter({
 
       <Button
         type="button"
+        onClick={onNext}
         className="mt-4 h-12 w-full rounded-xl bg-primary text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground hover:bg-primary-hover"
       >
         {t('affectedArea.nextPhotos')}

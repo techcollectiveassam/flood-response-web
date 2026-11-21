@@ -228,6 +228,80 @@ describe('ReportFloodPage', () => {
     ).toHaveValue('Family stranded near the school')
   })
 
+  it('moves through the photos and review steps', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Show us what you see',
+      }),
+    ).toBeInTheDocument()
+
+    const photosProgress = screen.getByRole('navigation', {
+      name: 'Report progress',
+    })
+
+    expect(
+      within(photosProgress).getByText('Photos').closest('li'),
+    ).toHaveAttribute('aria-current', 'step')
+    expect(
+      screen.getByRole('button', { name: 'Skip, no photos right now' }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Review report' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Review and submit',
+      }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to photos' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Show us what you see',
+      }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Skip, no photos right now' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Review and submit',
+      }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to photos' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to situation' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
+  })
+
   it('shows and switches the desktop location methods', async () => {
     renderDesktopFlowPage()
 
@@ -428,5 +502,61 @@ describe('ReportFloodPage', () => {
         name: 'Search Village, Landmark, or Revenue Circle',
       }),
     ).toHaveValue('Kamalabari')
+  })
+
+  it('shows the desktop photos and review frames', async () => {
+    renderDesktopFlowPage()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Situation details' }),
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Attach photos' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Show us what you see',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Step 3')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Skip, no photos right now' }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Review report' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Review and submit',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Step 4')).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to photos' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Show us what you see',
+      }),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to situation' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
   })
 })
