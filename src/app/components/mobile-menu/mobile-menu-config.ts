@@ -32,7 +32,7 @@ export const mobileMenuGroups: MobileMenuGroup[] = [
       {
         labelKey: 'mobileMenu.item.reportFloodedArea',
         icon: MapPin,
-        to: '#',
+        to: '/report-flood',
       },
       {
         labelKey: 'mobileMenu.item.requestRelief',

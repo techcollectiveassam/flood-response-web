@@ -108,6 +108,17 @@ describe('locale routing', () => {
     expect(router.state.location.pathname).toBe('/as/nope')
   })
 
+  it('renders the flood report location step at the localized route', async () => {
+    const router = renderRoute('/en/report-flood')
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Where is the flooding?',
+      }),
+    ).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/en/report-flood')
+  })
+
   it('redirects legacy /sos using the stored preference', async () => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, 'hi')
 

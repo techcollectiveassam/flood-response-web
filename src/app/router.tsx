@@ -1,5 +1,6 @@
 import { createBrowserRouter, redirect } from 'react-router'
 import type { LoaderFunctionArgs, RouteObject } from 'react-router'
+import { affectedAreaRoutes } from '@/features/affected-area/routes'
 import { sosRoutes } from '@/features/sos/routes'
 import { i18n } from '@/lib/i18n/i18n'
 import { getPreferredLanguage } from '@/lib/i18n/detect-language'
@@ -92,6 +93,7 @@ export const routes: RouteObject[] = [
             index: true,
             element: <HomePage />,
           },
+          ...affectedAreaRoutes,
           ...sosRoutes,
           {
             path: '*',

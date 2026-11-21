@@ -21,7 +21,7 @@ export const desktopFooterLinkGroups: DesktopFooterLinkGroup[] = [
     links: [
       {
         labelKey: 'footer.link.reportFloodedArea',
-        to: '#',
+        to: '/report-flood',
         variant: 'emergency',
       },
       {
@@ -29,8 +29,8 @@ export const desktopFooterLinkGroups: DesktopFooterLinkGroup[] = [
         to: '#',
       },
       {
-        labelKey: 'footer.link.emergencySosHotline',
-        to: '#',
+        labelKey: 'footer.link.emergencySos',
+        to: '/sos/new',
       },
     ],
   },
