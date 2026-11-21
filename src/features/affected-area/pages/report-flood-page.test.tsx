@@ -118,7 +118,7 @@ describe('ReportFloodPage', () => {
     ).not.toBeInTheDocument()
     expect(
       screen.getByText(
-        'Saved securely on local storage • Zero connection needed',
+        'Your answers are kept while you complete this report',
       ),
     ).toBeInTheDocument()
     expect(
@@ -211,11 +211,13 @@ describe('ReportFloodPage', () => {
 
     expect(
       screen.getByText(
-        'Saved securely on local device storage • Zero data connection needed to submit',
+        'Your answers are kept on this device while you complete this report',
       ),
     ).toBeInTheDocument()
-    expect(screen.getByText(/Incident ref:/)).toBeInTheDocument()
-    expect(screen.getByText('#AS-26-TEMP')).toBeInTheDocument()
+    expect(
+      screen.getByText('Draft · Not submitted'),
+    ).toBeInTheDocument()
+    expect(screen.queryByText('#AS-26-TEMP')).not.toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Back to Citizen Home' }),
     ).toHaveAttribute('href', '/en')

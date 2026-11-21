@@ -5,9 +5,6 @@ import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/hooks/use-language'
 import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
 
-// Placeholder until local draft persistence generates a real incident reference.
-const TEMP_INCIDENT_REF = '#AS-26-TEMP'
-
 export function DesktopLocationFooter() {
   const { t } = useTranslation()
   const { language } = useLanguage()
@@ -24,8 +21,7 @@ export function DesktopLocationFooter() {
         </p>
 
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground">
-          {t('affectedArea.location.incidentRef')}:{' '}
-          <span className="font-mono">{TEMP_INCIDENT_REF}</span>
+          {t('affectedArea.location.draftStatus')}
         </p>
       </div>
 
