@@ -37,13 +37,8 @@ export function DesktopSearchCard({
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-start justify-between gap-2">
-            <span className="text-lg font-bold leading-tight text-foreground">
-              {t('affectedArea.location.search.desktopTitle')}
-            </span>
-            <span className="pt-1 text-xs text-muted-foreground">
-              {t('affectedArea.location.search.database')}
-            </span>
+          <span className="block text-lg font-bold leading-tight text-foreground">
+            {t('affectedArea.location.search.desktopTitle')}
           </span>
 
           <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">

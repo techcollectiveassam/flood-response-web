@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DetailsField } from './details-field'
 import { SeverityLevelField } from './severity-level-field'
 
 type ReportSituationDesktopProps = {
@@ -34,6 +35,8 @@ export function ReportSituationDesktop({
       </section>
 
       <SeverityLevelField />
+
+      <DetailsField />
     </>
   )
 }

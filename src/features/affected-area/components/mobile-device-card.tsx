@@ -1,5 +1,4 @@
-import { Crosshair, Navigation, Satellite } from 'lucide-react'
-import { useId } from 'react'
+import { Crosshair, Navigation } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { OptionRadioIndicator } from './option-radio-indicator'
@@ -14,7 +13,6 @@ export function MobileDeviceCard({
   onSelect,
 }: MobileDeviceCardProps) {
   const { t } = useTranslation()
-  const hintId = useId()
 
   return (
     <div className="rounded-2xl border border-border-subtle bg-card p-4">
@@ -45,23 +43,11 @@ export function MobileDeviceCard({
 
         <Button
           type="button"
-          aria-describedby={hintId}
           className="mt-2 h-12 w-full rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary-hover"
         >
           <Navigation className="size-5" aria-hidden="true" />
           {t('affectedArea.location.device.action')}
         </Button>
-
-        <p
-          id={hintId}
-          className="mt-2.5 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground"
-        >
-          <Satellite
-            className="mt-0.5 size-4 shrink-0 text-warning"
-            aria-hidden="true"
-          />
-          {t('affectedArea.location.device.hint')}
-        </p>
       </div>
     </div>
   )

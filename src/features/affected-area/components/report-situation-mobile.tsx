@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DetailsField } from './details-field'
 import { SeverityLevelField } from './severity-level-field'
 
 type ReportSituationMobileProps = {
@@ -35,6 +36,10 @@ export function ReportSituationMobile({
 
       <div className="mt-6">
         <SeverityLevelField />
+      </div>
+
+      <div className="mt-6">
+        <DetailsField />
       </div>
     </>
   )

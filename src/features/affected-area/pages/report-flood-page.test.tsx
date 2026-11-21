@@ -96,11 +96,6 @@ describe('ReportFloodPage', () => {
         name: 'Acquire GPS Location (1 Tap)',
       }),
     ).toBeInTheDocument()
-    expect(
-      screen.getByText(
-        'Works offline with cached satellite • Accuracy ~5-15m',
-      ),
-    ).toBeInTheDocument()
   })
 
   it('switches between the device, search, and map methods', async () => {
@@ -205,6 +200,29 @@ describe('ReportFloodPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(screen.getByRole('radio', { name: 'Critical' })).toBeChecked()
+  })
+
+  it('keeps additional details when moving between steps', async () => {
+    renderFlowPage()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    const details = screen.getByRole('textbox', {
+      name: 'Additional details',
+    })
+
+    await userEvent.type(details, 'Family stranded near the school')
+
+    expect(details).toHaveValue('Family stranded near the school')
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to location' }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(
+      screen.getByRole('textbox', { name: 'Additional details' }),
+    ).toHaveValue('Family stranded near the school')
   })
 
   it('shows and switches the desktop location methods', async () => {
@@ -374,6 +392,14 @@ describe('ReportFloodPage', () => {
     await userEvent.click(urgentRadio)
 
     expect(urgentRadio).toBeChecked()
+    expect(
+      screen.getByRole('textbox', { name: 'Additional details' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', {
+        name: 'Dictate additional details',
+      }),
+    ).toBeInTheDocument()
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Back to location' }),
