@@ -1,7 +1,21 @@
+import { useState } from 'react'
 import { useIsDesktop } from '@/hooks/use-is-desktop'
-import { ReportFloodDesktop } from '../components/report-flood-desktop'
-import { ReportFloodMobile } from '../components/report-flood-mobile'
+import { ReportFlowDesktop } from '../components/report-flow-desktop'
+import { ReportFlowMobile } from '../components/report-flow-mobile'
+import type { ReportStepNumber } from '../utils/report-steps'
 
 export function ReportFloodPage() {
-  return useIsDesktop() ? <ReportFloodDesktop /> : <ReportFloodMobile />
+  const [currentStep, setCurrentStep] = useState<ReportStepNumber>(1)
+
+  return useIsDesktop() ? (
+    <ReportFlowDesktop
+      currentStep={currentStep}
+      onStepChange={setCurrentStep}
+    />
+  ) : (
+    <ReportFlowMobile
+      currentStep={currentStep}
+      onStepChange={setCurrentStep}
+    />
+  )
 }

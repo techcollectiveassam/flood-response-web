@@ -2,7 +2,11 @@ import { ArrowRight, CircleCheck } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 
-export function MobileLocationFooter() {
+type MobileLocationFooterProps = {
+  onNext: () => void
+}
+
+export function MobileLocationFooter({ onNext }: MobileLocationFooterProps) {
   const { t } = useTranslation()
 
   return (
@@ -19,6 +23,7 @@ export function MobileLocationFooter() {
 
       <Button
         type="button"
+        onClick={onNext}
         className="mt-4 h-12 w-full rounded-xl bg-primary text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground hover:bg-primary-hover"
       >
         {t('affectedArea.next')}

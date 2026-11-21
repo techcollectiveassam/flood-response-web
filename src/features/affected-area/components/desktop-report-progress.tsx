@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { resolveLanguage } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/formatters'
@@ -34,6 +35,7 @@ export function DesktopReportProgress({
 
       <ol className="mt-4 grid grid-cols-4 gap-3">
         {reportSteps.map((step) => {
+          const isComplete = step.number < currentStep
           const isCurrent = step.number === currentStep
 
           return (
@@ -46,26 +48,45 @@ export function DesktopReportProgress({
                 aria-hidden="true"
                 className={cn(
                   'block h-2 rounded-full',
-                  isCurrent ? 'bg-primary' : 'bg-secondary',
+                  isComplete
+                    ? 'bg-success'
+                    : isCurrent
+                      ? 'bg-primary'
+                      : 'bg-secondary',
                 )}
               />
               <span className="mt-2 flex min-w-0 items-center gap-2">
                 <span
                   className={cn(
                     'flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold',
-                    isCurrent
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-muted-foreground',
+                    isComplete
+                      ? 'bg-success text-success-foreground'
+                      : isCurrent
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-muted-foreground',
                   )}
                 >
-                  {formatNumber(step.number, language)}
+                  {isComplete ? (
+                    <Check className="size-3.5" aria-hidden="true" />
+                  ) : (
+                    formatNumber(step.number, language)
+                  )}
                 </span>
                 <span
                   className={cn(
-                    'truncate text-xs font-semibold',
-                    isCurrent ? 'text-primary' : 'text-muted-foreground',
+                    'min-w-0 text-xs font-semibold leading-tight',
+                    isComplete
+                      ? 'text-success-text'
+                      : isCurrent
+                        ? 'text-primary'
+                        : 'text-muted-foreground',
                   )}
                 >
+                  {isComplete && (
+                    <span className="sr-only">
+                      {t('affectedArea.progress.completed')}:{' '}
+                    </span>
+                  )}
                   {t(step.labelKey)}
                 </span>
               </span>

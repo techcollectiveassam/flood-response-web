@@ -35,16 +35,16 @@ describe('ReportFloodPage', () => {
 
     const progress = screen.getByRole('navigation', { name: 'Report progress' })
 
-    expect(within(progress).getByText('1. Location')).toBeInTheDocument()
-    expect(within(progress).getByText('2. Situation')).toBeInTheDocument()
-    expect(within(progress).getByText('3. Photos')).toBeInTheDocument()
-    expect(within(progress).getByText('4. Review')).toBeInTheDocument()
+    expect(within(progress).getByText('Location')).toBeInTheDocument()
+    expect(within(progress).getByText('Situation')).toBeInTheDocument()
+    expect(within(progress).getByText('Photos')).toBeInTheDocument()
+    expect(within(progress).getByText('Review')).toBeInTheDocument()
 
     expect(
-      within(progress).getByText('1. Location').closest('li'),
+      within(progress).getByText('Location').closest('li'),
     ).toHaveAttribute('aria-current', 'step')
     expect(
-      within(progress).getByText('2. Situation').closest('li'),
+      within(progress).getByText('Situation').closest('li'),
     ).not.toHaveAttribute('aria-current')
   })
 
@@ -123,6 +123,37 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Next' }),
+    ).toBeInTheDocument()
+  })
+
+  it('moves between the location and situation steps in one route', async () => {
+    renderWithProviders(<ReportFloodPage />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
+
+    const progress = screen.getByRole('navigation', { name: 'Report progress' })
+
+    expect(within(progress).getByText(/Completed:/)).toBeInTheDocument()
+    expect(
+      within(progress).getByText('Situation').closest('li'),
+    ).toHaveAttribute('aria-current', 'step')
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to location' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Where is the flooding?',
+      }),
     ).toBeInTheDocument()
   })
 
@@ -262,5 +293,41 @@ describe('ReportFloodPage', () => {
         name: 'Cellular Tower Blackouts',
       }),
     ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Next: Situation details' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'What is the situation?',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Step 2')).toBeInTheDocument()
+    expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
+
+    const situationProgress = screen.getByRole('region', {
+      name: 'Report progress',
+    })
+
+    expect(
+      within(situationProgress).getByText(/Completed:/),
+    ).toBeInTheDocument()
+    expect(
+      within(situationProgress).getByText('Situation').closest('li'),
+    ).toHaveAttribute('aria-current', 'step')
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Back to location' }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Where is the flooding?',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Step 1')).toBeInTheDocument()
   })
 })

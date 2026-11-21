@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/hooks/use-language'
 import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
 
-export function DesktopLocationFooter() {
+type DesktopLocationFooterProps = {
+  onNext: () => void
+}
+
+export function DesktopLocationFooter({ onNext }: DesktopLocationFooterProps) {
   const { t } = useTranslation()
   const { language } = useLanguage()
 
@@ -36,6 +40,7 @@ export function DesktopLocationFooter() {
 
         <Button
           type="button"
+          onClick={onNext}
           className="h-12 rounded-xl bg-primary px-5 text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground hover:bg-primary-hover"
         >
           {t('affectedArea.nextSituation')}

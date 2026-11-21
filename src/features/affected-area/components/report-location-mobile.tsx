@@ -8,16 +8,17 @@ import {
 import { MobileDeviceCard } from './mobile-device-card'
 import { MobileLocationFooter } from './mobile-location-footer'
 import { MobileLocationMethodCard } from './mobile-location-method-card'
-import { MobileReportProgress } from './mobile-report-progress'
 
-export function ReportFloodMobile() {
+type ReportLocationMobileProps = {
+  onNext: () => void
+}
+
+export function ReportLocationMobile({ onNext }: ReportLocationMobileProps) {
   const { t } = useTranslation()
   const [method, setMethod] = useState<LocationMethod>(DEFAULT_LOCATION_METHOD)
 
   return (
-    <div className="mx-auto w-full max-w-md">
-      <MobileReportProgress currentStep={1} />
-
+    <>
       <header className="mt-6">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {t('affectedArea.location.title')}
@@ -63,7 +64,7 @@ export function ReportFloodMobile() {
         />
       </fieldset>
 
-      <MobileLocationFooter />
-    </div>
+      <MobileLocationFooter onNext={onNext} />
+    </>
   )
 }
