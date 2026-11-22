@@ -38,5 +38,11 @@ describe('DesktopAppShell', () => {
     ).toHaveAttribute('href', '#main-content')
     expect(document.getElementById('main-content')).toBeInTheDocument()
     expect(screen.getByText('Page content')).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Report Flooded Area' }),
+    ).toHaveAttribute('href', '/en/report-flood')
+    expect(
+      screen.getByRole('link', { name: 'Emergency SOS' }),
+    ).toHaveAttribute('href', '/en/sos/new')
   })
 })

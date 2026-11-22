@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { Link } from 'react-router'
 import { cn } from '@/lib/utils'
 
 type SosActionCardTone = 'warning' | 'info'
@@ -10,6 +11,7 @@ type SosActionCardProps = {
   description: string
   tag: string
   tone: SosActionCardTone
+  to?: string
 }
 
 const toneClasses: Record<
@@ -44,17 +46,16 @@ export function SosActionCard({
   description,
   tag,
   tone,
+  to,
 }: SosActionCardProps) {
   const classes = toneClasses[tone]
+  const className = cn(
+    'group flex flex-col justify-between rounded-2xl border-2 border-border bg-card p-6 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
+    classes.card,
+  )
 
-  return (
-    <a
-      href="#"
-      className={cn(
-        'group flex flex-col justify-between rounded-2xl border-2 border-border bg-card p-6 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
-        classes.card,
-      )}
-    >
+  const content = (
+    <>
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4">
           <span
@@ -101,6 +102,20 @@ export function SosActionCard({
           <ChevronRight className="size-4" aria-hidden="true" />
         </span>
       </div>
+    </>
+  )
+
+  if (to) {
+    return (
+      <Link to={to} className={className}>
+        {content}
+      </Link>
+    )
+  }
+
+  return (
+    <a href="#" className={className}>
+      {content}
     </a>
   )
 }
