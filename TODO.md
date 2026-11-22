@@ -1,6 +1,13 @@
 # TODO
 
-Last updated: 2026-11-01
+Last updated: 2026-11-22
+
+## Affected area submission follow-up
+
+- [ ] Add the submitted-state confirmation (reference id, report another,
+      back home). The success path currently resets the draft and returns
+      home, so the reference id is not shown. Deferred until the new catalog
+      keys can go through the translation workflow.
 
 ## Navigation follow-up
 

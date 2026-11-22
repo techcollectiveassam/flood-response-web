@@ -4,7 +4,7 @@ export const apiBaseUrl = configuredApiBaseUrl.endsWith('/')
   ? configuredApiBaseUrl
   : `${configuredApiBaseUrl}/`
 
-export function getSosDisasterId(): number | null {
+export function getDisasterId(): number | null {
   const raw = import.meta.env.VITE_DISASTER_ID
 
   if (raw === undefined || raw === '') {
@@ -15,3 +15,5 @@ export function getSosDisasterId(): number | null {
 
   return Number.isInteger(disasterId) && disasterId > 0 ? disasterId : null
 }
+
+export const getSosDisasterId = getDisasterId

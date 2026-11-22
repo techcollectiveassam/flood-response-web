@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useReportSubmission } from '../../../hooks/use-report-submission'
 import { DesktopReviewFooter } from './desktop-review-footer'
 import { ReporterContactCard } from './reporter-contact-card'
 import { ReviewSummary } from './review-summary'
@@ -17,6 +18,7 @@ export function ReportReviewDesktop({
   onEditPhotos,
 }: ReportReviewDesktopProps) {
   const { t } = useTranslation()
+  const { submit, isSubmitting, errorKey } = useReportSubmission()
 
   return (
     <>
@@ -37,7 +39,12 @@ export function ReportReviewDesktop({
 
       <ReporterContactCard />
 
-      <DesktopReviewFooter onBack={onBack} />
+      <DesktopReviewFooter
+        onBack={onBack}
+        onSubmit={submit}
+        isSubmitting={isSubmitting}
+        errorKey={errorKey}
+      />
     </>
   )
 }

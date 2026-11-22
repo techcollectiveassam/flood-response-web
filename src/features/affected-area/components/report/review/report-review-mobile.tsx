@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useReportSubmission } from '../../../hooks/use-report-submission'
 import { MobileReviewFooter } from './mobile-review-footer'
 import { ReporterContactCard } from './reporter-contact-card'
 import { ReviewSummary } from './review-summary'
@@ -17,6 +18,7 @@ export function ReportReviewMobile({
   onEditPhotos,
 }: ReportReviewMobileProps) {
   const { t } = useTranslation()
+  const { submit, isSubmitting, errorKey } = useReportSubmission()
 
   return (
     <>
@@ -38,7 +40,12 @@ export function ReportReviewMobile({
         <ReporterContactCard />
       </div>
 
-      <MobileReviewFooter onBack={onBack} />
+      <MobileReviewFooter
+        onBack={onBack}
+        onSubmit={submit}
+        isSubmitting={isSubmitting}
+        errorKey={errorKey}
+      />
     </>
   )
 }
