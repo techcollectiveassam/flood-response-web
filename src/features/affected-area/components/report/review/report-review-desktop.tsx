@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import type { TranslationKey } from '@/lib/i18n/catalog'
 import { DesktopReviewFooter } from './desktop-review-footer'
 import { ReporterContactCard } from './reporter-contact-card'
 import { ReviewSummary } from './review-summary'
@@ -8,6 +9,9 @@ type ReportReviewDesktopProps = {
   onEditLocation: () => void
   onEditSituation: () => void
   onEditPhotos: () => void
+  onSubmit: () => void
+  isSubmitting: boolean
+  errorKey: TranslationKey | null
 }
 
 export function ReportReviewDesktop({
@@ -15,6 +19,9 @@ export function ReportReviewDesktop({
   onEditLocation,
   onEditSituation,
   onEditPhotos,
+  onSubmit,
+  isSubmitting,
+  errorKey,
 }: ReportReviewDesktopProps) {
   const { t } = useTranslation()
 
@@ -37,7 +44,12 @@ export function ReportReviewDesktop({
 
       <ReporterContactCard />
 
-      <DesktopReviewFooter onBack={onBack} />
+      <DesktopReviewFooter
+        onBack={onBack}
+        onSubmit={onSubmit}
+        isSubmitting={isSubmitting}
+        errorKey={errorKey}
+      />
     </>
   )
 }

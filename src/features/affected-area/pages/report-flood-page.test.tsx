@@ -1,12 +1,15 @@
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { http, HttpResponse } from 'msw'
+import { MemoryRouter, useLocation } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   renderWithProviders,
   screen,
+  waitFor,
   within,
 } from '@/testing/test-utils'
 import { i18n } from '@/lib/i18n/i18n'
+import { server } from '@/testing/mocks/server'
 import { ReportDraftProvider } from '../contexts/report-draft-provider'
 import { ReportFloodPage } from './report-flood-page'
 
@@ -55,9 +58,22 @@ function stubSuccessfulGeolocation() {
 
 function renderFlowPage() {
   return renderWithProviders(
-    <ReportDraftProvider>
-      <ReportFloodPage />
-    </ReportDraftProvider>,
+    <MemoryRouter initialEntries={['/en/report-flood']}>
+      <ReportDraftProvider>
+        <ReportFloodPage />
+        <LocationProbe />
+      </ReportDraftProvider>
+    </MemoryRouter>,
+  )
+}
+
+function LocationProbe() {
+  const { pathname } = useLocation()
+
+  return (
+    <p data-testid="location" hidden>
+      {pathname}
+    </p>
   )
 }
 
@@ -68,6 +84,7 @@ function renderDesktopFlowPage() {
     <MemoryRouter initialEntries={['/en/report-flood']}>
       <ReportDraftProvider>
         <ReportFloodPage />
+        <LocationProbe />
       </ReportDraftProvider>
     </MemoryRouter>,
   )
@@ -82,14 +99,70 @@ async function captureGps() {
   await screen.findByText(/Location captured/)
 }
 
+async function reachReviewStep() {
+  await captureGps()
+  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(screen.getByRole('radio', { name: 'Urgent' }))
+  await userEvent.click(
+    screen.getByRole('button', { name: 'Next: Attach photos' }),
+  )
+  await userEvent.click(
+    screen.getByRole('button', { name: 'Next: Review report' }),
+  )
+}
+
+const createdAffectedAreaResponse = {
+  data: {
+    affected_area: {
+      ref_id: '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d',
+      disaster_id: 1,
+      latitude: 26.7509,
+      longitude: 94.2037,
+      severity: 'high',
+      verification_status: 'reported',
+      report_count: 1,
+    },
+    report: {
+      ref_id: '4f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d',
+      severity: 'high',
+      location: {
+        source: 'gps',
+        latitude: 26.7509,
+        longitude: 94.2037,
+      },
+      created_at: '2026-11-22T00:00:00Z',
+    },
+    is_new_area: true,
+    confidence: 0,
+    match_reason: 'none',
+  },
+}
+
+function stubSuccessfulSubmission() {
+  let requestBody: unknown
+
+  server.use(
+    http.post('*/api/v1/affected-areas', async ({ request }) => {
+      requestBody = await request.json()
+      return HttpResponse.json(createdAffectedAreaResponse, {
+        status: 201,
+      })
+    }),
+  )
+
+  return () => requestBody
+}
+
 describe('ReportFloodPage', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
+    vi.stubEnv('VITE_DISASTER_ID', '1')
     stubSuccessfulGeolocation()
   })
 
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.unstubAllEnvs()
 
     if (originalGeolocation) {
       Object.defineProperty(navigator, 'geolocation', originalGeolocation)
@@ -791,5 +864,150 @@ describe('ReportFloodPage', () => {
         name: 'What is the situation?',
       }),
     ).toBeInTheDocument()
+  })
+
+  it('submits the report and shows the submitted screen', async () => {
+    const getRequestBody = stubSuccessfulSubmission()
+
+    renderFlowPage()
+    await reachReviewStep()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Report submitted',
+      }),
+    ).toHaveFocus()
+    expect(
+      screen.getByText('3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Under verification')).toBeInTheDocument()
+    expect(screen.getByText('In progress')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Done' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Report another area' }),
+    ).toBeInTheDocument()
+
+    expect(getRequestBody()).toEqual({
+      disaster_id: 1,
+      location: {
+        source: 'gps',
+        latitude: 26.7509,
+        longitude: 94.2037,
+      },
+      severity: 'high',
+    })
+  })
+
+  it('returns home from the submitted screen', async () => {
+    stubSuccessfulSubmission()
+
+    renderFlowPage()
+    await reachReviewStep()
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Done' }),
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('location')).toHaveTextContent(/^\/en$/)
+    })
+  })
+
+  it('starts a new report from the submitted screen', async () => {
+    stubSuccessfulSubmission()
+
+    renderFlowPage()
+    await reachReviewStep()
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+    await userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Report another area',
+      }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Where is the flooding?',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText('Location captured')).not.toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
+  })
+
+  it('shows a localized error when submission fails', async () => {
+    server.use(
+      http.post('*/api/v1/affected-areas', () =>
+        HttpResponse.json(
+          {
+            error: {
+              code: 'internal_error',
+              message: 'internal server error',
+            },
+          },
+          { status: 500 },
+        ),
+      ),
+    )
+
+    renderFlowPage()
+    await reachReviewStep()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The server encountered an error. Please try again later.',
+    )
+    expect(screen.getByTestId('location')).toHaveTextContent(
+      '/en/report-flood',
+    )
+    expect(
+      screen.getByRole('button', { name: 'Submit report' }),
+    ).toBeEnabled()
+  })
+
+  it('blocks submission when the reporter mobile is incomplete', async () => {
+    let requestCount = 0
+
+    server.use(
+      http.post('*/api/v1/affected-areas', () => {
+        requestCount += 1
+        return HttpResponse.json(createdAffectedAreaResponse, {
+          status: 201,
+        })
+      }),
+    )
+
+    renderFlowPage()
+    await reachReviewStep()
+
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Mobile number' }),
+      '12345',
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+
+    expect(
+      screen.getByText('Enter a valid 10-digit mobile number.'),
+    ).toBeInTheDocument()
+    expect(requestCount).toBe(0)
   })
 })

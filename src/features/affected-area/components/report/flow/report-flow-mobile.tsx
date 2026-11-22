@@ -1,3 +1,4 @@
+import type { TranslationKey } from '@/lib/i18n/catalog'
 import { MobileReportStepLayout } from '../../../layouts/mobile-report-step-layout'
 import {
   nextReportStep,
@@ -13,11 +14,17 @@ import { ReportSituationMobile } from '../situation/report-situation-mobile'
 type ReportFlowMobileProps = {
   currentStep: ReportStepNumber
   onStepChange: (step: ReportStepNumber) => void
+  onSubmit: () => void
+  isSubmitting: boolean
+  errorKey: TranslationKey | null
 }
 
 export function ReportFlowMobile({
   currentStep,
   onStepChange,
+  onSubmit,
+  isSubmitting,
+  errorKey,
 }: ReportFlowMobileProps) {
   return (
     <MobileReportStepLayout currentStep={currentStep}>
@@ -47,6 +54,9 @@ export function ReportFlowMobile({
             onEditLocation={() => onStepChange(1)}
             onEditSituation={() => onStepChange(2)}
             onEditPhotos={() => onStepChange(3)}
+            onSubmit={onSubmit}
+            isSubmitting={isSubmitting}
+            errorKey={errorKey}
           />
         }
       />
