@@ -1,8 +1,6 @@
-import { useNavigate } from 'react-router'
-import { useLanguage } from '@/hooks/use-language'
+import { useCallback } from 'react'
 import { getApiErrorKey } from '@/lib/api-error'
 import type { TranslationKey } from '@/lib/i18n/catalog'
-import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
 import { useCreateAffectedAreaReport } from '../api/create-affected-area-report'
 import { useReportDraft } from '../contexts/report-draft-context'
 import { hasResolvedLocation } from '../utils/location-method'
@@ -12,8 +10,7 @@ const MOBILE_PATTERN = /^\d{10}$/
 export function useReportSubmission() {
   const { draft, resetDraft } = useReportDraft()
   const createReport = useCreateAffectedAreaReport()
-  const navigate = useNavigate()
-  const { language } = useLanguage()
+  const resetMutation = createReport.reset
 
   const locationMissing = !hasResolvedLocation(draft.location)
   const severityMissing = !draft.situation.severity
@@ -30,15 +27,13 @@ export function useReportSubmission() {
       return
     }
 
-    createReport.mutate(draft, {
-      onSuccess: () => {
-        // The submitted-state screen is deferred. Reset and return home so
-        // the same draft cannot be submitted twice.
-        resetDraft()
-        navigate(buildLocalizedPath(language, '/'))
-      },
-    })
+    createReport.mutate(draft)
   }
+
+  const reset = useCallback(() => {
+    resetMutation()
+    resetDraft()
+  }, [resetDraft, resetMutation])
 
   const validationErrorKey: TranslationKey | null = locationMissing
     ? 'affectedArea.location.requiredError'
@@ -52,5 +47,7 @@ export function useReportSubmission() {
     errorKey:
       validationErrorKey ??
       (createReport.error ? getApiErrorKey(createReport.error) : null),
+    result: createReport.data,
+    reset,
   }
 }

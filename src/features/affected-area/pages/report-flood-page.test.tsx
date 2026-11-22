@@ -138,6 +138,21 @@ const createdAffectedAreaResponse = {
   },
 }
 
+function stubSuccessfulSubmission() {
+  let requestBody: unknown
+
+  server.use(
+    http.post('*/api/v1/affected-areas', async ({ request }) => {
+      requestBody = await request.json()
+      return HttpResponse.json(createdAffectedAreaResponse, {
+        status: 201,
+      })
+    }),
+  )
+
+  return () => requestBody
+}
+
 describe('ReportFloodPage', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
@@ -851,17 +866,8 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
   })
 
-  it('submits the report and returns home', async () => {
-    let requestBody: unknown
-
-    server.use(
-      http.post('*/api/v1/affected-areas', async ({ request }) => {
-        requestBody = await request.json()
-        return HttpResponse.json(createdAffectedAreaResponse, {
-          status: 201,
-        })
-      }),
-    )
+  it('submits the report and shows the submitted screen', async () => {
+    const getRequestBody = stubSuccessfulSubmission()
 
     renderFlowPage()
     await reachReviewStep()
@@ -870,11 +876,25 @@ describe('ReportFloodPage', () => {
       screen.getByRole('button', { name: 'Submit report' }),
     )
 
-    await waitFor(() => {
-      expect(screen.getByTestId('location')).toHaveTextContent('/en')
-    })
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Report submitted',
+      }),
+    ).toHaveFocus()
+    expect(
+      screen.getByText('3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Under verification')).toBeInTheDocument()
+    expect(screen.getByText('In progress')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Done' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Report another area' }),
+    ).toBeInTheDocument()
 
-    expect(requestBody).toEqual({
+    expect(getRequestBody()).toEqual({
       disaster_id: 1,
       location: {
         source: 'gps',
@@ -883,6 +903,50 @@ describe('ReportFloodPage', () => {
       },
       severity: 'high',
     })
+  })
+
+  it('returns home from the submitted screen', async () => {
+    stubSuccessfulSubmission()
+
+    renderFlowPage()
+    await reachReviewStep()
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Done' }),
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('location')).toHaveTextContent(/^\/en$/)
+    })
+  })
+
+  it('starts a new report from the submitted screen', async () => {
+    stubSuccessfulSubmission()
+
+    renderFlowPage()
+    await reachReviewStep()
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Submit report' }),
+    )
+    await userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Report another area',
+      }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Where is the flooding?',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText('Location captured')).not.toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Device' })).toBeChecked()
   })
 
   it('shows a localized error when submission fails', async () => {
