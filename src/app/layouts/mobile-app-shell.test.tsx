@@ -84,7 +84,7 @@ describe('MobileAppShell', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
-  it('links the brand and the emergency SOS menu item to localized routes', async () => {
+  it('links the brand, report area, and emergency SOS menu items to localized routes', async () => {
     await i18n.changeLanguage('en')
 
     const router = renderShell('/en')
@@ -104,6 +104,12 @@ describe('MobileAppShell', () => {
         name: /Flood Watch.*Assam Floods 2026/i,
       }),
     ).toHaveAttribute('href', '/en')
+
+    const reportAreaLink = within(dialog).getByRole('link', {
+      name: 'Report Flooded Area',
+    })
+
+    expect(reportAreaLink).toHaveAttribute('href', '/en/report-flood')
 
     const sosLink = within(dialog).getByRole('link', {
       name: 'Emergency SOS',

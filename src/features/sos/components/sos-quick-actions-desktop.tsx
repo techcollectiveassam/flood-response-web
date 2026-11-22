@@ -1,9 +1,11 @@
 import { Check, HandHeart, TriangleAlert, Zap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useLanguage } from '@/hooks/use-language'
 import type { TranslationKey } from '@/lib/i18n/catalog'
 import { resolveLanguage } from '@/lib/i18n/config'
 import type { LanguageCode } from '@/lib/i18n/config'
 import { formatNumber } from '@/lib/i18n/formatters'
+import { buildLocalizedPath } from '@/lib/i18n/locale-segment'
 import { SosActionCard } from './sos-action-card'
 import { SosMetricCard } from './sos-metric-card'
 import { SosRegionalSituation } from './sos-regional-situation'
@@ -100,6 +102,7 @@ function SosMetricList({ metrics }: { metrics: SosMetric[] }) {
 
 export function SosQuickActionsDesktop() {
   const { t } = useTranslation()
+  const { language } = useLanguage()
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -198,6 +201,7 @@ export function SosQuickActionsDesktop() {
           description={t('home.action.reportArea.detail')}
           tag={t('home.action.reportArea.tag')}
           tone="warning"
+          to={buildLocalizedPath(language, '/report-flood')}
         />
         <SosActionCard
           icon={HandHeart}

@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { Link } from 'react-router'
 import { cn } from '@/lib/utils'
 
 type QuickActionCardTone = 'warning' | 'info'
@@ -9,6 +10,7 @@ type QuickActionCardProps = {
   title: string
   description: string
   tone: QuickActionCardTone
+  to?: string
 }
 
 const toneClasses: Record<QuickActionCardTone, string> = {
@@ -21,12 +23,13 @@ export function QuickActionCard({
   title,
   description,
   tone,
+  to,
 }: QuickActionCardProps) {
-  return (
-    <a
-      href="#"
-      className="group flex min-h-[76px] items-center gap-4 rounded-xl border-2 border-border bg-card p-4 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 motion-safe:active:scale-[0.99]"
-    >
+  const className =
+    'group flex min-h-[76px] items-center gap-4 rounded-xl border-2 border-border bg-card p-4 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 motion-safe:active:scale-[0.99]'
+
+  const content = (
+    <>
       <span
         className={cn(
           'flex size-12 shrink-0 items-center justify-center rounded-xl',
@@ -48,6 +51,20 @@ export function QuickActionCard({
       <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <ChevronRight className="size-5" aria-hidden="true" />
       </span>
+    </>
+  )
+
+  if (to) {
+    return (
+      <Link to={to} className={className}>
+        {content}
+      </Link>
+    )
+  }
+
+  return (
+    <a href="#" className={className}>
+      {content}
     </a>
   )
 }

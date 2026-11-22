@@ -58,6 +58,7 @@ Never commit `.env.local` or credentials.
 | --- | --- |
 | `/` | Redirects to the preferred locale home page. |
 | `/{locale}` | Localized home page (`en`, `as`, `hi`, `bn`). |
+| `/{locale}/report-flood` | Flood report wizard, step 1 location screen. |
 | `/{locale}/sos` | SOS request list scaffold. |
 | `/{locale}/sos/new` | Create SOS request scaffold. |
 | `/sos`, `/sos/new` | Legacy redirects to the preferred locale. |
