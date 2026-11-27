@@ -1,17 +1,21 @@
+import { z } from 'zod'
+
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/'
 
 export const apiBaseUrl = configuredApiBaseUrl.endsWith('/')
   ? configuredApiBaseUrl
   : `${configuredApiBaseUrl}/`
 
-export function getSosDisasterId(): number | null {
-  const raw = import.meta.env.VITE_DISASTER_ID
+const disasterRefIdSchema = z.string().uuid()
 
-  if (raw === undefined || raw === '') {
+export function getDisasterRefId(): string | null {
+  const raw = import.meta.env.VITE_DISASTER_REF_ID?.trim()
+
+  if (!raw) {
     return null
   }
 
-  const disasterId = Number(raw)
+  const parsed = disasterRefIdSchema.safeParse(raw)
 
-  return Number.isInteger(disasterId) && disasterId > 0 ? disasterId : null
+  return parsed.success ? parsed.data : null
 }

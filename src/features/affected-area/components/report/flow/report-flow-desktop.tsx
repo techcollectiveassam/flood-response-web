@@ -1,3 +1,4 @@
+import type { TranslationKey } from '@/lib/i18n/catalog'
 import { DesktopReportStepLayout } from '../../../layouts/desktop-report-step-layout'
 import {
   nextReportStep,
@@ -13,11 +14,17 @@ import { ReportSituationDesktop } from '../situation/report-situation-desktop'
 type ReportFlowDesktopProps = {
   currentStep: ReportStepNumber
   onStepChange: (step: ReportStepNumber) => void
+  onSubmit: () => void
+  isSubmitting: boolean
+  errorKey: TranslationKey | null
 }
 
 export function ReportFlowDesktop({
   currentStep,
   onStepChange,
+  onSubmit,
+  isSubmitting,
+  errorKey,
 }: ReportFlowDesktopProps) {
   return (
     <DesktopReportStepLayout currentStep={currentStep}>
@@ -47,6 +54,9 @@ export function ReportFlowDesktop({
             onEditLocation={() => onStepChange(1)}
             onEditSituation={() => onStepChange(2)}
             onEditPhotos={() => onStepChange(3)}
+            onSubmit={onSubmit}
+            isSubmitting={isSubmitting}
+            errorKey={errorKey}
           />
         }
       />
