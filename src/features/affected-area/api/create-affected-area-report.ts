@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
-import { getDisasterId } from '@/config/api'
+import { getDisasterRefId } from '@/config/api'
 import { apiClient } from '@/lib/api-client'
 import { API_ERROR_CODES, ApiError, normalizeApiError } from '@/lib/api-error'
 import type { ReportDraft, ReportSeverity } from '../types/report-draft'
@@ -55,7 +55,7 @@ const severitySchema = z.enum([
 ])
 
 export const affectedAreaReportPayloadSchema = z.object({
-  disaster_id: z.number().int().positive(),
+  disaster_ref_id: z.string().uuid(),
   location: affectedAreaLocationPayloadSchema,
   severity: severitySchema,
   description: z.string().max(2000).optional(),
@@ -128,12 +128,12 @@ function buildLocationPayload(draft: ReportDraft): AffectedAreaLocationPayload {
 export function buildAffectedAreaReportPayload(
   draft: ReportDraft,
 ): AffectedAreaReportPayload {
-  const disasterId = getDisasterId()
+  const disasterRefId = getDisasterRefId()
 
-  if (disasterId === null) {
+  if (disasterRefId === null) {
     throw new ApiError({
       code: API_ERROR_CODES.CONFIGURATION,
-      message: 'VITE_DISASTER_ID is not configured',
+      message: 'VITE_DISASTER_REF_ID is not configured',
     })
   }
 
@@ -155,7 +155,7 @@ export function buildAffectedAreaReportPayload(
       : undefined
 
   const payload = {
-    disaster_id: disasterId,
+    disaster_ref_id: disasterRefId,
     location: buildLocationPayload(draft),
     severity: severityMap[severity],
     ...(description ? { description } : {}),
@@ -176,7 +176,7 @@ const verificationStatusSchema = z.enum([
 const createdAffectedAreaSchema = z.object({
   ref_id: z.string(),
   description: z.string().optional(),
-  disaster_id: z.number().int(),
+  disaster_ref_id: z.string().uuid(),
   location: z.string().optional(),
   geometry: z.string().optional(),
   latitude: z.number().nullish(),

@@ -111,11 +111,13 @@ async function reachReviewStep() {
   )
 }
 
+const DISASTER_REF_ID = '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'
+
 const createdAffectedAreaResponse = {
   data: {
     affected_area: {
       ref_id: '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d',
-      disaster_id: 1,
+      disaster_ref_id: DISASTER_REF_ID,
       latitude: 26.7509,
       longitude: 94.2037,
       severity: 'high',
@@ -156,7 +158,7 @@ function stubSuccessfulSubmission() {
 describe('ReportFloodPage', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
-    vi.stubEnv('VITE_DISASTER_ID', '1')
+    vi.stubEnv('VITE_DISASTER_REF_ID', DISASTER_REF_ID)
     stubSuccessfulGeolocation()
   })
 
@@ -895,7 +897,7 @@ describe('ReportFloodPage', () => {
     ).toBeInTheDocument()
 
     expect(getRequestBody()).toEqual({
-      disaster_id: 1,
+      disaster_ref_id: DISASTER_REF_ID,
       location: {
         source: 'gps',
         latitude: 26.7509,

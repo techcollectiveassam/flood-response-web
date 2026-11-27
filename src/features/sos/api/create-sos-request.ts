@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
-import { getSosDisasterId } from '@/config/api'
+import { getDisasterRefId } from '@/config/api'
 import {
   API_ERROR_CODES,
   ApiError,
@@ -24,7 +24,7 @@ const sosLocationSchema = coordinatesSchema.partial()
 
 const createSosRequestSchema = z
   .object({
-    disaster_id: z.number().int().positive(),
+    disaster_ref_id: z.string().uuid(),
     reporter_mobile: z.string().regex(MOBILE_PATTERN).optional(),
     location: coordinatesSchema.nullish(),
   })
@@ -134,18 +134,18 @@ function parseCreateSosRequest(input: unknown): CreateSosRequestInput {
 export async function buildCreateSosRequest(
   reporterMobile?: string,
 ): Promise<CreateSosRequestInput> {
-  const disasterId = getSosDisasterId()
+  const disasterRefId = getDisasterRefId()
 
-  if (disasterId === null) {
+  if (disasterRefId === null) {
     throw new ApiError({
       code: API_ERROR_CODES.CONFIGURATION,
-      message: 'VITE_DISASTER_ID is not configured',
+      message: 'VITE_DISASTER_REF_ID is not configured',
     })
   }
 
   if (reporterMobile !== undefined) {
     return parseCreateSosRequest({
-      disaster_id: disasterId,
+      disaster_ref_id: disasterRefId,
       reporter_mobile: normalizeDigits(reporterMobile).trim(),
     })
   }
@@ -153,7 +153,7 @@ export async function buildCreateSosRequest(
   const location = await getCurrentLocation()
 
   return parseCreateSosRequest({
-    disaster_id: disasterId,
+    disaster_ref_id: disasterRefId,
     location,
   })
 }
