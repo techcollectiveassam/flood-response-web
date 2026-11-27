@@ -8,6 +8,8 @@ import {
   createAffectedAreaReport,
 } from './create-affected-area-report'
 
+const DISASTER_REF_ID = '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'
+
 function createDraft(
   overrides: Partial<ReportDraft> = {},
 ): ReportDraft {
@@ -33,7 +35,7 @@ function createDraft(
 
 describe('buildAffectedAreaReportPayload', () => {
   beforeEach(() => {
-    vi.stubEnv('VITE_DISASTER_ID', '1')
+    vi.stubEnv('VITE_DISASTER_REF_ID', DISASTER_REF_ID)
   })
 
   afterEach(() => {
@@ -42,7 +44,7 @@ describe('buildAffectedAreaReportPayload', () => {
 
   it('builds a GPS payload with description and reporter details', () => {
     expect(buildAffectedAreaReportPayload(createDraft())).toEqual({
-      disaster_id: 1,
+      disaster_ref_id: DISASTER_REF_ID,
       location: {
         source: 'gps',
         latitude: 26.2,
@@ -187,7 +189,7 @@ describe('buildAffectedAreaReportPayload', () => {
   })
 
   it('requires the disaster configuration', () => {
-    vi.stubEnv('VITE_DISASTER_ID', '')
+    vi.stubEnv('VITE_DISASTER_REF_ID', '')
 
     expect(() => buildAffectedAreaReportPayload(createDraft())).toThrow(
       ApiError,
@@ -198,7 +200,7 @@ describe('buildAffectedAreaReportPayload', () => {
 const createdAffectedAreaFixture = {
   affected_area: {
     ref_id: '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d',
-    disaster_id: 1,
+    disaster_ref_id: DISASTER_REF_ID,
     latitude: 26.2,
     longitude: 91.8,
     severity: 'medium',
@@ -226,7 +228,7 @@ const createdAffectedAreaFixture = {
 
 describe('createAffectedAreaReport', () => {
   beforeEach(() => {
-    vi.stubEnv('VITE_DISASTER_ID', '1')
+    vi.stubEnv('VITE_DISASTER_REF_ID', DISASTER_REF_ID)
   })
 
   afterEach(() => {
@@ -249,7 +251,7 @@ describe('createAffectedAreaReport', () => {
     const result = await createAffectedAreaReport(createDraft())
 
     expect(requestBody).toEqual({
-      disaster_id: 1,
+      disaster_ref_id: DISASTER_REF_ID,
       location: {
         source: 'gps',
         latitude: 26.2,

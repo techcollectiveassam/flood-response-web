@@ -10,6 +10,8 @@ import {
   sosResponseSchema,
 } from './create-sos-request'
 
+const DISASTER_REF_ID = '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d'
+
 const originalGeolocation = Object.getOwnPropertyDescriptor(
   navigator,
   'geolocation',
@@ -42,7 +44,7 @@ function stubSuccessfulLocation() {
 
 describe('buildCreateSosRequest', () => {
   beforeEach(() => {
-    vi.stubEnv('VITE_DISASTER_ID', '7')
+    vi.stubEnv('VITE_DISASTER_REF_ID', DISASTER_REF_ID)
     stubSuccessfulLocation()
   })
 
@@ -58,7 +60,7 @@ describe('buildCreateSosRequest', () => {
 
   it('builds the payload with the configured disaster and GPS coordinates', async () => {
     await expect(buildCreateSosRequest()).resolves.toEqual({
-      disaster_id: 7,
+      disaster_ref_id: DISASTER_REF_ID,
       location: {
         latitude: 26.29,
         longitude: 91.8,
@@ -75,14 +77,14 @@ describe('buildCreateSosRequest', () => {
     })
 
     await expect(buildCreateSosRequest('9876543210')).resolves.toEqual({
-      disaster_id: 7,
+      disaster_ref_id: DISASTER_REF_ID,
       reporter_mobile: '9876543210',
     })
   })
 
   it('normalizes localized digits in the mobile fallback', async () => {
     await expect(buildCreateSosRequest('৯৮৭৬৫৪৩২১০')).resolves.toEqual({
-      disaster_id: 7,
+      disaster_ref_id: DISASTER_REF_ID,
       reporter_mobile: '9876543210',
     })
   })
@@ -93,21 +95,21 @@ describe('buildCreateSosRequest', () => {
     })
   })
 
-  it('rejects when the disaster id is missing', async () => {
-    vi.stubEnv('VITE_DISASTER_ID', '')
+  it('rejects when the disaster ref id is missing', async () => {
+    vi.stubEnv('VITE_DISASTER_REF_ID', '')
 
     await expect(buildCreateSosRequest()).rejects.toMatchObject({
       code: API_ERROR_CODES.CONFIGURATION,
-      message: 'VITE_DISASTER_ID is not configured',
+      message: 'VITE_DISASTER_REF_ID is not configured',
     })
   })
 
-  it('rejects when the disaster id is invalid', async () => {
-    vi.stubEnv('VITE_DISASTER_ID', 'abc')
+  it('rejects when the disaster ref id is invalid', async () => {
+    vi.stubEnv('VITE_DISASTER_REF_ID', 'abc')
 
     await expect(buildCreateSosRequest()).rejects.toMatchObject({
       code: API_ERROR_CODES.CONFIGURATION,
-      message: 'VITE_DISASTER_ID is not configured',
+      message: 'VITE_DISASTER_REF_ID is not configured',
     })
   })
 

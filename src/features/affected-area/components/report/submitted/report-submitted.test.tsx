@@ -9,7 +9,7 @@ import { ReportSubmitted } from './report-submitted'
 const result: CreateAffectedAreaResult = {
   affected_area: {
     ref_id: '3f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d',
-    disaster_id: 1,
+    disaster_ref_id: '5f2a9c1e-7b4d-4e2a-9c1e-5d6f7a8b9c0d',
     latitude: 26.7509,
     longitude: 94.2037,
     severity: 'high',
